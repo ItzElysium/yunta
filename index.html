@@ -5,20 +5,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Yunta</title>
 <meta name="description" content="Compañía, tutorías, salud y oficios con personas verificadas en Perú.">
+<meta name="theme-color" content="#4B2170">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <!--HEADER-->
 <header class="top"><div class="wrap">
   <button class="logo" id="home" aria-label="Yunta, inicio"><i></i>yunta</button>
-  <span class="demo" id="modeTag">Demo</span>
+  <span class="tag-demo" id="modeTag">Demo</span>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+  <button class="wallet" id="wallet" hidden aria-label="Mis contactos disponibles"></button>
 </div></header>
 <main class="wrap" id="app"></main>
 <div id="modal"></div>
-<div id="toast" class="toast" hidden></div>
+<div id="safebar" class="safebar" hidden></div>
+<div id="toast" class="toast" role="status" hidden></div>
 <!--/HEADER-->
 <script src="config.js"></script>
 <script src="avatars.js"></script>

@@ -1,222 +1,426 @@
-// Yunta · interfaz. Usa window.API (demo o Supabase) y window.avatarSVG.
+// Yunta · interfaz v2. Usa window.API (demo o Supabase), window.avatarSVG y window.YUNTA_CONFIG.
 (function () {
 const C = window.YUNTA_CONFIG;
-const ICON = {
-  compania:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="9" r="2.6"/><path d="M2.5 20c.6-3.4 2.9-5.4 5.5-5.4s4.9 2 5.5 5.4M14 15.2c.8-.4 1.6-.6 2.5-.6 2.2 0 4 1.7 4.5 5.4"/></svg>',
-  tutoria:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5 12 4l10 4.5L12 13 2 8.5Z"/><path d="M6 10.5V16c2 2 10 2 12 0v-5.5M22 8.5V14"/></svg>',
-  salud:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z"/><path d="M8 12h2.2l1.2-2.4 1.6 4.4 1.2-2H16"/></svg>',
-  hogar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3.5 17.3a1.8 1.8 0 0 0 2.5 2.5l5.8-5.8a4 4 0 0 0 5.2-5.4l-2.5 2.5-2.3-.4-.4-2.3 2.9-2.1Z"/></svg>'
+
+// ---------------- Íconos ----------------
+const P = {
+  home:'<path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+  heart:'<path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z"/>',
+  key:'<circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  verified:'<path d="M12 2.5 14.4 4l2.8-.2 1 2.6 2.4 1.5-.7 2.7.7 2.8-2.4 1.4-1 2.7-2.8-.2L12 19l-2.4-1.5-2.8.2-1-2.7-2.4-1.4.7-2.8-.7-2.7 2.4-1.5 1-2.6 2.8.2z" fill="currentColor" stroke="none"/><path d="m8.5 11.5 2.3 2.3 4.7-4.7" stroke="#fff" stroke-width="2.2"/>',
+  star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" fill="currentColor"/>',
+  shield:'<path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/>',
+  crown:'<path d="m3 8 4.5 4L12 5l4.5 7L21 8l-2 10H5z" fill="currentColor"/>',
+  sparkle:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/>',
+  bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  doc:'<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h5"/>',
+  idcard:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4M14 13h3"/>',
+  face:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"/>',
+  wa:'<path d="M3.5 20.5 5 16a8.5 8.5 0 1 1 3.2 3.1z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a4.6 4.6 0 0 1-2.8-2.8l.8-1-1-2z" fill="currentColor" stroke="none"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/>',
+  pin:'<path d="M12 21s-7-6.3-7-11.5A7 7 0 0 1 19 9.5C19 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  flame:'<path d="M12 21c-4 0-6.5-2.6-6.5-6.2 0-3.6 2.8-5.6 3.8-9.3 2.2 1.4 3 3.4 3 5 1.1-.5 1.8-1.6 2-3 2.5 2 4.2 4.4 4.2 7.3 0 3.6-2.5 6.2-6.5 6.2z" fill="currentColor"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  play:'<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  sos:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5h.01"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.4 6.5-5.4s5.9 2 6.5 5.4M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.7.7 2.8 2.4 3 5.2"/>',
+  cap:'<path d="M2 8.5 12 4l10 4.5L12 13 2 8.5Z"/><path d="M6 10.5V16c2 2 10 2 12 0v-5.5M22 8.5V14"/>',
+  pulse:'<path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z"/><path d="M8 12h2.2l1.2-2.4 1.6 4.4 1.2-2H16"/>',
+  tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3.5 17.3a1.8 1.8 0 0 0 2.5 2.5l5.8-5.8a4 4 0 0 0 5.2-5.4l-2.5 2.5-2.3-.4-.4-2.3 2.9-2.1Z"/>',
+  logout:'<path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 16l-4-4 4-4M6 12h10"/>'
 };
+const I = (n, cls = 'i') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n]}</svg>`;
+
 const CATS = [
-  {id:'compania',name:'Compañía',desc:'Amigos, eventos, reuniones familiares',subs:['Amigo para salir','Acompañante a evento','Pareja para reunión familiar','Familiar para ceremonia','Adulto mayor','Caminatas y deporte']},
-  {id:'tutoria',name:'Tutorías',desc:'Colegio, pre, idiomas, música',subs:['Matemática','Pre-U','Inglés','Quechua','Música','Programación']},
-  {id:'salud',name:'Salud y bienestar',desc:'Psicología, nutrición, coaching',subs:['Psicología','Nutrición','Coaching']},
-  {id:'hogar',name:'Hogar y oficios',desc:'Electricista, gasfitero, técnico',subs:['Electricista','Gasfitero','Técnico de PC','Carpintería','Limpieza']}
+  {id:'compania',name:'Compañía',desc:'Amigos, eventos, familia',icon:'users',subs:['Amigo para salir','Acompañante a evento','Pareja para reunión familiar','Familiar para ceremonia','Adulto mayor','Caminatas y deporte']},
+  {id:'tutoria',name:'Tutorías',desc:'Colegio, pre, idiomas',icon:'cap',subs:['Matemática','Pre-U','Inglés','Quechua','Música','Programación']},
+  {id:'salud',name:'Salud',desc:'Psicología, nutrición',icon:'pulse',subs:['Psicología','Nutrición','Coaching']},
+  {id:'hogar',name:'Hogar y oficios',desc:'Electricista, gasfitero',icon:'tool',subs:['Electricista','Gasfitero','Técnico de PC','Carpintería','Limpieza']}
 ];
 const DISTRITOS = ['Miraflores','San Isidro','Barranco','Santiago de Surco','San Borja','Jesús María','Pueblo Libre','San Miguel','Los Olivos','La Molina','Chorrillos','Callao','Arequipa · Cercado','Cusco · Wanchaq','Trujillo · Centro','Online'];
+const DIAS = ['D','L','M','M','J','V','S'];
+const ROT = ['salir el viernes','la boda de tu prima','el examen de la UNI','la terma que gotea','acompañar a tu mamá','practicar inglés'];
+const TAGS = { rapido:['bolt','Responde rápido'], puntual:['clock','Puntual'], amable:['smile','Amable'], igual:['eye','Igual que en el perfil'] };
+const CTAGS = { puntual:'Puntual', respetuoso:'Respetuoso', pago:'Pagó lo acordado' };
 
-const S = { view:'explorar', cat:null, sub:null, q:'', dist:'', user:null, services:[], after:null };
+const S = { view:'inicio', cat:null, sub:null, q:'', dist:'', filter:null, user:null, wallet:{credits:0}, services:[], favs:[], seen:new Set(), after:null, safety:null };
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const soles = n => 'S/ ' + Number(n).toFixed(2);
+const soles = n => 'S/ ' + Number(n).toFixed(2).replace(/\.00$/, '');
 const catOf = id => CATS.find(c => c.id === id);
-const av = (p, cls='') => `<span class="av ${cls}">${avatarSVG({seed:p.seed, g:p.g, age:p.age})}</span>`;
+const avatar = p => avatarSVG({ seed: p.seed, g: p.g, age: p.age });
+const av = (p, cls = '') => `<span class="av ${cls}">${avatar(p)}</span>`;
+const daysTo = d => Math.ceil((new Date(d + 'T12:00') - Date.now()) / 864e5);
 const daysAgo = d => Math.floor((Date.now() - new Date(d + 'T12:00')) / 864e5);
-function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true, 3000); }
-const run = fn => async (...a) => { try { return await fn(...a) } catch (e) { toast(e.message || 'Algo salió mal. Intenta otra vez.') } };
+function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,3200); }
+const run = fn => async (...a) => { try { return await fn(...a) } catch (e) { console.error(e); toast(e.message || 'Algo salió mal. Intenta otra vez.') } };
 const readFile = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
 
+// ---------------- Prestigio ----------------
+function nivel(s){
+  if (!s.verified) return 'pendiente';
+  const rp = s.n ? (s.tags?.rapido || 0) / s.n : 0;
+  const culOk = !s.culVence || daysTo(s.culVence) >= 0;
+  const [, c, d, o] = C.NIVELES;
+  if (s.oro && culOk && !s.reportes && s.n >= o.n && s.rating >= o.nota && rp >= o.rapido) return 'oro';
+  if (!s.reportes && s.n >= d.n && s.rating >= d.nota && rp >= d.rapido) return 'destacado';
+  if (s.n >= c.n && s.rating >= c.nota) return 'confiable';
+  return 'nuevo';
+}
+const LV = { pendiente:['flag','En revisión'], nuevo:['sparkle','Nuevo'], confiable:['shield','Confiable'], destacado:['star','Destacado'], oro:['crown','Oro'] };
+const lvlBadge = id => `<span class="lvl ${id}">${I(LV[id][0])}${LV[id][1]}</span>`;
+const LORDER = { oro:4, destacado:3, confiable:2, nuevo:1, pendiente:0 };
+function badgesOf(s){
+  const b = [];
+  const pct = k => s.n ? (s.tags?.[k] || 0) / s.n : 0;
+  if (s.respMin != null && s.respMin <= 15) b.push(['bolt', `Responde en ~${s.respMin} min`]);
+  else if (pct('rapido') >= .6) b.push(['bolt', 'Responde rápido']);
+  if (pct('puntual') >= .6) b.push(['clock', 'Puntual']);
+  if (pct('igual') >= .7) b.push(['eye', 'Igual que en el perfil']);
+  if (s.colegiatura) b.push(['idcard', 'Colegiatura verificada']);
+  if (s.culVence && daysTo(s.culVence) >= 0) b.push(['doc', 'CUL vigente']);
+  if (s.n >= 100) b.push(['users', `+${Math.floor(s.n / 10) * 10} clientes`]);
+  if (s.video) b.push(['play', 'Con video']);
+  return b;
+}
+const bdg = ([i, t]) => `<span class="bdg">${I(i)}${esc(t)}</span>`;
+const score = s => (s.boosted ? 1000 : 0) + (s.featured ? 500 : 0) + LORDER[nivel(s)] * 50 + s.rating * Math.log10(s.n + 1) * 10;
+
 // ---------------- Navegación ----------------
-async function refreshUser(){ S.user = await API.getUser(); renderNav(); }
+async function refreshUser(){ S.user = await API.getUser(); S.wallet = await API.wallet(); S.favs = await API.favorites(); renderNav(); }
 function renderNav(){
   const u = S.user;
   $('#tabs').innerHTML = [
-    ['explorar','Explorar'],['publicar','Publicar'],['reservas','Reservas'],
-    ...(u && u.role === 'admin' ? [['admin','Revisión']] : [['seguridad','Seguridad']]),
-    ['cuenta', u ? `<span class="me">${avatarSVG({seed:u.seed,g:u.g,age:u.age})}</span>${esc(u.name.split(' ')[0])}` : 'Ingresar']
-  ].map(([v,l]) => `<button data-view="${v}" aria-current="${S.view===v}">${l}</button>`).join('');
+    ['inicio', I('home'), 'Inicio'], ['descubrir', I('compass'), 'Descubrir'], ['guardados', I('heart'), 'Guardados'], ['planes', I('key'), 'Planes'],
+    ['cuenta', u ? `<span class="me">${avatar(u)}</span>` : I('user'), u ? esc(u.name.split(' ')[0]) : 'Ingresar']
+  ].map(([v, ic, l]) => `<button data-view="${v}" aria-current="${S.view===v}">${ic}<span>${l}</span>${v==='guardados'&&S.favs.length?`<span class="dot">${S.favs.length}</span>`:''}</button>`).join('');
   $$('#tabs button').forEach(b => b.onclick = () => go(b.dataset.view));
+  $('#wallet').innerHTML = u ? `<span class="k">${I('key')}</span>${S.wallet.credits}<span class="lbl2">&nbsp;${S.wallet.credits===1?'contacto':'contactos'}</span>` : '';
+  $('#wallet').hidden = !u;
   $('#modeTag').textContent = API.mode === 'demo' ? 'Demo' : 'Beta';
 }
-function go(v){ S.view = v; renderNav(); render(); window.scrollTo(0,0); }
-function requireLogin(next, msg){ if (S.user) return true; S.after = next; go('cuenta'); toast(msg || 'Inicia sesión para continuar'); return false; }
+function go(v){ S.view = v; renderNav(); render(); window.scrollTo(0, 0); }
+function requireLogin(next, msg){ if (S.user) return true; S.after = next; close(); go('cuenta'); toast(msg || 'Inicia sesión para continuar'); return false; }
 const VIEWS = {};
-async function render(){ close(); await VIEWS[S.view](); }
+let rotTimer;
+async function render(){ clearInterval(rotTimer); await VIEWS[S.view](); }
 
-// ---------------- Explorar ----------------
+// ---------------- Inicio ----------------
 function card(s){
-  const badge = s.colegiatura ? s.colegiatura + ' verificado' : s.verified ? 'Identidad y CUL verificados' : 'Verificación pendiente';
-  return `<button class="card" data-id="${s.id}">
-    ${s.featured ? '<span class="star">Destacado</span>' : ''}
-    <div class="who">${av(s)}<div><b>${esc(s.name)}</b><small>${esc(s.dist)} · ${s.age} años</small></div></div>
-    <h3>${esc(s.title)}</h3>
-    <div class="meta"><span class="pill m">${esc(s.sub)}</span><span class="pill ${s.verified?'ok':'warn'}">${s.verified?'✓':'⏳'} ${esc(badge)}</span></div>
-    <div class="foot"><span class="price">S/ ${s.price}<small> /${esc(s.unit)}</small></span>
-      <span class="stars">${s.n ? `★ <b>${s.rating.toFixed(1)}</b> (${s.n})` : 'Nuevo'}</span></div>
-  </button>`;
+  const lv = nivel(s); const fav = S.favs.includes(s.id);
+  return `<article class="card" data-cat="${s.cat}">
+    <button class="heart" data-fav="${s.id}" aria-pressed="${fav}" aria-label="${fav?'Quitar de guardados':'Guardar'}">${I('heart')}</button>
+    ${s.boosted ? `<span class="ribbon boost">${I('flame')} Boost</span>` : s.featured ? '<span class="ribbon">Destacado</span>' : ''}
+    <button class="open" data-open="${s.id}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;flex:1">
+      <div class="cover"><div class="pattern"></div><span class="avw">${avatar(s)}</span></div>
+      ${s.online ? '<span class="on-dot" title="En línea"></span>' : ''}
+      <div class="body">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="nm">${esc(s.name)}${s.verified?I('verified'):''}</span>${lvlBadge(lv)}</div>
+        <span class="sub">${esc(s.sub)} · ${esc(s.dist)}</span>
+        <h3>${esc(s.title)}</h3>
+        <div class="badges">${badgesOf(s).slice(0,2).map(bdg).join('')}</div>
+        <div class="foot"><span class="price">S/ ${s.price}<small> /${esc(s.unit)}</small></span>
+          <span class="stars">${s.n ? `${I('star')}<b>${s.rating.toFixed(1)}</b> (${s.n})` : 'Nuevo'}</span></div>
+      </div>
+    </button>
+  </article>`;
 }
-VIEWS.explorar = async function(){
+function bindCards(root = document){
+  root.querySelectorAll('[data-open]').forEach(b => b.onclick = () => perfil(S.services.find(s => s.id === b.dataset.open)));
+  root.querySelectorAll('[data-fav]').forEach(b => b.onclick = run(async e => { e.stopPropagation(); if (!requireLogin(null, 'Inicia sesión para guardar')) return;
+    const on = await API.toggleFavorite(b.dataset.fav); S.favs = await API.favorites(); b.setAttribute('aria-pressed', on); renderNav(); toast(on ? 'Guardado en tus favoritos' : 'Quitado de guardados'); }));
+}
+const FILTERS = [['online','En línea ahora','eye'],['oro','Nivel Oro','crown'],['rapido','Responde rápido','bolt'],['top','Mejor valorados','star'],['barato','Más económicos','key'],['video','Con video','play']];
+VIEWS.inicio = async function(){
   S.services = await API.listServices();
-  drawExplorar();
+  drawInicio();
 };
-function drawExplorar(){
-  const list = S.services.filter(s => (!S.cat||s.cat===S.cat) && (!S.sub||s.sub===S.sub) && (!S.dist||s.dist===S.dist) &&
+function drawInicio(){
+  const all = S.services.filter(s => s.active);
+  let list = all.filter(s => (!S.cat||s.cat===S.cat) && (!S.sub||s.sub===S.sub) && (!S.dist||s.dist===S.dist) &&
     (!S.q || (s.title+' '+s.desc+' '+s.sub+' '+s.name).toLowerCase().includes(S.q.toLowerCase())));
+  const f = S.filter;
+  if (f === 'online') list = list.filter(s => s.online);
+  if (f === 'oro') list = list.filter(s => nivel(s) === 'oro');
+  if (f === 'rapido') list = list.filter(s => badgesOf(s).some(b => b[0] === 'bolt'));
+  if (f === 'video') list = list.filter(s => s.video);
+  list.sort(f === 'top' ? (a,b) => b.rating - a.rating || b.n - a.n : f === 'barato' ? (a,b) => a.price - b.price : (a,b) => score(b) - score(a));
+  const filtering = S.cat || S.q || S.dist || f;
+  const online = all.filter(s => s.online).sort((a,b) => score(b) - score(a));
+  const top = [...all].sort((a,b) => b.rating * Math.log10(b.n+1) - a.rating * Math.log10(a.n+1)).slice(0, 8);
   const c = S.cat && catOf(S.cat);
   $('#app').innerHTML = `
   <section class="hero">
-    <div><h1>Tu <em>yunta</em> para lo que se necesite.</h1>
-    <p>Un pata para salir, una tía para la graduación, la profe para el pre o el electricista que llega hoy. Todos verificados con DNI, reconocimiento facial y Certificado Único Laboral.</p></div>
-    <div class="search">
-      <label class="lbl" for="q">Buscar</label>
-      <input id="q" placeholder="Ej. padrino, inglés, terma, psicóloga" value="${esc(S.q)}">
+    <h1>Tu yunta para <span class="rot" id="rot"><span>${ROT[0]}</span></span></h1>
+    <p>Personas reales y verificadas para acompañarte, enseñarte o ayudarte en casa. Elige, desbloquea su WhatsApp y coordinan directo.</p>
+    <div class="search" role="search">
+      <label class="q">${I('search')}<input id="q" placeholder="Padrino, inglés, terma, psicóloga…" value="${esc(S.q)}" aria-label="Buscar"></label>
       <select id="dist" aria-label="Distrito"><option value="">Todo el Perú</option>${DISTRITOS.map(d=>`<option ${d===S.dist?'selected':''}>${d}</option>`).join('')}</select>
     </div>
+    <div class="trust"><span>${I('idcard')} DNI y rostro verificados</span><span>${I('doc')} Certificado Único Laboral</span><span>${I('shield')} Cita segura</span></div>
   </section>
-  <div class="cats">${CATS.map(k=>`<button class="cat" data-cat="${k.id}" aria-pressed="${S.cat===k.id}">${ICON[k.id]}<b>${k.name}</b><span>${k.desc}</span></button>`).join('')}</div>
-  ${c ? `<div class="chips"><button class="chip" data-sub="" aria-pressed="${!S.sub}">Todo ${c.name.toLowerCase()}</button>${c.subs.map(x=>`<button class="chip" data-sub="${esc(x)}" aria-pressed="${S.sub===x}">${esc(x)}</button>`).join('')}</div>` : ''}
-  <p class="count">${list.length} ${list.length===1?'persona disponible':'personas disponibles'}${S.dist?' en '+esc(S.dist):''}</p>
+  ${online.length ? `<div class="stories" aria-label="En línea ahora">${online.map(s=>`<button class="story" data-cat="${s.cat}" data-open="${s.id}"><span class="ring"><span>${avatar(s)}</span><i class="live">EN LÍNEA</i></span><b>${esc(s.name.replace(/^(Ps\.|Lic\.|Don)\s/,'').split(' ')[0])}</b></button>`).join('')}</div>` : ''}
+  <div class="section-h"><h2>¿Qué necesitas?</h2></div>
+  <div class="cats">${CATS.map(k=>`<button class="cat" data-cat="${k.id}" data-c="${k.id}" aria-pressed="${S.cat===k.id}"><span class="ic">${I(k.icon)}</span><b>${k.name}</b><span>${all.filter(s=>s.cat===k.id).length} personas · ${k.desc}</span></button>`).join('')}</div>
+  ${c ? `<div class="chips">${['',...c.subs].map(x=>`<button class="chip" data-sub="${esc(x)}" aria-pressed="${(S.sub||'')===x}">${x?esc(x):'Todo '+c.name.toLowerCase()}</button>`).join('')}</div>` : ''}
+  <div class="chips">${FILTERS.map(([id,l,ic])=>`<button class="chip" data-f="${id}" aria-pressed="${f===id}">${I(ic)}${l}</button>`).join('')}</div>
+  ${!filtering ? `<div class="section-h"><h2>Top de la semana</h2><small>Por nota y número de reseñas</small></div>
+    <div class="rank">${top.map((s,i)=>`<button class="rk" data-cat="${s.cat}" data-open="${s.id}"><span class="num">${i+1}</span>${av(s)}<span><b>${esc(s.name)}</b><small>${esc(s.sub)} · ${I('star')} ${s.rating.toFixed(1)}</small><br>${lvlBadge(nivel(s))}</span></button>`).join('')}</div>` : ''}
+  <div class="section-h"><h2>${filtering ? `${list.length} ${list.length===1?'resultado':'resultados'}` : 'Todos'}</h2>${filtering?'<button class="link" id="clear">Quitar filtros</button>':''}</div>
   ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<div class="empty">No hay resultados con esos filtros. Prueba otro distrito o quita la búsqueda.</div>`}
   ${legal()}`;
-  const q = $('#q'); q.oninput = e => { S.q = e.target.value; const p = q.selectionStart; drawExplorar(); const n = $('#q'); n.focus(); n.setSelectionRange(p,p); };
-  $('#dist').onchange = e => { S.dist = e.target.value; drawExplorar(); };
-  $$('.cat').forEach(b => b.onclick = () => { S.cat = S.cat===b.dataset.cat ? null : b.dataset.cat; S.sub = null; drawExplorar(); });
-  $$('.chip').forEach(b => b.onclick = () => { S.sub = b.dataset.sub || null; drawExplorar(); });
-  $$('.card').forEach(b => b.onclick = () => perfil(S.services.find(s => s.id === b.dataset.id)));
+  let k = 0; rotTimer = setInterval(() => { const r = $('#rot'); if (!r) return clearInterval(rotTimer); k = (k+1) % ROT.length; r.innerHTML = `<span>${ROT[k]}</span>`; }, 2400);
+  const q = $('#q'); q.oninput = e => { S.q = e.target.value; const p = q.selectionStart; drawInicio(); const n = $('#q'); n.focus(); n.setSelectionRange(p,p); };
+  $('#dist').onchange = e => { S.dist = e.target.value; drawInicio(); };
+  $$('.cat').forEach(b => b.onclick = () => { S.cat = S.cat===b.dataset.c ? null : b.dataset.c; S.sub = null; drawInicio(); });
+  $$('[data-sub]').forEach(b => b.onclick = () => { S.sub = b.dataset.sub || null; drawInicio(); });
+  $$('[data-f]').forEach(b => b.onclick = () => { S.filter = S.filter===b.dataset.f ? null : b.dataset.f; drawInicio(); });
+  const cl = $('#clear'); if (cl) cl.onclick = () => { S.cat=S.sub=S.filter=null; S.q=S.dist=''; drawInicio(); };
+  bindCards();
 }
 function legal(){ return `<footer class="legal"><span>Yunta · Lima, Perú</span><button class="link" data-act="reclamo">Libro de Reclamaciones</button><span>Datos protegidos según Ley N.º 29733</span><button class="link" data-act="seguridad">Seguridad</button></footer>`; }
 document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if (!a) return;
   if (a.dataset.act === 'reclamo') reclamo(); if (a.dataset.act === 'seguridad') go('seguridad'); });
 
 // ---------------- Modal ----------------
-function openModal(html){ $('#modal').innerHTML = `<div class="scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
+function openModal(html, cat){ $('#modal').innerHTML = `<div class="scrim"><div class="sheet" role="dialog" aria-modal="true" ${cat?`data-cat="${cat}"`:''}><button class="x" aria-label="Cerrar">${I('x')}</button>${html}</div></div>`;
   const sc = $('.scrim'); sc.onclick = e => { if (e.target === sc) close(); }; $$('.x').forEach(x => x.onclick = close); }
 function close(){ $('#modal').innerHTML = ''; }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
-// ---------------- Perfil + contacto bloqueado ----------------
+// ---------------- Perfil ----------------
 async function perfil(s){
-  const c = catOf(s.cat); const social = s.cat === 'compania';
-  openModal(`<header><div class="who">${av(s,'lg')}
-    <div><h2 style="font-size:22px">${esc(s.name)}</h2><small style="color:var(--muted)">${esc(c.name)} · ${esc(s.sub)} · ${esc(s.dist)}</small></div></div><button class="x" aria-label="Cerrar">×</button></header>
-    <h3 style="font-size:18px">${esc(s.title)}</h3>
-    <p style="margin:8px 0">${esc(s.desc)}</p>
-    <div class="meta">${s.verified ? `<span class="pill ok">✓ DNI y rostro</span><span class="pill ok">✓ CUL sin antecedentes</span>` : `<span class="pill warn">⏳ Verificación en revisión</span>`}
-      ${s.colegiatura ? `<span class="pill ok">✓ ${esc(s.colegiatura)}</span>` : ''}<span class="pill">${esc(s.langs)}</span></div>
-    ${social ? `<div class="alert" style="margin-top:12px">Compañía social. El primer encuentro es en un lugar público y no incluye contacto íntimo.</div>` : ''}
-    ${s.cat === 'salud' ? `<div class="note" style="margin-top:12px">Si estás en crisis, llama a la Línea 113, opción 5.</div>` : ''}
-    <div class="section"><h4>Contacto</h4><div id="contact"><div class="lock"><span class="note">Cargando…</span></div></div></div>
-    <div class="section"><h4>Reseñas</h4><div class="reviews">${API.reviews(s.providerId).map(r=>`<div class="rev">"${esc(r[1])}"<br><small>${esc(r[0])}</small></div>`).join('') || '<span class="note">Aún sin reseñas.</span>'}</div></div>
-    <div class="section" style="flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap">
-      <span class="price">S/ ${s.price}<small> /${esc(s.unit)}</small></span>
-      <button class="btn" id="res">Reservar con pago protegido</button></div>`);
-  $('#res').onclick = () => { if (requireLogin(() => reservar(s))) reservar(s); };
-  drawContact(s);
+  if (!s) return;
+  API.addView(s.id);
+  const c = catOf(s.cat); const lv = nivel(s);
+  const [ct, revs] = await Promise.all([API.getContact(s.providerId), API.reviews(s.providerId)]);
+  const pct = k => s.n ? Math.round((s.tags?.[k]||0) / s.n * 100) : 0;
+  const fav = S.favs.includes(s.id);
+  openModal(`
+    <div class="pcover"><div class="pattern"></div></div>
+    <div class="pad" style="padding-top:0">
+      <div class="phead"><span class="avw">${avatar(s)}${s.online?'<span class="on-dot"></span>':''}</span>
+        <div style="flex:1 1 220px;min-width:0;padding-bottom:6px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">${lvlBadge(lv)}${s.online?'<span class="pill ok">En línea</span>':''}</div>
+          <h2>${esc(s.name)}${s.verified?I('verified'):''}</h2>
+          <span class="note">${esc(c.name)} · ${esc(s.sub)} · ${I('pin')} ${esc(s.dist)} · ${s.age} años</span></div>
+      </div>
+      <div class="stat-row">
+        <div><b>${s.n?s.rating.toFixed(1):'—'}</b><span>Nota (${s.n} reseñas)</span></div>
+        <div><b>${s.n?pct('rapido')+'%':'—'}</b><span>Dicen que responde rápido</span></div>
+        <div><b>${s.n?pct('puntual')+'%':'—'}</b><span>Dicen que es puntual</span></div>
+        <div><b>${s.views||0}</b><span>Visitas al perfil</span></div>
+      </div>
+      <h3 style="font-size:20px;margin-top:14px">${esc(s.title)}</h3>
+      <p style="margin:8px 0 0">${esc(s.desc)}</p>
+      ${s.video?`<div class="block"><h4>Video de presentación</h4><video class="video" src="${esc(s.video)}" controls playsinline></video></div>`:''}
+      ${badgesOf(s).length?`<div class="badges" style="margin-top:12px">${badgesOf(s).map(bdg).join('')}</div>`:''}
+      <div class="block"><h4>Precio y extras</h4><div class="extras">
+        <div><b>${esc(s.sub)}</b><b>S/ ${s.price} /${esc(s.unit)}</b></div>
+        ${(s.extras||[]).map(e=>`<div><span>+ ${esc(e.name)}</span><span>${e.price?soles(e.price):'Incluido'}</span></div>`).join('')}</div>
+        <span class="note">Lo pagas directamente a ${esc(s.name.split(' ')[0])} cuando coordinen.</span></div>
+      <div class="block"><h4>Disponibilidad</h4><div class="week">${DIAS.map((d,i)=>`<span class="${(s.days||[]).includes(i)?'on':''}">${d}</span>`).join('')}</div>${s.hours?`<span class="note">${I('clock')} ${esc(s.hours)}</span>`:''}</div>
+      ${s.limits || s.cat==='compania' ? `<div class="block"><h4>Lo que no hago</h4><div class="limits">${s.cat==='compania'?'Solo compañía social, sin contacto íntimo. Primer encuentro en un lugar público. ':''}${esc(s.limits||'')}</div></div>` : ''}
+      <div class="block"><h4>Verificado por Yunta</h4><div class="trustlist">
+        <div>${I('idcard')} DNI validado</div><div>${I('face')} Rostro y prueba de vida</div>
+        <div>${I('doc')} CUL sin antecedentes${s.culVence?` · vence en ${Math.max(0,daysTo(s.culVence))} días`:''}</div>
+        ${s.colegiatura?`<div>${I('verified')} ${esc(s.colegiatura)}</div>`:`<div>${I('shield')} Cita segura disponible</div>`}</div></div>
+      <div class="block"><h4>Reseñas</h4>${revs.length?revs.slice(0,6).map(r=>`<div class="rev"><div class="h"><b style="color:var(--fg)">${esc(r.author)}</b><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)} · ${esc(r.date)}</span></div>${r.comment?esc(r.comment):''}<div class="badges">${(r.tags||[]).filter(t=>TAGS[t]).map(t=>bdg(TAGS[t])).join('')}</div></div>`).join(''):'<span class="note">Aún no tiene reseñas.</span>'}</div>
+      <div class="row" style="margin-top:12px"><button class="btn line sm" id="pfav">${I('heart')} ${fav?'Guardado':'Guardar'}</button><button class="btn line sm" id="prep">${I('flag')} Reportar</button></div>
+    </div>
+    <div class="cta" id="cta"></div>`, s.cat);
+  drawCta(s, ct);
+  $('#pfav').onclick = run(async () => { if (!requireLogin(() => perfil(s))) return; await API.toggleFavorite(s.id); S.favs = await API.favorites(); renderNav(); perfil(s); });
+  $('#prep').onclick = () => { if (requireLogin(() => perfil(s))) reportar(s); };
 }
-async function drawContact(s){
-  const box = $('#contact'); if (!box) return;
-  const ct = await API.getContact(s.providerId);
-  const cr = await API.credits();
-  if (!$('#contact')) return;
+const waLink = (num, s) => `https://wa.me/51${String(num).replace(/\D/g,'').slice(-9)}?text=${encodeURIComponent(`Hola ${s.name.replace(/^(Ps\.|Lic\.|Don)\s/,'').split(' ')[0]}, te vi en Yunta (${s.sub}). ¿Tienes disponibilidad?`)}`;
+function drawCta(s, ct){
+  const box = $('#cta'); if (!box) return;
   if (ct.unlocked) {
-    box.innerHTML = `<div class="lock open"><div class="kv">
-      <span>WhatsApp</span><b>${esc(ct.whatsapp)}</b><button class="btn sm ghost" data-copy="${esc(ct.whatsapp)}">Copiar</button>
-      <span>Correo</span><b style="font-size:14px;overflow-wrap:anywhere">${esc(ct.email)}</b><button class="btn sm ghost" data-copy="${esc(ct.email)}">Copiar</button></div>
-      <span class="note">Contacto desbloqueado. Si pagas por fuera de Yunta, el pago no queda protegido.</span></div>`;
-    box.querySelectorAll('[data-copy]').forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('Copiado'); } catch (e) { toast('Selecciona el texto para copiarlo'); } });
+    box.innerHTML = `<div class="contact-open grow"><span class="lbl">WhatsApp de ${esc(s.name.split(' ')[0])}</span><span class="num">${esc(ct.whatsapp)}</span><span class="note" style="overflow-wrap:anywhere">${esc(ct.email)}</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1 1 200px">
+        <a class="btn wa" href="${waLink(ct.whatsapp, s)}" target="_blank" rel="noopener">${I('wa')} Escribir por WhatsApp</a>
+        <div class="row"><button class="btn ghost sm" id="cp">${I('copy')} Copiar</button><button class="btn ghost sm" id="safe">${I('shield')} Cita segura</button><button class="btn ghost sm" id="rv">${I('star')} Calificar</button></div></div>`;
+    $('#cp').onclick = async () => { try { await navigator.clipboard.writeText(ct.whatsapp.replace(/\s/g,'')); toast('Número copiado'); } catch (e) { toast('Mantén presionado el número para copiarlo'); } };
+    $('#safe').onclick = () => citaSegura(s);
+    $('#rv').onclick = () => calificar(s);
     return;
   }
-  box.innerHTML = `<div class="lock"><div class="kv">
-      <span>WhatsApp</span><b class="blur">${esc(ct.whatsapp)}</b><span></span>
-      <span>Correo</span><b class="blur" style="font-size:14px">${esc(ct.email)}</b><span></span></div>
-    ${ct.pending ? `<div class="alert">Recibimos tu pago. Lo estamos verificando y te mostramos el contacto en unos minutos.</div>` :
-    `<div class="row">
-      <button class="btn aji" id="unl">Ver contacto · S/ ${C.PRECIO_DESBLOQUEO}</button>
-      ${cr > 0 ? `<button class="btn line" id="cred">Usar 1 crédito (tienes ${cr})</button>` : `<button class="btn line" id="pack">${C.PAQUETE.creditos} contactos · S/ ${C.PAQUETE.precio}</button>`}</div>
-    <span class="note">Pago único por persona. Así sabemos que quien escribe va en serio y protegemos a quien publica.</span>`}</div>`;
-  const u = $('#unl'); if (u) u.onclick = () => { if (requireLogin(() => perfil(s), 'Inicia sesión para ver el contacto')) pagar({ concepto: `Ver contacto de ${s.name}`, monto: C.PRECIO_DESBLOQUEO, onPaid: run(async (m) => { await API.requestUnlock(s.providerId, m); if (API.mode === 'demo') { toast('Pago recibido. Verificando…'); await perfil(s); setTimeout(run(async () => { const ul = (await API.pendingUnlocks()).find(x => x.providerId === s.providerId); if (ul) await API.confirmUnlock(ul.id); toast('Pago verificado. Contacto desbloqueado.'); drawContact(s); }), 1600); } else perfil(s); }) }); };
-  const k = $('#cred'); if (k) k.onclick = run(async () => { if (await API.unlockWithCredit(s.providerId)) { toast('Usaste 1 crédito'); drawContact(s); } });
-  const p = $('#pack'); if (p) p.onclick = () => { if (requireLogin(() => perfil(s))) pagar({ concepto: `Paquete de ${C.PAQUETE.creditos} contactos`, monto: C.PAQUETE.precio, onPaid: run(async (m) => { await API.buyPack(m); toast(`Tienes ${C.PAQUETE.creditos} créditos`); perfil(s); }) }); };
+  const cr = S.wallet.credits || 0;
+  box.innerHTML = `<div class="grow"><span class="price">S/ ${s.price}<small> /${esc(s.unit)}</small></span><br><span class="note">${I('lock')} WhatsApp ${esc(ct.whatsapp)}</span></div>
+    ${!S.user ? `<button class="btn big" id="unl">${I('key')} Ingresa para ver su contacto</button>` :
+      cr > 0 ? `<button class="btn big aji" id="unl">${I('key')} Ver WhatsApp · usa 1 de tus ${cr}</button>` :
+      `<button class="btn big" id="unl">${I('key')} Elegir un plan para ver su contacto</button>`}`;
+  $('#unl').onclick = run(async () => {
+    if (!requireLogin(() => perfil(s), 'Inicia sesión para ver contactos')) return;
+    if (!(S.wallet.credits > 0)) { close(); go('planes'); toast('Te quedaste sin contactos. Elige un plan.'); return; }
+    const r = await API.unlock(s.providerId);
+    if (r === 'ok') { S.wallet = await API.wallet(); renderNav(); confetti(); toast('¡Contacto desbloqueado!'); drawCta(s, await API.getContact(s.providerId)); }
+    else if (r === 'sin_creditos') { close(); go('planes'); }
+    else if (r === 'reputacion') toast(`Tu nota como cliente está bajo ${C.CLIENTE_NOTA_MIN}. No puedes contactar servicios de Compañía por ahora.`);
+    else requireLogin(() => perfil(s));
+  });
 }
 
-// ---------------- Pago Yape/Plin (reutilizable) ----------------
-function pagar({ concepto, monto, onPaid }){
+// ---------------- Calificar / reportar ----------------
+function starPicker(id, init = 5){ return `<div class="starpick" id="${id}" data-v="${init}">${[1,2,3,4,5].map(n=>`<button type="button" data-n="${n}" class="${n<=init?'on':''}" aria-label="${n} estrellas">${I('star')}</button>`).join('')}</div>`; }
+function bindStars(id){ const el = $('#'+id); el.querySelectorAll('button').forEach(b => b.onclick = () => { el.dataset.v = b.dataset.n; el.querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.n <= +b.dataset.n)); }); }
+function bindTags(id){ $('#'+id).querySelectorAll('button').forEach(b => b.onclick = () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')); }
+const pickedTags = id => [...$('#'+id).querySelectorAll('[aria-pressed="true"]')].map(b => b.dataset.t);
+function calificar(s){
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">¿Cómo te fue con ${esc(s.name.split(' ')[0])}?</h2>
+    <p class="note">Tu reseña ayuda a otros y suma a su nivel en Yunta.</p>
+    ${starPicker('st')}
+    <div class="field" style="margin-top:12px"><span class="lbl">¿Qué destacas?</span><div class="tagpick" id="tg">${Object.entries(TAGS).map(([k,[i,t]])=>`<button type="button" data-t="${k}" aria-pressed="false">${I(i)} ${t}</button>`).join('')}</div></div>
+    <div class="field" style="margin-top:12px"><label for="cm">Comentario (opcional)</label><textarea id="cm" maxlength="300"></textarea></div>
+    <button class="btn big" id="send" style="width:100%;margin-top:14px">Publicar reseña</button></div>`, s.cat);
+  bindStars('st'); bindTags('tg');
+  $('#send').onclick = run(async () => { await API.reviewProvider(s.providerId, { rating: +$('#st').dataset.v, tags: pickedTags('tg'), comment: $('#cm').value.trim() }); S.services = await API.listServices(); toast('¡Gracias! Tu reseña ya está publicada.'); close(); if (S.view !== 'inicio') render(); });
+}
+function reportar(s){
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">Reportar a ${esc(s.name)}</h2>
+    <p class="note">El equipo revisa cada reporte en menos de 24 horas. Si hay un delito, lo derivamos a la PNP.</p>
+    <div class="field"><label for="rr">Motivo</label><select id="rr"><option>Pidió o insinuó servicios íntimos</option><option>No es la persona de las fotos</option><option>Pidió pagos por adelantado sospechosos</option><option>Fue agresivo o irrespetuoso</option><option>Otro</option></select></div>
+    <div class="field" style="margin-top:10px"><label for="rd">Detalle</label><textarea id="rd"></textarea></div>
+    <button class="btn big" id="rs" style="width:100%;margin-top:14px">Enviar reporte</button></div>`);
+  $('#rs').onclick = run(async () => { await API.report(s.providerId, $('#rr').value + ': ' + $('#rd').value.trim()); close(); toast('Reporte enviado. Gracias por cuidar la comunidad.'); });
+}
+
+// ---------------- Descubrir (swipe) ----------------
+VIEWS.descubrir = async function(){
+  S.services = await API.listServices();
+  drawDeck();
+};
+function drawDeck(){
+  const pool = S.services.filter(s => s.active && !S.seen.has(s.id) && (!S.cat || s.cat === S.cat)).sort((a,b) => score(b) - score(a));
+  $('#app').innerHTML = `<div class="deck-wrap"><div style="text-align:center"><h1 style="font-size:30px">Descubrir</h1><p class="lead" style="margin:4px 0 0">Desliza a la derecha para guardar, a la izquierda para pasar.</p></div>
+    <div class="chips" style="justify-content:center">${[{id:'',name:'Todo'},...CATS].map(k=>`<button class="chip" data-dc="${k.id}" aria-pressed="${(S.cat||'')===k.id}">${k.name}</button>`).join('')}</div>
+    <div class="deck" id="deck">${pool.length ? pool.slice(0,3).reverse().map((s,i,arr)=>deckCard(s, i === arr.length-1)).join('') : `<div class="empty" style="position:absolute;inset:0;display:grid;place-items:center">Viste a todos por ahora.<br><br><button class="btn" id="again">Volver a empezar</button></div>`}</div>
+    ${pool.length?`<div class="deck-actions"><button class="round pass" id="bp" aria-label="Pasar">${I('x')}</button><button class="round go" id="bg" aria-label="Ver perfil">${I('key')}</button><button class="round save" id="bs" aria-label="Guardar">${I('heart')}</button></div>
+    <span class="deck-hint">Usa ← y → del teclado</span>`:''}</div>`;
+  $$('[data-dc]').forEach(b => b.onclick = () => { S.cat = b.dataset.dc || null; drawDeck(); });
+  const ag = $('#again'); if (ag) ag.onclick = () => { S.seen.clear(); drawDeck(); };
+  if (!pool.length) return;
+  const top = $('#deck .dcard:last-child'); const s = pool[0];
+  const decide = run(async dir => {
+    top.style.transform = `translateX(${dir*130}%) rotate(${dir*22}deg)`; top.style.opacity = 0;
+    S.seen.add(s.id);
+    if (dir > 0 && S.user && !S.favs.includes(s.id)) { await API.toggleFavorite(s.id); S.favs = await API.favorites(); renderNav(); toast(`${s.name.split(' ')[0]} guardado`); }
+    else if (dir > 0 && !S.user) toast('Ingresa para guardar tus favoritos');
+    setTimeout(drawDeck, 260);
+  });
+  $('#bp').onclick = () => decide(-1); $('#bs').onclick = () => decide(1); $('#bg').onclick = () => perfil(s);
+  document.onkeydown = e => { if (S.view !== 'descubrir' || $('#modal').innerHTML) return; if (e.key === 'ArrowLeft') decide(-1); if (e.key === 'ArrowRight') decide(1); };
+  let x0 = null, dx = 0;
+  top.onpointerdown = e => { x0 = e.clientX; dx = 0; top.classList.add('drag'); top.setPointerCapture(e.pointerId); };
+  top.onpointermove = e => { if (x0 === null) return; dx = e.clientX - x0; top.style.transform = `translateX(${dx}px) rotate(${dx/18}deg)`;
+    top.querySelector('.stamp.save').style.opacity = Math.max(0, dx/120); top.querySelector('.stamp.pass').style.opacity = Math.max(0, -dx/120); };
+  top.onpointerup = () => { top.classList.remove('drag'); if (Math.abs(dx) > 110) decide(Math.sign(dx)); else { top.style.transform = ''; top.querySelectorAll('.stamp').forEach(x => x.style.opacity = 0); if (Math.abs(dx) < 6) perfil(s); } x0 = null; };
+}
+function deckCard(s, isTop){
+  const c = catOf(s.cat);
+  return `<div class="dcard" data-cat="${s.cat}" style="${isTop?'':'transform:scale(.95) translateY(14px);filter:brightness(.97)'}">
+    <span class="stamp save">GUARDAR</span><span class="stamp pass">PASAR</span>
+    <div class="top"><div class="pattern"></div><span class="big">${avatar(s)}</span></div>
+    <div class="info"><div style="display:flex;gap:6px;flex-wrap:wrap">${lvlBadge(nivel(s))}${s.online?'<span class="pill ok">En línea</span>':''}<span class="pill">${esc(c.name)}</span></div>
+      <h2>${esc(s.name.split(' ').slice(0,2).join(' '))}, ${s.age}</h2>
+      <span class="note">${esc(s.sub)} · ${esc(s.dist)} · S/ ${s.price}/${esc(s.unit)} · ${I('star')} ${s.rating.toFixed(1)}</span>
+      <p>${esc(s.title)}. ${esc(s.desc)}</p></div></div>`;
+}
+
+// ---------------- Guardados ----------------
+VIEWS.guardados = async function(){
+  S.services = await API.listServices();
+  const list = S.services.filter(s => S.favs.includes(s.id));
+  $('#app').innerHTML = `<h1 style="font-size:32px">Guardados</h1><p class="lead">Las personas que te gustaron, para decidir con calma.</p>
+    ${!S.user ? `<div class="empty">Ingresa para guardar a tus favoritos.<br><br><button class="btn" id="li">Ingresar</button></div>` :
+      list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<div class="empty">Aún no guardas a nadie. Toca el corazón en un perfil o desliza a la derecha en Descubrir.<br><br><button class="btn" id="dc">${I('compass')} Ir a Descubrir</button></div>`}
+    ${legal()}`;
+  const li = $('#li'); if (li) li.onclick = () => go('cuenta');
+  const dc = $('#dc'); if (dc) dc.onclick = () => go('descubrir');
+  bindCards();
+};
+
+// ---------------- Planes ----------------
+VIEWS.planes = async function(){
+  const w = S.wallet; const maxC = Math.max(w.credits, w.plan ? w.plan.contactos : 5);
+  $('#app').innerHTML = `<div style="max-width:1100px">
+    <div class="panel" style="flex-direction:row;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:28px">
+      <div class="meter-ring" style="--p:${S.user ? Math.min(100, w.credits / maxC * 100) : 0}"><div><b>${S.user ? w.credits : '—'}</b><span>contactos<br>disponibles</span></div></div>
+      <div style="flex:1 1 260px"><h1 style="font-size:30px">Elige cuántas personas quieres contactar</h1>
+        <p class="lead" style="margin:6px 0 0">Cada contacto te muestra el WhatsApp y el correo de una persona verificada, para siempre. El servicio lo coordinan y lo pagan directo entre ustedes.${S.user && w.plan ? ` Tu plan <b>${esc(w.plan.nombre)}</b> se renueva el ${esc(w.renews || '')}.` : S.user ? '' : ` Al registrarte te regalamos ${C.CONTACTOS_BIENVENIDA} contacto.`}</p></div>
+    </div>
+    <div class="plans">${C.PLANES.map(p=>`<div class="plan ${p.top?'top':''}">${p.top?`<span class="flag">${esc(p.nota)}</span>`:''}
+      <b style="font-size:18px">${esc(p.nombre)}</b>
+      <div class="big">${p.contactos}<small> ${p.contactos===1?'contacto':'contactos'}</small></div>
+      <ul><li>${I('check')} WhatsApp y correo visibles</li><li>${I('check')} ${p.periodo?'Se renuevan cada mes':'Sin suscripción'}</li>${(p.extras||[]).map(x=>`<li>${I('check')} ${esc(x)}</li>`).join('')}</ul>
+      <div class="pr">${soles(p.precio)}<small>${p.periodo?' / '+p.periodo:''}</small><br><small>${(p.precio/p.contactos).toFixed(2).replace('.',',')} soles por contacto</small></div>
+      <button class="btn ${p.top?'':'ghost'}" data-buy="${p.id}">${p.periodo?'Suscribirme':'Comprar'}</button></div>`).join('')}</div>
+    <div class="section-h"><h2>¿Ofreces servicios?</h2><small>Para quien publica</small></div>
+    <div class="two">${C.IMPULSOS.map(p=>`<div class="panel"><b style="font-size:18px;display:flex;gap:8px;align-items:center">${I(p.id==='boost'?'flame':'star')} ${esc(p.nombre)} · ${soles(p.precio)}</b><span class="note">${esc(p.desc)}</span><button class="btn line sm" data-imp="${p.id}" style="align-self:flex-start">Activar desde mi panel</button></div>`).join('')}</div>
+    <p class="note" style="margin-top:18px">Pagas con Yape o Plin y confirmamos en minutos. Publicar tu perfil siempre es gratis.</p>
+    ${legal()}</div>`;
+  $$('[data-buy]').forEach(b => b.onclick = () => { const p = C.PLANES.find(x => x.id === b.dataset.buy); if (requireLogin(() => go('planes'), 'Crea tu cuenta para comprar un plan')) comprar(p); });
+  $$('[data-imp]').forEach(b => b.onclick = () => { if (requireLogin(() => go('cuenta'))) go('cuenta'); });
+};
+function comprar(p, serviceId){
   let method = 'yape';
-  openModal(`<header><div><h2 style="font-size:20px">Pagar ${soles(monto)}</h2><span class="note">${esc(concepto)}</span></div><button class="x" aria-label="Cerrar">×</button></header>
-    <div class="pay"><button data-p="yape" aria-pressed="true">Yape</button><button data-p="plin" aria-pressed="false">Plin</button></div>
-    <div class="qr" style="margin-top:10px"><canvas id="qr" width="84" height="84"></canvas><div><b id="pnum">Yape a ${esc(C.YAPE_TITULAR)}</b><br><span class="note">Número: ${esc(C.YAPE_NUMERO)}${API.mode==='demo'?' (demo)':''}. Escanea o yapea al número y copia el código de operación.</span></div></div>
-    <div class="field" style="margin-top:10px"><label for="op">Código de operación</label><input id="op" inputmode="numeric" placeholder="Ej. 04821937" autocomplete="off"></div>
-    <button class="btn" id="paid" style="width:100%;margin-top:12px">Ya pagué</button>`);
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">${esc(p.nombre)} · ${soles(p.precio)}</h2>
+    <p class="note">${p.contactos ? `${p.contactos} ${p.contactos===1?'contacto':'contactos'}${p.periodo?' cada mes':''}` : esc(p.desc)}</p>
+    <div class="seg" style="margin-top:10px"><button type="button" data-p="yape" aria-pressed="true">Yape</button><button type="button" data-p="plin" aria-pressed="false">Plin</button></div>
+    <div class="panel" style="flex-direction:row;align-items:center;margin-top:12px;background:var(--sunk);border:0"><canvas id="qr" width="84" height="84" style="width:84px;height:84px;border-radius:10px;background:#fff;flex:none"></canvas>
+      <div><b id="pnum">Yape a ${esc(C.YAPE_TITULAR)}</b><br><span class="note">${esc(C.YAPE_NUMERO)}${API.mode==='demo'?' (demo)':''} · escanea o yapea al número y copia el código de operación.</span></div></div>
+    <div class="field" style="margin-top:12px"><label for="op">Código de operación</label><input id="op" inputmode="numeric" placeholder="Ej. 04821937" autocomplete="off"></div>
+    <button class="btn big" id="paid" style="width:100%;margin-top:14px">Ya pagué</button></div>`);
   drawQR();
-  $$('.pay button').forEach(b => b.onclick = () => { method = b.dataset.p; $$('.pay button').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#pnum').textContent = (method==='yape'?'Yape':'Plin') + ' a ' + C.YAPE_TITULAR; drawQR(); });
-  $('#paid').onclick = () => { const op = $('#op').value.trim(); if (!/^\d{6,12}$/.test(op)) { toast('El código de operación tiene entre 6 y 12 dígitos'); $('#op').focus(); return; } onPaid({ method, op }); };
+  $$('[data-p]').forEach(b => b.onclick = () => { method = b.dataset.p; $$('[data-p]').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#pnum').textContent = (method==='yape'?'Yape':'Plin') + ' a ' + C.YAPE_TITULAR; drawQR(); });
+  $('#paid').onclick = run(async () => { const op = $('#op').value.trim();
+    if (!/^\d{6,12}$/.test(op)) { toast('El código de operación tiene entre 6 y 12 dígitos'); $('#op').focus(); return; }
+    await API.buyPlan(p.id, { method, op, serviceId }); close(); toast('Recibimos tu pago. Lo confirmamos en unos minutos.'); });
 }
 function drawQR(){ const c = $('#qr'); if (!c) return; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,84,84); x.fillStyle = '#231A2B';
   let seed = Math.random()*1e6; const r = () => (seed = (seed*9301+49297) % 233280) / 233280;
   for (let i=0;i<21;i++) for (let j=0;j<21;j++){ const f=(i<7&&j<7)||(i<7&&j>13)||(i>13&&j<7);
     if (f){ const a=i%14,b=j%14; if(a===0||a===6||b===0||b===6||(a>1&&a<5&&b>1&&b<5)) x.fillRect(j*4,i*4,4,4); } else if (r()>.52) x.fillRect(j*4,i*4,4,4); } }
+window.addEventListener('yunta:wallet', run(async () => { const before = S.wallet.credits; S.wallet = await API.wallet(); renderNav(); if (S.wallet.credits > before) { confetti(); toast(`Pago confirmado: ahora tienes ${S.wallet.credits} contactos`); } if (['planes','cuenta'].includes(S.view)) render(); }));
 
-// ---------------- Reservar ----------------
-function reservar(s){
-  const t = new Date(); t.setDate(t.getDate()+2); const d = t.toISOString().slice(0,10);
-  const porHora = s.unit === 'hora'; const social = s.cat === 'compania';
-  openModal(`<header><h2 style="font-size:20px">Reservar con ${esc(s.name)}</h2><button class="x" aria-label="Cerrar">×</button></header>
-  <div class="row"><div class="field"><label for="f">Fecha</label><input type="date" id="f" value="${d}"></div>
-    <div class="field"><label for="h">Hora</label><input type="time" id="h" value="16:00"></div>
-    ${porHora ? `<div class="field"><label for="dur">Horas</label><select id="dur">${[1,2,3,4,5,6].map(n=>`<option ${n===2?'selected':''}>${n}</option>`).join('')}</select></div>` : ''}</div>
-  <div class="field" style="margin-top:10px"><label for="lug">${social?'Punto de encuentro (lugar público)':s.dist==='Online'?'Enlace o plataforma':'Dirección'}</label>
-    <input id="lug" placeholder="${social?'Ej. Larcomar, entrada principal':s.dist==='Online'?'Google Meet / Zoom':'Av., calle, número, referencia'}"></div>
-  <div class="field" style="margin-top:10px"><label for="det">Detalles</label><textarea id="det" placeholder="Cuéntale qué necesitas"></textarea></div>
-  ${social ? `<label class="check" style="margin-top:10px"><input type="checkbox" id="ok1"> Acepto que es compañía social, sin contacto íntimo, y que el primer encuentro será en un lugar público.</label>` : ''}
-  <div class="section"><h4>Resumen</h4><div class="sum" id="sum"></div></div>
-  <button class="btn" id="go" style="width:100%;margin-top:12px">Continuar al pago</button>`);
-  const calc = () => { const h = porHora ? +$('#dur').value : 1; const sub = s.price*h; const fee = Math.round(sub*C.COMISION_RESERVA*100)/100;
-    $('#sum').innerHTML = `<span>S/ ${s.price} × ${h} ${esc(s.unit)}${h>1?'s':''}</span><span>${soles(sub)}</span><span>Tarifa de servicio (${C.COMISION_RESERVA*100}%)</span><span>${soles(fee)}</span><span class="t">Total</span><span class="t">${soles(sub+fee)}</span>`; return { h, sub, fee }; };
-  calc(); if (porHora) $('#dur').onchange = calc;
-  $('#go').onclick = () => {
-    if (social && !$('#ok1').checked) { toast('Marca la casilla de compañía social para continuar'); return; }
-    if (!$('#lug').value.trim()) { toast('Indica el lugar o enlace del servicio'); $('#lug').focus(); return; }
-    const { h, sub, fee } = calc(); const b = { serviceId: s.id, providerId: s.providerId, name: s.name, seed: s.seed, g: s.g, age: s.age, title: s.sub, date: $('#f').value, time: $('#h').value, h, lug: $('#lug').value.trim(), det: $('#det').value.trim(), subtotal: sub, fee, total: sub+fee };
-    pagar({ concepto: `Reserva con ${s.name}`, monto: sub+fee, onPaid: run(async (m) => { await API.createBooking({ ...b, pay: m.method, op: m.op }); toast('Reserva enviada. Verificamos tu pago en unos minutos.'); go('reservas'); }) });
-  };
-}
-
-VIEWS.reservas = async function(){
-  if (!S.user) { $('#app').innerHTML = `<div class="page"><h1>Mis reservas</h1><div class="empty">Inicia sesión para ver tus reservas.<br><br><button class="btn" id="li">Ingresar</button></div></div>`; $('#li').onclick = () => go('cuenta'); return; }
-  const list = await API.myBookings();
-  const fmt = d => new Date(d+'T12:00').toLocaleDateString('es-PE',{weekday:'short',day:'numeric',month:'short'});
-  $('#app').innerHTML = `<div class="page"><h1>Mis reservas</h1><p class="lead">El pago queda retenido por Yunta y se libera 24 horas después del servicio si no reportas ningún problema.</p>
-  ${list.length ? `<div class="list">${list.map(b=>`<div class="bk">${av(b)}
-    <div class="info"><b>${esc(b.name)}</b> · ${esc(b.title)}<br><span class="note">${fmt(b.date)} · ${esc(b.time)} · ${esc(b.lug)}</span><br>
-    <span class="pill ${b.status==='Confirmada'?'ok':b.status==='Cancelada'?'':'warn'}">${esc(b.status)}</span> <span class="note">${b.pay==='yape'?'Yape':'Plin'} · op. ${esc(b.op)} · ${soles(b.total)}</span></div>
-    <div class="row" style="flex:0 1 auto">${b.status==='Pago por verificar'&&API.mode==='demo'?`<button class="btn sm ghost" data-ok="${b.id}">Simular verificación</button>`:''}${b.status!=='Cancelada'?`<button class="btn sm ghost" data-cancel="${b.id}">Cancelar</button>`:''}</div></div>`).join('')}</div>`
-  : `<div class="empty">Aún no tienes reservas. Cuando reserves, aquí verás el estado de tu pago.<br><br><button class="btn" id="ex">Explorar servicios</button></div>`}
-  ${legal()}</div>`;
-  const ex = $('#ex'); if (ex) ex.onclick = () => go('explorar');
-  $$('[data-ok]').forEach(b => b.onclick = run(async () => { await API.updateBooking(b.dataset.ok, 'Confirmada'); toast('Pago verificado. Reserva confirmada.'); render(); }));
-  $$('[data-cancel]').forEach(b => b.onclick = run(async () => { await API.updateBooking(b.dataset.cancel, 'Cancelada'); toast('Reserva cancelada. Devolvemos tu pago en 48 h.'); render(); }));
-};
-
-// ---------------- Cuenta / Login ----------------
+// ---------------- Cuenta ----------------
 VIEWS.cuenta = async function(){
-  if (S.user) return cuentaPerfil();
+  if (!S.user) return login();
+  if (S.user.role === 'admin') return panelAdmin();
+  if (S.user.role === 'proveedor') return panelProveedor();
+  return panelCliente();
+};
+function login(){
   let mode = 'in';
   const draw = () => {
-    $('#app').innerHTML = `<div class="auth"><h1 style="font-size:30px;margin-bottom:6px">${mode==='in'?'Ingresa a Yunta':'Crea tu cuenta'}</h1>
-    <p class="lead">${mode==='in'?'Para ver contactos, reservar y publicar.':'Gratis. Para ofrecer servicios te pediremos verificar tu identidad.'}</p>
-    <form class="form" id="af">
+    $('#app').innerHTML = `<div class="auth"><h1 style="font-size:32px;margin-bottom:6px">${mode==='in'?'Hola de nuevo':'Únete a Yunta'}</h1>
+    <p class="lead">${mode==='in'?'Ingresa para ver contactos y guardar favoritos.':`Gratis, y con ${C.CONTACTOS_BIENVENIDA} contacto de regalo.`}</p>
+    <form class="panel" id="af">
       <div class="seg"><button type="button" data-m="in" aria-pressed="${mode==='in'}">Ingresar</button><button type="button" data-m="up" aria-pressed="${mode==='up'}">Registrarme</button></div>
       ${mode==='up' ? `<div class="field"><label for="an">Nombre completo</label><input id="an" required autocomplete="name"></div>
-        <div class="field"><label>Quiero</label><div class="seg" id="rolSeg"><button type="button" data-r="cliente" aria-pressed="true">Contratar</button><button type="button" data-r="proveedor" aria-pressed="false">Ofrecer servicios</button></div></div>` : ''}
+        <div class="field"><span class="lbl">Quiero</span><div class="seg"><button type="button" data-r="cliente" aria-pressed="true">Contratar</button><button type="button" data-r="proveedor" aria-pressed="false">Ofrecer servicios</button></div></div>` : ''}
       <div class="field"><label for="ae">Correo</label><input id="ae" type="email" required autocomplete="email"></div>
       <div class="field"><label for="ap">Contraseña</label><input id="ap" type="password" required minlength="${mode==='up'?8:1}" autocomplete="${mode==='up'?'new-password':'current-password'}"></div>
-      <button class="btn" type="submit">${mode==='in'?'Ingresar':'Crear cuenta'}</button>
+      <button class="btn big" type="submit">${mode==='in'?'Ingresar':'Crear cuenta'}</button>
       <div class="or">o</div>
       <button class="btn line" type="button" id="gg">Continuar con Google</button>
-      ${API.mode==='demo' ? `<div class="section"><h4>Probar con cuentas demo</h4>
+      ${API.mode==='demo' ? `<div class="field" style="margin-top:6px"><span class="lbl">Probar con cuentas demo</span>
         <div class="quick"><button type="button" data-q="cliente">${av({seed:4411,g:'f',age:28})}Cliente</button><button type="button" data-q="proveedor">${av({seed:9087,g:'m',age:32})}Proveedor</button><button type="button" data-q="admin">${av({seed:77,g:'x',age:30})}Admin</button></div>
-        <span class="note">Contraseña de todas: yunta123 (cliente@demo.pe, proveedor@demo.pe, admin@demo.pe)</span></div>` : ''}
+        <span class="note">Clave de todas: yunta123</span></div>` : ''}
     </form></div>`;
     let role = 'cliente';
     $$('[data-m]').forEach(b => b.onclick = () => { mode = b.dataset.m; draw(); });
@@ -229,80 +433,133 @@ VIEWS.cuenta = async function(){
       await loggedIn(); });
   };
   draw();
-};
+}
 async function loggedIn(){ await refreshUser(); toast('Hola, ' + S.user.name.split(' ')[0]); const n = S.after; S.after = null;
-  if (n) { S.view = 'explorar'; renderNav(); await VIEWS.explorar(); n(); } else go(S.user.role === 'admin' ? 'admin' : S.user.role === 'proveedor' ? 'publicar' : 'explorar'); }
-async function cuentaPerfil(){
-  const u = S.user; const cr = await API.credits();
-  $('#app').innerHTML = `<div class="page"><div class="who" style="margin-bottom:18px">${av(u,'lg')}<div><h1 style="font-size:28px;margin:0">${esc(u.name)}</h1><small style="color:var(--muted)">${esc(u.email)} · ${({cliente:'Cliente',proveedor:'Proveedor',admin:'Administrador'})[u.role]}</small></div></div>
-    <div class="rules">
-      <div class="rule"><h3>Créditos de contacto</h3><p>Tienes <b>${cr}</b> ${cr===1?'crédito':'créditos'}. Cada uno desbloquea el WhatsApp y correo de una persona.</p>
-        <button class="btn sm aji" id="buy" style="margin-top:10px">Comprar ${C.PAQUETE.creditos} por S/ ${C.PAQUETE.precio}</button></div>
-      <div class="rule"><h3>Ofrecer servicios</h3><p>Publica tu anuncio y verifica tu identidad para aparecer en Explorar.</p><button class="btn sm ghost" id="pub" style="margin-top:10px">Ir a Publicar</button></div>
-    </div>
-    <div class="row" style="margin-top:18px">${u.role==='admin'?'<button class="btn ghost" id="adm">Panel de revisión</button>':''}<button class="btn line" id="out">Cerrar sesión</button>${API.mode==='demo'?'<button class="btn line" id="rst">Reiniciar datos demo</button>':''}</div>
-    ${legal()}</div>`;
-  $('#buy').onclick = () => pagar({ concepto: `Paquete de ${C.PAQUETE.creditos} contactos`, monto: C.PAQUETE.precio, onPaid: run(async m => { await API.buyPack(m); toast('Créditos añadidos'); render(); }) });
-  $('#pub').onclick = () => go('publicar');
-  const a = $('#adm'); if (a) a.onclick = () => go('admin');
-  $('#out').onclick = run(async () => { await API.signOut(); await refreshUser(); go('explorar'); toast('Sesión cerrada'); });
-  const r = $('#rst'); if (r) r.onclick = run(async () => { await API.reset(); await refreshUser(); go('explorar'); toast('Datos demo reiniciados'); });
+  if (n) { S.view = 'inicio'; renderNav(); await VIEWS.inicio(); n(); } else go(S.user.role === 'cliente' ? 'inicio' : 'cuenta'); }
+function accountFoot(){ return `<div class="row" style="margin-top:22px"><button class="btn line" id="out">${I('logout')} Cerrar sesión</button>${API.mode==='demo'?'<button class="btn line" id="rst">Reiniciar datos demo</button>':''}</div>${legal()}`; }
+function bindFoot(){
+  $('#out').onclick = run(async () => { await API.signOut(); await refreshUser(); go('inicio'); toast('Sesión cerrada'); });
+  const r = $('#rst'); if (r) r.onclick = run(async () => { await API.reset(); S.seen.clear(); await refreshUser(); go('inicio'); toast('Datos demo reiniciados'); });
 }
 
-// ---------------- Publicar + verificación ----------------
-VIEWS.publicar = async function(){
-  if (!S.user) { $('#app').innerHTML = `<div class="page"><h1>Publica tu servicio</h1><p class="lead">Gana ofreciendo compañía, clases o tu oficio. Publicar es gratis.</p><div class="empty">Crea tu cuenta o ingresa para publicar.<br><br><button class="btn" id="li">Ingresar o registrarme</button></div></div>`; $('#li').onclick = () => { S.after = null; go('cuenta'); }; return; }
-  const v = await API.myVerification();
-  const mine = await API.myServices();
-  $('#app').innerHTML = `<div class="page"><h1>Publica tu servicio</h1>
-    <p class="lead">Publicar es gratis. Ganas cuando un cliente paga S/ ${C.PRECIO_DESBLOQUEO} por ver tu contacto o reserva con pago protegido. Tu WhatsApp y correo nunca se muestran sin ese pago.</p>
+async function panelCliente(){
+  const u = S.user; const [rep, unl] = await Promise.all([API.clientReputation(), API.myUnlocks()]);
+  const tc = trusted();
+  $('#app').innerHTML = `<div class="page">
+    <div class="phead" style="margin:0 0 18px;align-items:center"><span class="avw" style="width:84px;height:84px;border-width:3px">${avatar(u)}</span>
+      <div><h1 style="font-size:28px;margin:0">${esc(u.name)}</h1><span class="note">${esc(u.email)}</span><br>
+      <span class="pill ${rep.n && rep.rating < C.CLIENTE_NOTA_MIN ? 'bad' : 'ok'}" style="display:inline-flex;gap:4px;margin-top:6px">${I('star')} Tu nota como cliente: ${rep.n ? rep.rating.toFixed(1) + ` (${rep.n})` : 'aún sin calificaciones'}</span></div></div>
+    <div class="two">
+      <div class="panel" style="flex-direction:row;align-items:center;gap:16px"><div class="meter-ring" style="--p:${Math.min(100, S.wallet.credits/Math.max(5,S.wallet.credits)*100)};width:96px;height:96px"><div style="width:72px;height:72px"><b style="font-size:26px">${S.wallet.credits}</b><span>contactos</span></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><b>${S.wallet.plan ? 'Plan ' + esc(S.wallet.plan.nombre) : 'Sin plan'}</b><span class="note">${S.wallet.plan ? 'Se renueva el ' + esc(S.wallet.renews || '') : 'Compra un plan para contactar a más personas.'}</span><button class="btn sm aji" id="gp">Ver planes</button></div></div>
+      <div class="panel"><b style="display:flex;gap:8px;align-items:center">${I('shield')} Contacto de confianza</b>
+        <span class="note">A quien avisamos cuando usas Cita segura.</span>
+        <div class="row"><input id="tn" placeholder="Nombre" value="${esc(tc.name||'')}" aria-label="Nombre del contacto"><input id="tp" placeholder="9XX XXX XXX" inputmode="tel" value="${esc(tc.phone||'')}" aria-label="Celular del contacto"></div>
+        <button class="btn sm ghost" id="ts" style="align-self:flex-start">Guardar</button></div>
+    </div>
+    <div class="section-h"><h2>Mis contactos</h2><small>${unl.length} desbloqueados</small></div>
+    ${unl.length ? `<div class="list">${unl.map(x=>{ const s=x.service; if(!s) return ''; return `<div class="row-item" data-cat="${s.cat}">${av(s)}<div class="info"><b>${esc(s.name)}</b> ${lvlBadge(nivel(s))}<br><span class="note">${esc(s.sub)} · desbloqueado ${esc(x.date)}</span></div>
+      <div class="row" style="flex:0 1 auto"><button class="btn sm wa" data-ver="${s.id}">${I('wa')} Ver contacto</button>${x.reviewed?'<span class="pill ok">Reseñado</span>':`<button class="btn sm ghost" data-rv="${s.id}">${I('star')} Calificar</button>`}</div></div>`; }).join('')}</div>`
+      : `<div class="empty">Todavía no desbloqueas a nadie. Tienes ${S.wallet.credits} ${S.wallet.credits===1?'contacto disponible':'contactos disponibles'}.<br><br><button class="btn" id="ex">Explorar personas</button></div>`}
+    <div class="panel" style="margin-top:18px;flex-direction:row;align-items:center;flex-wrap:wrap"><div style="flex:1 1 240px"><b>¿Quieres ofrecer tus servicios?</b><br><span class="note">Publicar es gratis. Verificamos tu identidad y tu CUL.</span></div><button class="btn sm line" id="bp">Ofrecer servicios</button></div>
+    ${accountFoot()}</div>`;
+  S.services = S.services.length ? S.services : await API.listServices();
+  $('#gp').onclick = () => go('planes');
+  $('#ts').onclick = () => { trusted({ name: $('#tn').value.trim(), phone: $('#tp').value.trim() }); toast('Contacto de confianza guardado'); };
+  const ex = $('#ex'); if (ex) ex.onclick = () => go('inicio');
+  $$('[data-ver]').forEach(b => b.onclick = () => perfil(S.services.find(s => s.id === b.dataset.ver)));
+  $$('[data-rv]').forEach(b => b.onclick = () => calificar(S.services.find(s => s.id === b.dataset.rv)));
+  $('#bp').onclick = () => panelProveedor();
+  bindFoot();
+}
+function trusted(v){ try { if (v) localStorage.setItem('yunta.trusted', JSON.stringify(v)); return JSON.parse(localStorage.getItem('yunta.trusted')) || {}; } catch (e) { return v || {}; } }
+
+// ---------------- Panel del proveedor ----------------
+async function panelProveedor(){
+  const [v, mine, fans] = await Promise.all([API.myVerification(), API.myServices(), API.whoUnlockedMe()]);
+  const s0 = mine[0] || { verified: false, n: 0, rating: 0, tags: {}, views: 0 };
+  const lv = nivel(s0); const idx = C.NIVELES.findIndex(l => l.id === lv); const next = C.NIVELES[Math.max(1, idx + 1)];
+  const rp = s0.n ? (s0.tags.rapido || 0) / s0.n : 0;
+  const reqs = next ? [
+    ['Reseñas', s0.n, next.n, `${s0.n}/${next.n}`],
+    ['Nota promedio', s0.rating, next.nota, `${s0.n ? s0.rating.toFixed(2) : '—'} / ${next.nota}`],
+    ...(next.rapido ? [['Dicen que respondes rápido', rp, next.rapido, `${Math.round(rp*100)}% / ${next.rapido*100}%`]] : [])
+  ] : [];
+  const culD = s0.culVence ? daysTo(s0.culVence) : null;
+  $('#app').innerHTML = `<div class="page">
+    <h1>Mi panel</h1><p class="lead">Tu perfil es gratis. Ganas cuando un cliente desbloquea tu WhatsApp y te escribe.</p>
     <div id="vbox"></div>
-    ${mine.length ? `<div class="section" style="border:0;margin:0 0 18px;padding:0"><h4>Mis anuncios</h4><div class="list">${mine.map(s=>`<div class="bk">${av(s)}<div class="info"><b>${esc(s.title)}</b><br><span class="note">${esc(s.sub)} · S/ ${s.price}/${esc(s.unit)}</span><br>
-      <span class="pill ${s.active?'ok':'warn'}">${s.active?'Publicado':'Esperando verificación'}</span>${s.featured?' <span class="pill m">Destacado</span>':''}</div>
-      ${s.active && !s.featured ? `<button class="btn sm aji" data-feat="${s.id}">Destacar 7 días · S/ ${C.PRECIO_DESTACADO}</button>` : ''}</div>`).join('')}</div></div>` : ''}
-    <div id="sf"></div>${legal()}</div>`;
-  $$('[data-feat]').forEach(b => b.onclick = () => pagar({ concepto: 'Anuncio destacado por 7 días', monto: C.PRECIO_DESTACADO, onPaid: run(async () => { await API.featureService(b.dataset.feat); toast('Tu anuncio aparece primero por 7 días'); render(); }) }));
+    ${mine.length ? `
+    <div class="level-card ${lv==='oro'?'oro':''}"><div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center">${I(LV[lv][0]).replace('class="i"','class="i" style="width:38px;height:38px"')}</div>
+      <div style="flex:1 1 220px"><span class="lbl" style="color:inherit;opacity:.8">Tu nivel</span><h2>${lv==='pendiente'?'En revisión':C.NIVELES.find(l=>l.id===lv)?.nombre||'Nuevo'}</h2>
+      <p>${lv==='oro'?'Estás en lo más alto. Mantén tu nota y tu CUL al día.':next?`Siguiente: <b>${esc(next.nombre)}</b> · ${esc(next.req)}.`:''} Los niveles se recalculan cada mes.</p></div></div>
+    ${reqs.length && lv!=='oro' ? `<div class="panel prog" style="margin-top:12px">${reqs.map(([l,a,b,t])=>`<div class="row"><span>${l}</span><b>${t}</b><div class="bar"><i class="${a>=b?'done':''}" style="width:${Math.min(100,(b?a/b:0)*100)}%"></i></div></div>`).join('')}</div>` : ''}
+    <div class="kpis" style="margin-top:12px">
+      <div class="kpi"><b>${mine.reduce((a,s)=>a+(s.views||0),0)}</b><span>Visitas a tu perfil</span></div>
+      <div class="kpi"><b>${fans.length}</b><span>Contactos desbloqueados</span></div>
+      <div class="kpi"><b>${s0.n?s0.rating.toFixed(1):'—'}</b><span>Nota (${s0.n} reseñas)</span></div>
+      <div class="kpi"><b style="color:${culD!==null&&culD<15?'var(--bad)':'inherit'}">${culD===null?'—':Math.max(0,culD)+' d'}</b><span>Para que venza tu CUL</span></div>
+    </div>
+    ${culD !== null && culD < 15 ? `<div class="alert bad" style="margin-top:10px">Tu CUL vence ${culD<=0?'hoy':'en '+culD+' días'}. Descarga uno nuevo en empleosperu.gob.pe y súbelo para no perder la insignia "CUL vigente".</div>` : ''}
+    <div class="section-h"><h2>Mis anuncios</h2></div>
+    <div class="list">${mine.map(s=>`<div class="row-item" data-cat="${s.cat}">${av(s)}<div class="info"><b>${esc(s.title)}</b><br><span class="note">${esc(s.sub)} · S/ ${s.price}/${esc(s.unit)} · ${s.views||0} visitas</span><br>
+      <span class="pill ${s.active?'ok':'warn'}">${s.active?'Publicado':'Esperando verificación'}</span> ${s.boosted?'<span class="pill bad">Boost activo</span>':''} ${s.featured?'<span class="pill m">Destacado</span>':''}</div>
+      ${s.active?`<div class="row" style="flex:0 1 auto">${C.IMPULSOS.map(p=>`<button class="btn sm ${p.id==='boost'?'aji':'ghost'}" data-imp="${p.id}" data-sid="${s.id}">${I(p.id==='boost'?'flame':'star')} ${esc(p.nombre)} · ${soles(p.precio)}</button>`).join('')}</div>`:''}</div>`).join('')}</div>
+    <div class="section-h"><h2>Quién vio tu contacto</h2><small>Califica a tus clientes para cuidar a la comunidad</small></div>
+    ${fans.length ? `<div class="list">${fans.map(f=>`<div class="row-item">${av(f)}<div class="info"><b>${esc(f.name)}</b><br><span class="note">Desbloqueó tu contacto el ${esc(f.date)}</span><br>
+      ${f.rep.n ? `<span class="pill ${f.rep.rating<C.CLIENTE_NOTA_MIN?'bad':'ok'}">${I('star')} Cliente ${f.rep.rating.toFixed(1)} (${f.rep.n})</span>` : '<span class="pill">Cliente nuevo</span>'}
+      ${f.rep.n && f.rep.rating<C.CLIENTE_NOTA_MIN?'<span class="pill bad">Ojo: otros reportaron problemas</span>':''}</div>
+      ${f.rated?'<span class="pill ok">Calificado</span>':`<button class="btn sm ghost" data-rc="${f.id}">${I('star')} Calificar</button>`}</div>`).join('')}</div>` : '<div class="empty">Cuando alguien desbloquee tu WhatsApp, aparecerá aquí con su reputación.</div>'}
+    ` : ''}
+    <div class="section-h"><h2>${mine.length?'Nuevo anuncio':'Tu anuncio'}</h2></div><div id="sf"></div>
+    ${accountFoot()}</div>`;
   if (!v) verifWizard(); else verifStatus(v);
   serviceForm(!!v);
-};
+  $$('[data-imp]').forEach(b => b.onclick = () => comprar(C.IMPULSOS.find(p => p.id === b.dataset.imp), b.dataset.sid));
+  $$('[data-rc]').forEach(b => b.onclick = () => calificarCliente(fans.find(f => f.id === b.dataset.rc)));
+  bindFoot();
+}
+function calificarCliente(f){
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">¿Cómo fue ${esc(f.name.split(' ')[0])} como cliente?</h2>
+    <p class="note">Solo lo ven otras personas que ofrecen servicios. Con nota baja, no podrá contactar servicios de Compañía.</p>
+    ${starPicker('st')}<div class="tagpick" id="tg" style="margin-top:12px">${Object.entries(CTAGS).map(([k,t])=>`<button type="button" data-t="${k}" aria-pressed="false">${t}</button>`).join('')}</div>
+    <button class="btn big" id="send" style="width:100%;margin-top:14px">Guardar calificación</button></div>`);
+  bindStars('st'); bindTags('tg');
+  $('#send').onclick = run(async () => { await API.rateClient(f.id, { rating: +$('#st').dataset.v, tags: pickedTags('tg') }); close(); toast('Calificación guardada'); render(); });
+}
 function verifStatus(v){
-  const st = { pendiente: ['warn','En revisión','Revisamos tus documentos en menos de 24 horas. Te avisamos por correo.'], aprobado: ['ok','Verificado','Tu identidad y tu CUL están verificados. Tus anuncios ya aparecen en Explorar.'], rechazado: ['bad','Rechazado', 'No pudimos validar tus documentos. ' + (v.notes || '') + ' Vuelve a enviarlos.'] }[v.status];
-  $('#vbox').innerHTML = `<div class="alert ${st[0]==='warn'?'':st[0]}" style="margin-bottom:18px"><b>Verificación: ${st[1]}.</b> ${esc(st[2])}${v.status==='rechazado'?' <button class="link" id="again">Enviar de nuevo</button>':''}</div>`;
+  const st = { pendiente:['','En revisión','Revisamos tus documentos en menos de 24 horas.'], aprobado:['ok','Verificado','Tu identidad, tu rostro y tu CUL están verificados.'], rechazado:['bad','Rechazado','No pudimos validar tus documentos. ' + (v.notes || '')] }[v.status];
+  $('#vbox').innerHTML = `<div class="alert ${st[0]}" style="margin-bottom:14px"><b>Verificación: ${st[1]}.</b> ${esc(st[2])}${v.status==='rechazado'?' <button class="link" id="again">Enviar de nuevo</button>':''}</div>`;
   const a = $('#again'); if (a) a.onclick = verifWizard;
 }
 function verifWizard(){
-  const data = { liveness: false };
-  const maxDate = new Date().toISOString().slice(0,10);
-  $('#vbox').innerHTML = `<div class="form" style="margin-bottom:18px"><div><h2 style="font-size:20px">1 · Verifica tu identidad</h2><p class="note" style="margin:4px 0 0">Obligatorio para aparecer en Explorar. Tus documentos se guardan cifrados y solo los ve el equipo de revisión.</p></div>
+  const data = { liveness: false }; const maxDate = new Date().toISOString().slice(0,10);
+  $('#vbox').innerHTML = `<div class="panel" style="margin-bottom:18px"><div><h2 style="font-size:22px">Verifica tu identidad</h2><p class="note" style="margin:4px 0 0">Obligatorio para aparecer en Yunta. Solo el equipo de revisión ve tus documentos.</p></div>
     <div class="steps">
       <div class="step" id="st1"><span class="n">1</span><div class="body"><h3>DNI</h3>
-        <div class="row"><div class="field"><label for="vn">Nombre como figura en tu DNI</label><input id="vn" value="${esc(S.user.name)}"></div>
-        <div class="field"><label for="vd">N.º de DNI</label><input id="vd" inputmode="numeric" maxlength="8" placeholder="8 dígitos"></div></div>
-        <div class="upl"><span class="thumb" id="t-dni">Foto del DNI</span><input type="file" id="f-dni" accept="image/*" capture="environment" aria-label="Foto del anverso del DNI"></div></div></div>
+        <div class="row"><div class="field"><label for="vn">Nombre como figura en tu DNI</label><input id="vn" value="${esc(S.user.name)}"></div><div class="field"><label for="vd">N.º de DNI</label><input id="vd" inputmode="numeric" maxlength="8" placeholder="8 dígitos"></div></div>
+        <div class="upl"><span class="thumb" id="t-dni">Foto del DNI</span><input type="file" id="f-dni" accept="image/*" capture="environment" aria-label="Foto del DNI"></div></div></div>
       <div class="step" id="st2"><span class="n">2</span><div class="body"><h3>Escaneo de rostro</h3>
-        <p class="note" style="margin:0">Tómate una selfie con buena luz, sin lentes ni gorra. Compararemos tu rostro con la foto del DNI y haremos una prueba de vida para confirmar que eres tú y no una foto.</p>
+        <p class="note" style="margin:0">Selfie con buena luz, sin lentes ni gorra. La comparamos con tu DNI y hacemos una prueba de vida.</p>
         <div class="face" id="face"><span class="hint">Centra tu rostro en el óvalo</span></div>
         <div class="live" id="live"><span>Mira al frente</span><span>Parpadea</span><span>Gira a la izquierda</span><span>Sonríe</span></div>
         <div class="upl"><span class="thumb">Selfie</span><input type="file" id="f-selfie" accept="image/*" capture="user" aria-label="Selfie"></div></div></div>
       <div class="step" id="st3"><span class="n">3</span><div class="body"><h3>Certificado Único Laboral (CUL)</h3>
-        <p class="note" style="margin:0">Descárgalo gratis en Empleos Perú (empleosperu.gob.pe) del Ministerio de Trabajo. Reúne tus antecedentes policiales, penales y judiciales en un solo documento. Debe tener menos de ${C.CUL_VIGENCIA_DIAS} días.</p>
-        <div class="row"><div class="field"><label for="vcn">N.º del certificado</label><input id="vcn" placeholder="Figura en el PDF"></div>
-          <div class="field"><label for="vcf">Fecha de emisión</label><input id="vcf" type="date" max="${maxDate}"></div></div>
+        <p class="note" style="margin:0">Gratis en empleosperu.gob.pe. Reúne tus antecedentes policiales, penales y judiciales. Debe tener menos de ${C.CUL_VIGENCIA_DIAS} días.</p>
+        <div class="row"><div class="field"><label for="vcn">N.º del certificado</label><input id="vcn"></div><div class="field"><label for="vcf">Fecha de emisión</label><input id="vcf" type="date" max="${maxDate}"></div></div>
         <div class="upl"><span class="thumb" id="t-cul">PDF</span><input type="file" id="f-cul" accept="application/pdf,image/*" aria-label="Archivo del CUL"></div></div></div>
-      <div class="step" id="st4"><span class="n">4</span><div class="body"><h3>Contacto y colegiatura</h3>
-        <div class="row"><div class="field"><label for="vw">WhatsApp (se mantiene bloqueado)</label><input id="vw" inputmode="tel" placeholder="9XX XXX XXX"></div>
-          <div class="field"><label for="vcol">Colegiatura (solo salud)</label><input id="vcol" placeholder="Ej. C.Ps.P. 34521"></div></div>
+      <div class="step" id="st4"><span class="n">4</span><div class="body"><h3>Contacto</h3>
+        <div class="row"><div class="field"><label for="vw">WhatsApp (solo lo ven quienes lo desbloquean)</label><input id="vw" inputmode="tel" placeholder="9XX XXX XXX"></div><div class="field"><label for="vcol">Colegiatura (solo salud)</label><input id="vcol" placeholder="Ej. C.Ps.P. 34521"></div></div>
         <label class="check"><input type="checkbox" id="vok"> Autorizo a Yunta a tratar mis datos personales y biométricos para verificar mi identidad (Ley N.º 29733).</label></div></div>
-    </div>
-    <button class="btn" id="vsend">Enviar a revisión</button></div>`;
+    </div><button class="btn big" id="vsend">Enviar a revisión</button></div>`;
   const mark = (id, on) => $('#'+id).classList.toggle('done', on);
   $('#f-dni').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.dniFrontUrl = await readFile(f); $('#t-dni').innerHTML = `<img alt="DNI" src="${data.dniFrontUrl}">`; mark('st1', /^\d{8}$/.test($('#vd').value)); });
   $('#vd').oninput = () => mark('st1', /^\d{8}$/.test($('#vd').value) && !!data.dniFrontUrl);
   $('#f-selfie').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.selfieUrl = await readFile(f);
-    $('#face').innerHTML = `<img alt="Tu selfie" src="${data.selfieUrl}">`;
-    const chips = $$('#live span'); chips.forEach((c,i) => setTimeout(() => c.classList.add('on'), 350*(i+1)));
-    setTimeout(() => { data.liveness = true; mark('st2', true); toast('Prueba de vida completada'); }, 350*chips.length + 100); });
-  $('#f-cul').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; if (f.size > 8e6) { toast('El archivo pesa más de 8 MB'); return; } data.culFileUrl = await readFile(f); $('#t-cul').textContent = f.name.slice(0,14); });
+    const face = $('#face'); face.innerHTML = `<img alt="Tu selfie" src="${data.selfieUrl}">`; face.classList.add('scan');
+    const chips = $$('#live span'); chips.forEach((c,i) => setTimeout(() => c.classList.add('on'), 400*(i+1)));
+    setTimeout(() => { face.classList.remove('scan'); data.liveness = true; mark('st2', true); toast('Prueba de vida completada'); }, 400*chips.length + 200); });
+  $('#f-cul').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; if (f.size > 8e6) return toast('El archivo pesa más de 8 MB'); data.culFileUrl = await readFile(f); $('#t-cul').textContent = f.name.slice(0,14); mark('st3', true); });
   $('#vsend').onclick = run(async () => {
     const dni = $('#vd').value.trim(), fecha = $('#vcf').value;
     if (!/^\d{8}$/.test(dni)) return toast('El DNI debe tener 8 dígitos');
@@ -311,111 +568,171 @@ function verifWizard(){
     if (!$('#vcn').value.trim() || !fecha) return toast('Ingresa el número y la fecha de emisión del CUL');
     if (daysAgo(fecha) > C.CUL_VIGENCIA_DIAS) return toast(`Tu CUL tiene ${daysAgo(fecha)} días. Descarga uno nuevo en Empleos Perú.`);
     if (!data.culFileUrl) return toast('Sube el PDF del CUL');
-    if (!/^9\d{8}$/.test($('#vw').value.replace(/\s/g,''))) return toast('Ingresa un celular peruano de 9 dígitos que empiece en 9');
+    if (!/^9\d{8}$/.test($('#vw').value.replace(/\s/g,''))) return toast('Ingresa un celular de 9 dígitos que empiece en 9');
     if (!$('#vok').checked) return toast('Debes autorizar el tratamiento de tus datos');
     await API.submitVerification({ ...data, name: $('#vn').value.trim(), dni, culNumero: $('#vcn').value.trim(), culFecha: fecha, whatsapp: $('#vw').value.trim(), colegiatura: $('#vcol').value.trim() });
-    toast('Documentos enviados. Los revisamos en menos de 24 h.'); render();
+    toast('Documentos enviados. Los revisamos en menos de 24 h.'); panelProveedor();
   });
 }
 function serviceForm(hasVerif){
-  $('#sf').innerHTML = `<form class="form" id="pf"><div><h2 style="font-size:20px">${hasVerif?'Nuevo anuncio':'2 · Tu anuncio'}</h2></div>
-    <div class="row"><div class="field"><label for="pc">Categoría</label><select id="pc">${CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
-      <div class="field"><label for="ps">Tipo de servicio</label><select id="ps"></select></div></div>
-    <div class="field"><label for="pt">Título del anuncio</label><input id="pt" required minlength="10" maxlength="90" placeholder="Ej. Clases de guitarra criolla para principiantes"></div>
-    <div class="field"><label for="pde">Descripción</label><textarea id="pde" required placeholder="Tu experiencia, qué incluye y cómo trabajas. No pongas tu número: se comparte al desbloquear."></textarea></div>
-    <div class="row"><div class="field"><label for="pp">Precio (S/)</label><input id="pp" type="number" min="10" required value="40"></div>
-      <div class="field"><label for="pu">Por</label><select id="pu"><option>hora</option><option>sesión</option><option>visita</option><option>evento</option></select></div>
-      <div class="field"><label for="pdi">Distrito</label><select id="pdi">${DISTRITOS.map(d=>`<option>${d}</option>`).join('')}</select></div></div>
-    <div class="alert" id="rules" hidden>En Compañía está prohibido ofrecer servicios sexuales o íntimos. Revisamos cada anuncio antes de publicarlo.</div>
-    <button class="btn aji" type="submit">Guardar anuncio</button></form>`;
+  const days = new Set([1,2,3,4,5]); let video = null;
+  $('#sf').innerHTML = `<form class="panel" id="pf">
+    <div class="row"><div class="field"><label for="pc">Categoría</label><select id="pc">${CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div><div class="field"><label for="ps">Tipo de servicio</label><select id="ps"></select></div></div>
+    <div class="field"><label for="pt">Título</label><input id="pt" required minlength="10" maxlength="90" placeholder="Ej. Clases de guitarra criolla para principiantes"></div>
+    <div class="field"><label for="pde">Descripción</label><textarea id="pde" required placeholder="Tu experiencia y cómo trabajas. No pongas tu número: se muestra al desbloquear."></textarea></div>
+    <div class="row"><div class="field"><label for="pp">Precio (S/)</label><input id="pp" type="number" min="10" required value="40"></div><div class="field"><label for="pu">Por</label><select id="pu"><option>hora</option><option>sesión</option><option>visita</option><option>evento</option></select></div><div class="field"><label for="pdi">Distrito</label><select id="pdi">${DISTRITOS.map(d=>`<option>${d}</option>`).join('')}</select></div></div>
+    <div class="field"><span class="lbl">Extras con precio (opcional)</span><div id="ex" class="list"></div><button type="button" class="btn sm ghost" id="addx" style="align-self:flex-start">${I('plus')} Agregar extra</button></div>
+    <div class="field"><span class="lbl">Días disponibles</span><div class="daypick" id="dp">${DIAS.map((d,i)=>`<button type="button" data-d="${i}" aria-pressed="${days.has(i)}">${d}</button>`).join('')}</div></div>
+    <div class="row"><div class="field"><label for="ph">Horario</label><input id="ph" placeholder="Ej. 6 pm – 11 pm"></div><div class="field"><label for="pl">Lo que no hago</label><input id="pl" placeholder="Ej. No voy a fiestas en casas"></div></div>
+    <div class="field"><span class="lbl">Video de presentación (opcional, 15 s)</span><div class="upl"><span class="thumb">${I('play')}</span><input type="file" id="pv" accept="video/*" capture="user" aria-label="Video de presentación"></div></div>
+    <div class="alert" id="rules" hidden>En Compañía está prohibido ofrecer servicios sexuales o íntimos. Revisamos cada anuncio.</div>
+    <button class="btn big aji" type="submit">Guardar anuncio</button></form>`;
   const sync = () => { const c = catOf($('#pc').value); $('#ps').innerHTML = c.subs.map(s=>`<option>${s}</option>`).join(''); $('#rules').hidden = c.id !== 'compania'; };
   sync(); $('#pc').onchange = sync;
+  const addX = () => { if ($('#ex').children.length >= 4) return toast('Máximo 4 extras'); $('#ex').insertAdjacentHTML('beforeend', `<div class="row"><input placeholder="Ej. Discurso de 3 minutos" class="xn" aria-label="Nombre del extra"><input type="number" min="0" placeholder="S/" class="xp" style="flex:0 1 100px" aria-label="Precio del extra"></div>`); };
+  $('#addx').onclick = addX;
+  $$('#dp button').forEach(b => b.onclick = () => { const d = +b.dataset.d; days.has(d) ? days.delete(d) : days.add(d); b.setAttribute('aria-pressed', days.has(d)); });
+  $('#pv').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; if (f.size > 25e6) return toast('El video pesa más de 25 MB'); video = await readFile(f); toast('Video listo'); });
   $('#pf').onsubmit = run(async e => { e.preventDefault();
     const desc = $('#pde').value.trim();
-    if (/\b9\d{2}\s?\d{3}\s?\d{3}\b|@\w+\./.test(desc)) return toast('Quita tu número o correo de la descripción: se comparte al desbloquear');
-    await API.createService({ cat: $('#pc').value, sub: $('#ps').value, title: $('#pt').value.trim(), desc, price: +$('#pp').value, unit: $('#pu').value, dist: $('#pdi').value });
-    toast(hasVerif ? 'Anuncio guardado' : 'Anuncio guardado. Se publica cuando aprobemos tu verificación.'); render(); });
+    if (/\b9\d{2}\s?\d{3}\s?\d{3}\b|@\w+\./.test(desc)) return toast('Quita tu número o correo de la descripción: se muestra al desbloquear');
+    const extras = [...$$('#ex .row')].map(r => ({ name: r.querySelector('.xn').value.trim(), price: +r.querySelector('.xp').value || 0 })).filter(x => x.name);
+    await API.createService({ cat: $('#pc').value, sub: $('#ps').value, title: $('#pt').value.trim(), desc, price: +$('#pp').value, unit: $('#pu').value, dist: $('#pdi').value,
+      extras, days: [...days].sort(), hours: $('#ph').value.trim(), limits: $('#pl').value.trim(), videoUrl: video });
+    toast(hasVerif ? 'Anuncio guardado' : 'Anuncio guardado. Se publica cuando aprobemos tu verificación.'); panelProveedor(); });
 }
 
-// ---------------- Admin: revisión ----------------
-VIEWS.admin = async function(){
-  if (!S.user || S.user.role !== 'admin') return go('explorar');
-  const [vs, us, st] = await Promise.all([API.pendingVerifications(), API.pendingUnlocks(), API.stats()]);
-  const pend = vs.filter(v => v.status === 'pendiente');
-  $('#app').innerHTML = `<div class="page" style="max-width:900px"><h1>Revisión</h1><p class="lead">Aprueba identidades y confirma pagos de Yape/Plin.</p>
-    <div class="stats"><div class="stat"><b>${st.pendientes}</b><span>Verificaciones pendientes</span></div><div class="stat"><b>${us.length}</b><span>Pagos por confirmar</span></div>
-      <div class="stat"><b>${soles(st.ingresosDesbloqueo)}</b><span>Ingresos por contactos</span></div><div class="stat"><b>${soles(st.comisiones)}</b><span>Comisiones de reservas</span></div></div>
-    <div class="section" style="border:0;margin:0;padding:0"><h4>Pagos de desbloqueo por confirmar</h4>
-      ${us.length ? `<div class="list">${us.map(x=>`<div class="bk"><div class="info"><b>${esc(x.client||'Cliente')}</b> → ${esc(x.provider||'Proveedor')}<br><span class="note">${x.method==='yape'?'Yape':'Plin'} · op. ${esc(x.op)} · ${soles(x.amount)}</span></div>
-        <div class="row" style="flex:0 1 auto"><button class="btn sm" data-pay="${x.id}">Confirmar</button><button class="btn sm ghost" data-nopay="${x.id}">Rechazar</button></div></div>`).join('')}</div>`
-      : `<div class="empty" style="padding:16px">No hay pagos pendientes. Compara cada código de operación con tu app de Yape antes de confirmar.</div>`}</div>
-    <div class="section"><h4>Verificaciones de identidad</h4>
-      ${pend.length ? pend.map(reviewCard).join('') : '<div class="empty" style="padding:16px">Todo revisado.</div>'}</div>
-    ${legal()}</div>`;
-  $$('[data-pay]').forEach(b => b.onclick = run(async () => { await API.confirmUnlock(b.dataset.pay, true); toast('Pago confirmado. El cliente ya ve el contacto.'); render(); }));
-  $$('[data-nopay]').forEach(b => b.onclick = run(async () => { await API.confirmUnlock(b.dataset.nopay, false); toast('Pago rechazado'); render(); }));
-  $$('.rv').forEach(card => {
+// ---------------- Admin ----------------
+async function panelAdmin(){
+  const [vs, ps, st] = await Promise.all([API.pendingVerifications(), API.pendingPurchases(), API.stats()]);
+  $('#app').innerHTML = `<div class="page" style="max-width:960px"><h1>Revisión</h1><p class="lead">Confirma pagos de Yape/Plin y aprueba identidades.</p>
+    <div class="kpis"><div class="kpi"><b>${soles(st.ingresos)}</b><span>Ingresos por planes</span></div><div class="kpi"><b>${st.ventas}</b><span>Planes vendidos</span></div><div class="kpi"><b>${st.contactos}</b><span>Contactos desbloqueados</span></div><div class="kpi"><b>${st.pendientes}</b><span>Verificaciones pendientes</span></div></div>
+    <div class="section-h"><h2>Pagos por confirmar</h2></div>
+    ${ps.length ? `<div class="list">${ps.map(x=>`<div class="row-item"><div class="info"><b>${esc(x.user)}</b> · ${esc(x.plan)}<br><span class="note">${x.method==='yape'?'Yape':'Plin'} · op. ${esc(x.op)} · ${soles(x.amount)}</span></div><div class="row" style="flex:0 1 auto"><button class="btn sm" data-pay="${x.id}">Confirmar</button><button class="btn sm ghost" data-nopay="${x.id}">Rechazar</button></div></div>`).join('')}</div>`
+      : '<div class="empty" style="padding:18px">No hay pagos pendientes. Compara cada código con tu app de Yape antes de confirmar.</div>'}
+    <div class="section-h"><h2>Verificaciones</h2></div>
+    <div class="list">${vs.length ? vs.map(reviewCard).join('') : '<div class="empty" style="padding:18px">Todo revisado.</div>'}</div>
+    ${accountFoot()}</div>`;
+  $$('[data-pay]').forEach(b => b.onclick = run(async () => { await API.confirmPurchase(b.dataset.pay, true); toast('Pago confirmado'); render(); }));
+  $$('[data-nopay]').forEach(b => b.onclick = run(async () => { await API.confirmPurchase(b.dataset.nopay, false); toast('Pago rechazado'); render(); }));
+  $$('.rvw').forEach(card => {
     const id = card.dataset.v; const boxes = card.querySelectorAll('input[type=checkbox]'); const ap = card.querySelector('[data-ap]');
     const upd = () => ap.disabled = ![...boxes].every(b => b.checked); boxes.forEach(b => b.onchange = upd); upd();
     ap.onclick = run(async () => { await API.reviewVerification(id, 'aprobado', ''); toast('Identidad aprobada. Sus anuncios ya están publicados.'); render(); });
-    card.querySelector('[data-rj]').onclick = run(async () => { const n = card.querySelector('textarea').value.trim(); if (!n) return toast('Escribe el motivo del rechazo para el usuario'); await API.reviewVerification(id, 'rechazado', n); toast('Verificación rechazada'); render(); });
+    card.querySelector('[data-rj]').onclick = run(async () => { const n = card.querySelector('textarea').value.trim(); if (!n) return toast('Escribe el motivo del rechazo'); await API.reviewVerification(id, 'rechazado', n); toast('Verificación rechazada'); render(); });
   });
-};
+  bindFoot();
+}
 function reviewCard(v){
   const dniImg = API.file(v.id,'dniFront'), selfie = API.file(v.id,'selfie');
-  const draw = (img, label) => img ? `<img alt="${label}" src="${img}">` : avatarSVG({ seed: v.seed, g: v.g, age: v.age });
-  const age = v.cul && v.cul.fecha ? daysAgo(v.cul.fecha) : null;
-  const culOk = age !== null && age <= C.CUL_VIGENCIA_DIAS;
+  const draw = (img, label) => img ? `<img alt="${label}" src="${img}">` : avatar(v);
+  const age = v.cul && v.cul.fecha ? daysAgo(v.cul.fecha) : null; const culOk = age !== null && age <= C.CUL_VIGENCIA_DIAS;
   const sc = v.score; const scOk = sc != null && sc >= C.PUNTAJE_ROSTRO_MIN;
-  return `<div class="rv" data-v="${esc(v.id)}">
-    <div class="who">${av(v)}<div><b>${esc(v.name)}</b><small>DNI ${esc(v.dni || '—')}${v.sub ? ' · ' + esc(v.sub) : ''} · enviado ${esc(v.created)}</small></div></div>
-    <div class="cmp"><figure><span class="ph">${draw(dniImg,'DNI')}</span>Foto del DNI</figure><figure><span class="ph">${draw(selfie,'Selfie')}</span>Selfie</figure>
-      <figure><span class="ph" style="aspect-ratio:3/4;font-size:11px;padding:6px;text-align:center">CUL<br>${esc(v.cul?.numero || '')}</span>Certificado</figure></div>
-    <div class="field"><span class="lbl">Coincidencia de rostro ${sc!=null?`· ${(sc*100).toFixed(0)}%`:''} ${v.liveness?'· prueba de vida OK':''}</span>
-      <div class="meter"><i style="width:${(sc||0)*100}%;background:${scOk?'var(--ok)':'var(--bad)'}"></i></div>
-      ${!scOk ? `<span class="pill bad" style="align-self:flex-start">Bajo el mínimo de ${C.PUNTAJE_ROSTRO_MIN*100}%: pedir nueva selfie</span>` : ''}</div>
-    <div class="cul"><span>N.º CUL</span><span>${esc(v.cul?.numero)}</span><span>Emitido</span><span>${esc(v.cul?.fecha)} ${age!==null?`(hace ${age} días)`:''} ${culOk?'':'<b style="color:var(--bad)">· vencido</b>'}</span>
-      <span>Ant. policiales</span><span>${esc(v.cul?.policiales)}</span><span>Ant. penales</span><span>${esc(v.cul?.penales)}</span><span>Ant. judiciales</span><span>${esc(v.cul?.judiciales)}</span>
-      ${v.colegiatura?`<span>Colegiatura</span><span>${esc(v.colegiatura)}</span>`:''}</div>
+  return `<div class="panel rvw" data-v="${esc(v.id)}">
+    <div style="display:flex;gap:12px;align-items:center">${av(v)}<div><b>${esc(v.name)}</b><br><span class="note">DNI ${esc(v.dni || '—')}${v.sub?' · '+esc(v.sub):''} · ${esc(v.created)}</span></div></div>
+    <div class="cmp"><figure><span class="ph">${draw(dniImg,'DNI')}</span>Foto del DNI</figure><figure><span class="ph">${draw(selfie,'Selfie')}</span>Selfie</figure><figure><span class="ph" style="font-size:11px;padding:6px;text-align:center">CUL<br>${esc(v.cul?.numero || '')}</span>Certificado</figure></div>
+    <div class="field"><span class="lbl">Coincidencia de rostro ${sc!=null?`· ${(sc*100).toFixed(0)}%`:''} ${v.liveness?'· prueba de vida OK':''}</span><div class="meter"><i style="width:${(sc||0)*100}%;background:${scOk?'var(--ok)':'var(--bad)'}"></i></div>${!scOk?`<span class="pill bad" style="align-self:flex-start">Bajo ${C.PUNTAJE_ROSTRO_MIN*100}%: pedir nueva selfie</span>`:''}</div>
+    <div class="cul"><span>N.º CUL</span><span>${esc(v.cul?.numero)}</span><span>Emitido</span><span>${esc(v.cul?.fecha)} ${age!==null?`(hace ${age} días)`:''} ${culOk?'':'<b style="color:var(--bad)">· vencido</b>'}</span><span>Ant. policiales</span><span>${esc(v.cul?.policiales)}</span><span>Ant. penales</span><span>${esc(v.cul?.penales)}</span><span>Ant. judiciales</span><span>${esc(v.cul?.judiciales)}</span>${v.colegiatura?`<span>Colegiatura</span><span>${esc(v.colegiatura)}</span>`:''}</div>
     <div class="field"><span class="lbl">Antes de aprobar</span>
       <label class="check"><input type="checkbox"> El nombre y el DNI del CUL coinciden con la foto del DNI.</label>
-      <label class="check"><input type="checkbox"> Validé el CUL en empleosperu.gob.pe con su número y el DNI, y el resultado coincide con el PDF.</label>
+      <label class="check"><input type="checkbox"> Validé el CUL en empleosperu.gob.pe con su número y el DNI.</label>
       <label class="check"><input type="checkbox"> El CUL no muestra antecedentes policiales, penales ni judiciales.</label>
-      ${v.colegiatura?'<label class="check"><input type="checkbox"> Encontré la colegiatura activa en el registro del colegio profesional.</label>':''}
+      ${v.colegiatura?'<label class="check"><input type="checkbox"> La colegiatura está activa en el registro del colegio profesional.</label>':''}
       <label class="check"><input type="checkbox"> La selfie y la foto del DNI son la misma persona.</label></div>
-    <textarea placeholder="Motivo si rechazas (lo verá el usuario)"></textarea>
+    <textarea placeholder="Motivo si rechazas (lo verá el usuario)" aria-label="Motivo del rechazo"></textarea>
     <div class="row"><button class="btn" data-ap>Aprobar</button><button class="btn ghost" data-rj>Rechazar</button></div></div>`;
+}
+
+// ---------------- Cita segura ----------------
+function citaSegura(s){
+  const tc = trusted();
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">${I('shield')} Cita segura con ${esc(s.name.split(' ')[0])}</h2>
+    <p class="note">Avisamos a tu contacto de confianza cuándo empieza y termina tu encuentro. Si no marcas "Terminé bien" a tiempo, le enviamos tu ubicación.</p>
+    <div class="row"><div class="field"><label for="sn">Contacto de confianza</label><input id="sn" value="${esc(tc.name||'')}" placeholder="Ej. Mamá"></div><div class="field"><label for="sp">Celular</label><input id="sp" inputmode="tel" value="${esc(tc.phone||'')}" placeholder="9XX XXX XXX"></div></div>
+    <div class="row" style="margin-top:10px"><div class="field"><label for="sl">Lugar</label><input id="sl" placeholder="${s.cat==='compania'?'Ej. Larcomar, patio de comidas':'Dirección'}"></div><div class="field" style="flex:0 1 140px"><label for="sd">Duración</label><select id="sd"><option value="60">1 hora</option><option value="120" selected>2 horas</option><option value="180">3 horas</option><option value="240">4 horas</option></select></div></div>
+    <button class="btn big" id="go" style="width:100%;margin-top:14px">Empezar cita segura</button></div>`, s.cat);
+  $('#go').onclick = run(async () => {
+    if (!$('#sn').value.trim() || !/^9\d{8}$/.test($('#sp').value.replace(/\s/g,''))) return toast('Ingresa el nombre y celular de tu contacto de confianza');
+    trusted({ name: $('#sn').value.trim(), phone: $('#sp').value.trim() });
+    S.safety = await API.startSafety({ providerId: s.providerId, provider: s.name, trustedName: $('#sn').value.trim(), trustedPhone: $('#sp').value.trim(), place: $('#sl').value.trim(), minutes: +$('#sd').value });
+    close(); drawSafety(); toast(`Avisamos a ${S.safety.trustedName} que empezó tu cita`);
+  });
+}
+let safeTimer;
+function drawSafety(){
+  clearInterval(safeTimer);
+  const s = S.safety; const el = $('#safebar');
+  if (!s) { el.hidden = true; return; }
+  el.hidden = false;
+  const tick = () => {
+    const left = s.started + s.minutes * 60e3 - Date.now();
+    const t = Math.abs(left); const h = Math.floor(t/36e5), m = Math.floor(t%36e5/6e4), sec = Math.floor(t%6e4/1e3);
+    el.innerHTML = `<span class="t">${left<0?'+':''}${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}</span>
+      <span class="grow">Cita con <b>${esc(s.provider.split(' ')[0])}</b> · ${left<0?'¡Se pasó la hora! Marca que estás bien.':'Te cuidamos con '+esc(s.trustedName)}</span>
+      <button class="btn sm" id="ok">Terminé bien</button><button class="btn sm" id="fc">${I('phone')} Llamada</button><button class="btn sm sos" id="sos">SOS</button>`;
+    $('#ok').onclick = run(async () => { await API.endSafety(); S.safety = null; drawSafety(); toast(`Avisamos a ${s.trustedName} que terminaste bien`); });
+    $('#fc').onclick = () => { toast('Te llamamos en 5 segundos…'); setTimeout(fakeCall, 5000); };
+    $('#sos').onclick = sos;
+  };
+  tick(); safeTimer = setInterval(tick, 1000);
+}
+function fakeCall(){
+  const who = (S.safety && S.safety.trustedName) || 'Mamá';
+  const el = document.createElement('div'); el.className = 'call'; el.setAttribute('role','dialog');
+  el.innerHTML = `<div class="who"><span class="note" style="color:rgba(255,255,255,.7)">Llamada entrante…</span><div class="pulse">${esc(who[0].toUpperCase())}</div><h2>${esc(who)}</h2><span style="color:rgba(255,255,255,.7)">celular</span></div>
+    <div class="acts"><button class="no" aria-label="Rechazar">${I('phone')}</button><button class="yes" aria-label="Contestar">${I('phone')}</button></div>`;
+  document.body.appendChild(el);
+  el.querySelector('.no').onclick = () => el.remove();
+  el.querySelector('.yes').onclick = () => { let t = 0; const w = el.querySelector('.who span:last-child'); const iv = setInterval(() => { t++; w.textContent = `00:${String(t).padStart(2,'0')}`; }, 1000);
+    el.querySelector('.acts').innerHTML = `<button class="no" aria-label="Colgar">${I('phone')}</button>`; el.querySelector('.no').onclick = () => { clearInterval(iv); el.remove(); }; };
+}
+function sos(){
+  const s = S.safety;
+  openModal(`<div class="pad"><h2 style="font-size:24px;color:var(--bad)">${I('sos')} ¿Estás en peligro?</h2>
+    <p>Llama ahora a la <b>Policía: 105</b>. Para violencia: <b>Línea 100</b>.</p>
+    <div class="alert bad">En la app real, esto envía tu ubicación en vivo a ${esc(s?s.trustedName:'tu contacto de confianza')} y al equipo de Yunta, y queda registrado.</div>
+    <div class="row" style="margin-top:12px"><button class="btn big" id="cp105">${I('copy')} Copiar 105</button><button class="btn big ghost" id="cl">Estoy a salvo</button></div></div>`);
+  $('#cp105').onclick = async () => { try { await navigator.clipboard.writeText('105'); toast('105 copiado'); } catch (e) { toast('Marca 105 desde tu teléfono'); } };
+  $('#cl').onclick = close;
 }
 
 // ---------------- Seguridad ----------------
 VIEWS.seguridad = async function(){
-  $('#app').innerHTML = `<div class="page"><h1>Seguridad en Yunta</h1><p class="lead">Así verificamos a cada persona antes de que aparezca en la app.</p>
-  <div class="rules">
-    <div class="rule"><h3>DNI + escaneo de rostro</h3><p>Foto del DNI y selfie con prueba de vida (parpadear, girar). Un sistema biométrico compara ambas caras; si la coincidencia es menor a ${C.PUNTAJE_ROSTRO_MIN*100}%, se rechaza.</p></div>
-    <div class="rule"><h3>Certificado Único Laboral</h3><p>Todos suben su CUL del Ministerio de Trabajo, que reúne antecedentes policiales, penales y judiciales. Lo validamos en Empleos Perú con su número y DNI, y no aceptamos certificados de más de ${C.CUL_VIGENCIA_DIAS} días.</p></div>
-    <div class="rule"><h3>Colegiatura real</h3><p>Psicólogos y nutricionistas se validan en el registro del C.Ps.P. y del C.N.P.</p></div>
-    <div class="rule"><h3>Contacto protegido</h3><p>El WhatsApp y el correo solo se muestran a clientes registrados que pagan el desbloqueo. Así evitamos curiosos y acoso.</p></div>
-    <div class="rule"><h3>Primer encuentro en público</h3><p>Las citas de Compañía empiezan en un centro comercial, café o parque. Está prohibido ofrecer o pedir servicios sexuales.</p></div>
-    <div class="rule"><h3>Pago protegido</h3><p>Si reservas por la app, retenemos el pago y lo liberamos 24 horas después del servicio.</p></div>
+  $('#app').innerHTML = `<div class="page"><h1>Seguridad en Yunta</h1><p class="lead">Así cuidamos a quienes contratan y a quienes ofrecen.</p>
+  <div class="two">
+    ${[['idcard','DNI y escaneo de rostro',`Foto del DNI y selfie con prueba de vida. Si la coincidencia es menor a ${C.PUNTAJE_ROSTRO_MIN*100}%, se rechaza.`],
+      ['doc','Certificado Único Laboral',`Reúne antecedentes policiales, penales y judiciales. Lo validamos en Empleos Perú con su número y DNI. Vence a los ${C.CUL_VIGENCIA_DIAS} días.`],
+      ['star','Niveles por desempeño','Nuevo, Confiable, Destacado y Oro según reseñas reales, puntualidad y reportes. Se recalculan cada mes.'],
+      ['users','Reputación del cliente',`Quien ofrece servicios también te califica. Con nota menor a ${C.CLIENTE_NOTA_MIN} no puedes contactar en Compañía.`],
+      ['shield','Cita segura','Avisamos a tu contacto de confianza, con temporizador, llamada falsa para salir de una situación incómoda y botón SOS.'],
+      ['lock','Contacto protegido','El WhatsApp solo se muestra a personas registradas que usan un contacto de su plan. Así evitamos curiosos.']]
+      .map(([i,h,p])=>`<div class="panel"><b style="display:flex;gap:8px;align-items:center;font-size:16px">${I(i)} ${h}</b><span class="note">${p}</span></div>`).join('')}
   </div>
-  <div class="sos"><p><b>¿Te sientes en riesgo?</b> Llama a la PNP al 105. Violencia: Línea 100. Salud mental: Línea 113, opción 5.</p><button class="btn aji" id="sosb">Probar botón de emergencia</button></div>
+  <div class="panel" style="margin-top:14px;background:var(--hero-bg);color:var(--hero-fg);border:0"><b>¿Te sientes en riesgo?</b><span>Policía: 105 · Violencia: Línea 100 · Salud mental: Línea 113, opción 5.</span></div>
   ${legal()}</div>`;
-  $('#sosb').onclick = () => toast('En la app real esto avisa a tu contacto de confianza y a soporte con tu ubicación.');
 };
-
 function reclamo(){
-  openModal(`<header><h2 style="font-size:20px">Libro de Reclamaciones</h2><button class="x" aria-label="Cerrar">×</button></header>
-  <p class="note">Conforme al Código de Protección y Defensa del Consumidor (Indecopi). Respondemos en un plazo máximo de 15 días hábiles.</p>
-  <form class="form" id="rf" style="border:0;padding:0">
-    <div class="row"><div class="field"><label for="rn">Nombre</label><input id="rn" required></div><div class="field"><label for="rd">DNI</label><input id="rd" required maxlength="8"></div></div>
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">Libro de Reclamaciones</h2><p class="note">Conforme al Código de Protección y Defensa del Consumidor (Indecopi). Respondemos en máximo 15 días hábiles.</p>
+  <form class="list" id="rf"><div class="row"><div class="field"><label for="rn">Nombre</label><input id="rn" required></div><div class="field"><label for="rdn">DNI</label><input id="rdn" required maxlength="8"></div></div>
     <div class="field"><label for="rt">Tipo</label><select id="rt"><option>Reclamo (sobre el servicio)</option><option>Queja (sobre la atención)</option></select></div>
-    <div class="field"><label for="rx">Detalle</label><textarea id="rx" required></textarea></div>
-    <button class="btn" type="submit">Registrar</button></form>`);
+    <div class="field"><label for="rx">Detalle</label><textarea id="rx" required></textarea></div><button class="btn" type="submit">Registrar</button></form></div>`);
   $('#rf').onsubmit = e => { e.preventDefault(); close(); toast('Reclamo registrado. Código R-' + String(Date.now()).slice(-6)); };
 }
 
-// ---------------- Inicio ----------------
-$('#home').onclick = () => { S.cat = null; S.sub = null; go('explorar'); };
+// ---------------- Confeti ----------------
+function confetti(){
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = document.createElement('canvas'); cv.className = 'confetti'; document.body.appendChild(cv);
+  const ctx = cv.getContext('2d'); const W = cv.width = innerWidth, H = cv.height = innerHeight;
+  const cs = getComputedStyle(document.documentElement); const cols = ['--aji','--morado','--c-compania','--c-tutoria','--c-salud'].map(v => cs.getPropertyValue(v).trim());
+  const ps = Array.from({length: 140}, () => ({ x: W/2, y: H*0.55, vx: (Math.random()-.5)*14, vy: -Math.random()*15-5, r: Math.random()*6+3, c: cols[Math.floor(Math.random()*cols.length)], a: Math.random()*6 }));
+  let f = 0; (function step(){ ctx.clearRect(0,0,W,H); ps.forEach(p => { p.vy += .45; p.x += p.vx; p.y += p.vy; p.a += .2; ctx.fillStyle = p.c; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); ctx.restore(); });
+    if (++f < 90) requestAnimationFrame(step); else cv.remove(); })();
+}
+
+// ---------------- Inicio de la app ----------------
+$('#home').onclick = () => { S.cat = S.sub = S.filter = null; S.q = S.dist = ''; go('inicio'); };
+$('#wallet').onclick = () => go('planes');
 window.addEventListener('yunta:auth', () => refreshUser());
-refreshUser().then(render);
+(async () => { await refreshUser(); S.safety = await API.getSafety(); drawSafety(); render(); })();
 })();
