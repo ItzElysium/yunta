@@ -1,0 +1,916 @@
+<title>Yunta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app shell — sticky top bar, content column (max 1100px), bottom tab bar on phones */
+:root{
+  --bg:#FBF8F4; --surface:#FFFFFF; --sunk:#F2ECE5; --line:#E4DCD2;
+  --fg:#231A2B; --muted:#6E6274;
+  --morado:#5A2A82; --morado-soft:#EFE6F6; --on-morado:#FFFFFF; --aji:#F2B705; --aji-ink:#4A3600;
+  --ok:#1F7A4D; --ok-soft:#E2F3EA; --warn:#9A5B00; --warn-soft:#FCEFD6; --bad:#B3261E; --bad-soft:#FBE3E1;
+  --scrim:rgba(20,10,30,.5);
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17121C; --surface:#211A28; --sunk:#2A2232; --line:#3A3043; --fg:#F3EEF6; --muted:#B4A8BC;
+  --morado:#C9A2EC; --morado-soft:#352645; --on-morado:#1B1022; --aji:#F5C431; --aji-ink:#2A1F00;
+  --ok:#6FD3A0; --ok-soft:#1D3328; --warn:#F2B866; --warn-soft:#3A2C15; --bad:#FF9C94; --bad-soft:#3D1F1D;
+  --scrim:rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17121C; --surface:#211A28; --sunk:#2A2232; --line:#3A3043; --fg:#F3EEF6; --muted:#B4A8BC;
+  --morado:#C9A2EC; --morado-soft:#352645; --on-morado:#1B1022; --aji:#F5C431; --aji-ink:#2A1F00;
+  --ok:#6FD3A0; --ok-soft:#1D3328; --warn:#F2B866; --warn-soft:#3A2C15; --bad:#FF9C94; --bad-soft:#3D1F1D;
+  --scrim:rgba(0,0,0,.6); color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;line-height:1.15}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--morado);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.logo{font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--morado);letter-spacing:-.02em;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0}
+.logo i{width:12px;height:12px;border-radius:50%;background:var(--aji);display:inline-block}
+.demo{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--aji);color:var(--aji-ink);padding:3px 8px;border-radius:99px}
+nav.tabs{margin-left:auto;display:flex;gap:4px;align-items:center}
+nav.tabs button{background:none;border:0;padding:8px 12px;border-radius:10px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px}
+nav.tabs button[aria-current="true"]{background:var(--morado-soft);color:var(--morado)}
+nav.tabs .badge{background:var(--morado);color:var(--on-morado);border-radius:99px;font-size:11px;padding:0 6px}
+nav.tabs .me{width:26px;height:26px;border-radius:50%;overflow:hidden;display:inline-block;flex:none}
+
+main{padding-block:24px 110px}
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:end;margin-bottom:24px}
+.hero h1{font-size:clamp(30px,5vw,50px);font-weight:800;letter-spacing:-.03em}
+.hero h1 em{font-style:normal;color:var(--morado);background:linear-gradient(transparent 62%,var(--aji) 62%,var(--aji) 90%,transparent 90%)}
+.hero p{color:var(--muted);max-width:52ch;margin:12px 0 0}
+.search{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 140px;min-width:0}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:90px;resize:vertical}
+
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.cat{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:4px}
+.cat b{font-family:var(--font-display);font-size:17px}
+.cat span{color:var(--muted);font-size:13px}
+.cat svg{width:26px;height:26px;color:var(--morado);margin-bottom:4px}
+.cat[aria-pressed="true"]{border-color:var(--morado);background:var(--morado-soft)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px}
+.chip{white-space:nowrap;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.count{color:var(--muted);font-size:13px;margin:0 0 12px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.card:hover{border-color:var(--morado)}
+.card .star{position:absolute;top:12px;right:12px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--aji);color:var(--aji-ink);padding:2px 8px;border-radius:99px}
+.who{display:flex;gap:12px;align-items:center;min-width:0}
+.av{width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none;display:block}
+.av svg{width:100%;height:100%;display:block}
+.av.lg{width:72px;height:72px}
+.who b{display:block;font-size:15px}
+.who small{color:var(--muted)}
+.card h3{font-size:17px;font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:12px;font-weight:600;border-radius:99px;padding:2px 8px;background:var(--sunk);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.m{background:var(--morado-soft);color:var(--morado)}
+.foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:auto;padding-top:10px;border-top:1px dashed var(--line)}
+.price{font-family:var(--font-display);font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.price small{font-family:var(--font-body);font-size:12px;color:var(--muted);font-weight:500}
+.stars{font-size:13px;color:var(--muted)}
+.stars b{color:var(--fg)}
+
+.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;background:var(--morado);color:var(--on-morado);text-align:center}
+.btn.ghost{background:var(--sunk);color:var(--fg)}
+.btn.aji{background:var(--aji);color:var(--aji-ink)}
+.btn.line{background:none;border:1px solid var(--line);color:var(--fg)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--morado);font-weight:600;text-decoration:underline}
+
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:20px max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+@media (min-width:700px){.scrim{align-items:center}.sheet{border-radius:20px}}
+.sheet header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.x{background:var(--sunk);border:0;border-radius:50%;width:34px;height:34px;font-size:18px;flex:none}
+.section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.section h4{margin:0;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.check input{width:auto;margin-top:3px}
+.sum{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-variant-numeric:tabular-nums}
+.sum .t{font-weight:800;font-size:17px;border-top:1px solid var(--line);padding-top:6px}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pay button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-weight:700}
+.pay button[aria-pressed="true"]{border-color:var(--morado);background:var(--morado-soft);color:var(--morado)}
+.qr{display:flex;gap:14px;align-items:center;background:var(--sunk);border-radius:12px;padding:12px}
+.qr canvas{width:84px;height:84px;border-radius:8px;background:#fff;flex:none}
+.note{font-size:13px;color:var(--muted)}
+.alert{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px}
+.alert.ok{background:var(--ok-soft);color:var(--ok)}
+.alert.bad{background:var(--bad-soft);color:var(--bad)}
+.reviews{display:flex;flex-direction:column;gap:8px}
+.rev{background:var(--sunk);border-radius:10px;padding:10px 12px;font-size:14px}
+.rev small{color:var(--muted)}
+
+/* Contacto bloqueado */
+.lock{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.lock .kv{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center;font-variant-numeric:tabular-nums}
+.lock .kv span:nth-child(3n+1){color:var(--muted);font-size:13px}
+.lock .kv b{font-size:16px;letter-spacing:.02em}
+.lock.open{border-color:var(--ok);background:var(--ok-soft)}
+.blur{filter:blur(.5px);color:var(--muted)}
+
+/* Páginas */
+.page{max-width:780px}
+.page h1{font-size:32px;margin-bottom:6px}
+.lead{color:var(--muted);margin:0 0 20px}
+.form{display:flex;flex-direction:column;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label{font-weight:600;font-size:14px}
+.list{display:flex;flex-direction:column;gap:10px}
+.bk{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bk .info{flex:1 1 220px;min-width:0}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:28px;text-align:center;color:var(--muted)}
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.rule h3{font-size:16px;margin-bottom:4px}
+.rule p{margin:0;color:var(--muted);font-size:14px}
+.sos{display:flex;gap:12px;align-items:center;background:var(--morado);color:var(--on-morado);border-radius:var(--r);padding:16px;margin-top:16px;flex-wrap:wrap}
+.sos p{margin:0;flex:1 1 240px}
+
+/* Login */
+.auth{max-width:440px;margin:0 auto}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--sunk);border-radius:12px;padding:4px;gap:4px}
+.seg button{border:0;background:none;border-radius:9px;padding:9px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg)}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.quick button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:13px;font-weight:600}
+.quick .av{width:40px;height:40px}
+
+/* Verificación: pasos */
+.steps{display:flex;flex-direction:column;gap:0;counter-reset:s}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:16px 0;border-top:1px solid var(--line)}
+.step:first-child{border-top:0}
+.step .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);font-weight:800;font-family:var(--font-display);font-variant-numeric:tabular-nums}
+.step.done .n{background:var(--ok);color:var(--surface)}
+.step h3{font-size:16px;margin-bottom:2px}
+.step .body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.upl{display:flex;gap:12px;align-items:center;border:1px dashed var(--line);border-radius:12px;padding:10px;background:var(--bg);flex-wrap:wrap}
+.upl .thumb{width:72px;height:72px;border-radius:10px;background:var(--sunk);display:grid;place-items:center;overflow:hidden;flex:none;color:var(--muted);font-size:11px;text-align:center}
+.upl .thumb img{width:100%;height:100%;object-fit:cover}
+.upl input[type=file]{flex:1 1 180px;border:0;background:none;padding:0}
+.face{position:relative;width:150px;height:190px;border-radius:50%/42%;border:3px dashed var(--morado);display:grid;place-items:center;overflow:hidden;background:var(--sunk);margin:4px auto}
+.face img{width:100%;height:100%;object-fit:cover}
+.face .hint{font-size:12px;color:var(--muted);text-align:center;padding:12px}
+.live{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.live span{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--sunk);color:var(--muted);font-weight:600}
+.live span.on{background:var(--ok-soft);color:var(--ok)}
+
+/* Admin */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-family:var(--font-display);font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.rv{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cmp figure{margin:0;display:flex;flex-direction:column;gap:6px;align-items:center;font-size:12px;color:var(--muted);min-width:0}
+.cmp .ph{width:100%;aspect-ratio:3/4;max-width:120px;border-radius:10px;overflow:hidden;background:var(--sunk);display:grid;place-items:center}
+.cmp .ph svg,.cmp .ph img{width:100%;height:100%;object-fit:cover}
+.cul{font-size:13px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;background:var(--sunk);border-radius:10px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.cul span:nth-child(odd){color:var(--muted)}
+.meter{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%}
+
+footer.legal{border-top:1px solid var(--line);margin-top:32px;padding-top:16px;font-size:12px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+footer.legal button{font-size:12px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:30;font-weight:600;max-width:90vw}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr}
+  .cats{grid-template-columns:repeat(2,1fr)}
+  .rules{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;margin:0;background:var(--surface);border-top:1px solid var(--line);justify-content:space-around;padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:6}
+  nav.tabs button{font-size:12px;padding:8px 4px;flex:1;justify-content:center}
+}
+@media (max-width:420px){.cmp{grid-template-columns:repeat(3,1fr);gap:6px}.quick{grid-template-columns:repeat(3,1fr)}}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}.sheet{animation:up .22s ease-out}@keyframes up{from{transform:translateY(24px);opacity:.6}}}
+
+</style>
+
+<header class="top"><div class="wrap">
+  <button class="logo" id="home" aria-label="Yunta, inicio"><i></i>yunta</button>
+  <span class="demo" id="modeTag">Demo</span>
+  <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+</div></header>
+<main class="wrap" id="app"></main>
+<div id="modal"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+// Configuración de Yunta.
+// Deja SUPABASE_URL vacío para usar el MODO DEMO (datos de ejemplo en el navegador).
+// Para usar la base real: Supabase → Project Settings → API → copia URL y "anon public key".
+window.YUNTA_CONFIG = {
+  SUPABASE_URL: '',
+  SUPABASE_ANON_KEY: '',
+
+  // Monetización (soles)
+  PRECIO_DESBLOQUEO: 5,                 // ver el contacto de 1 persona
+  PAQUETE: { creditos: 5, precio: 19 }, // paquete de desbloqueos
+  PRECIO_DESTACADO: 15,                 // anuncio destacado por 7 días (lo paga el proveedor)
+  COMISION_RESERVA: 0.10,               // 10% al reservar con pago protegido
+
+  // Cuenta que recibe los Yape/Plin (mientras no haya pasarela)
+  YAPE_NUMERO: '999 000 111',
+  YAPE_TITULAR: 'Yunta Servicios',
+
+  CUL_VIGENCIA_DIAS: 90,
+  PUNTAJE_ROSTRO_MIN: 0.85
+};
+
+// Avatares dibujados (SVG) generados a partir de una semilla. Sin fotos reales.
+(function () {
+  const SKIN = ['#F3CFB1', '#E6B48E', '#D29A70', '#B87B52', '#9A623F', '#7A4B30'];
+  const HAIR = ['#1E1512', '#2E1D14', '#4A2F1E', '#6B4428', '#1B1B22'];
+  const GRAY = ['#B9B4AE', '#D4D0CA', '#9C9690'];
+  const BG = ['#EADFF3', '#FBE7B5', '#D7EDE8', '#F7D9D2', '#DCE4F7', '#E9E3D5'];
+  const SHIRT = ['#5A2A82', '#B0413E', '#1F6F78', '#C28A12', '#3B5BA5', '#2F7A4D', '#7A3E65', '#444055'];
+  const INK = '#2A1E2F';
+
+  function rng(seed) {
+    let a = (seed * 2654435761) >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
+  function shade(hex, k) {
+    const n = parseInt(hex.slice(1), 16);
+    const f = c => Math.max(0, Math.min(255, Math.round(c * k)));
+    return '#' + [n >> 16, (n >> 8) & 255, n & 255].map(f).map(c => c.toString(16).padStart(2, '0')).join('');
+  }
+
+  // p: { seed, g: 'f'|'m'|'x', age }
+  window.avatarSVG = function (p) {
+    const r = rng(p.seed || 1);
+    const g = p.g === 'x' ? (r() < .5 ? 'f' : 'm') : (p.g || 'x');
+    const old = (p.age || 30) >= 55;
+    const skin = pick(r, SKIN), skinD = shade(skin, .86);
+    const hair = old ? pick(r, GRAY) : pick(r, HAIR);
+    const bg = pick(r, BG), shirt = pick(r, SHIRT);
+    const styles = g === 'f' ? ['long', 'bob', 'bun', 'curlyL', 'pony'] : (old ? ['bald', 'short', 'side'] : ['short', 'side', 'curly', 'buzz', 'quiff']);
+    const style = pick(r, styles);
+    const glasses = r() < (old ? .65 : .25);
+    const beard = g === 'm' && r() < .35;
+    const earring = g === 'f' && r() < .5;
+    const smile = r();
+
+    let back = '', front = '';
+    switch (style) {
+      case 'long': back = `<path d="M17 31c-2-13 4-20 15-20s17 7 15 20l2 19H15z" fill="${hair}"/>`;
+        front = `<path d="M19.5 29c0-10 5-16 12.5-16s12.5 6 12.5 16c-5-1-10-5-12-10-2 5-8 9-13 10z" fill="${hair}"/>`; break;
+      case 'bob': back = `<path d="M17.5 36c-3-15 3-23 14.5-23s17.5 8 14.5 23z" fill="${hair}"/>`;
+        front = `<path d="M19.5 28c0-9 5.5-15 12.5-15s12.5 6 12.5 15c-6 0-14-2-18-7-2 3-4 6-7 7z" fill="${hair}"/>`; break;
+      case 'bun': back = `<circle cx="32" cy="11.5" r="5.5" fill="${hair}"/>`;
+        front = `<path d="M20 27c0-9 5-14 12-14s12 5 12 14c-3-4-7-6-12-6s-9 2-12 6z" fill="${hair}"/>`; break;
+      case 'pony': back = `<path d="M43 20c6 2 8 9 6 18-1-6-4-9-7-10z" fill="${hair}"/>`;
+        front = `<path d="M20 27c0-9 5-14 12-14s12 5 12 14c-4-3-8-5-13-5-4 0-8 2-11 5z" fill="${hair}"/>`; break;
+      case 'curlyL': back = [[18, 26], [17, 34], [19, 42], [46, 26], [47, 34], [45, 42]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="${hair}"/>`).join('');
+        front = [[21, 20], [26, 15], [32, 13.5], [38, 15], [43, 20]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5.2" fill="${hair}"/>`).join(''); break;
+      case 'curly': front = [[21, 21], [25, 16], [31, 14], [37, 15], [42, 19], [44, 24]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4.4" fill="${hair}"/>`).join(''); break;
+      case 'short': front = `<path d="M20 26c0-9 5-14 12-14s12 5 12 14c-2-4-6-6-12-6s-10 2-12 6z" fill="${hair}"/>`; break;
+      case 'side': front = `<path d="M20 27c-1-10 6-15 13-15 7 0 12 5 11 14-3-5-9-7-14-5-4 1-8 3-10 6z" fill="${hair}"/>`; break;
+      case 'quiff': front = `<path d="M20 26c0-8 4-13 10-14 3-3 9-3 12 1 3 3 2 8 2 13-3-4-7-6-12-6s-10 2-12 6z" fill="${hair}"/>`; break;
+      case 'buzz': front = `<path d="M21 24c1-7 5-11 11-11s10 4 11 11c-3-3-7-4-11-4s-8 1-11 4z" fill="${hair}" opacity=".9"/>`; break;
+      case 'bald': front = `<path d="M19.6 31c-.3-4 .6-7 2.4-8.5V31zM44.4 31c.3-4-.6-7-2.4-8.5V31z" fill="${hair}"/>`; break;
+    }
+    const mouth = smile < .5 ? `<path d="M28.5 35.5q3.5 3 7 0" stroke="${INK}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`
+      : smile < .8 ? `<path d="M28 35q4 4.5 8 0z" fill="#fff" stroke="${INK}" stroke-width="1.2" stroke-linejoin="round"/>`
+      : `<path d="M29 36h6" stroke="${INK}" stroke-width="1.5" stroke-linecap="round"/>`;
+    const beardSvg = beard ? `<path d="M20.5 30c0 8 5 12.5 11.5 12.5S43.5 38 43.5 30c-1.5 3-3 4-5 4.3-1.5-1.6-4-2.3-6.5-2.3s-5 .7-6.5 2.3c-2-.3-3.5-1.3-5-4.3z" fill="${hair}"/>` : '';
+    const glassesSvg = glasses ? `<g fill="none" stroke="${INK}" stroke-width="1.3"><circle cx="27" cy="29" r="3.6"/><circle cx="37" cy="29" r="3.6"/><path d="M30.6 29h2.8"/></g>` : '';
+    const wrinkles = old ? `<path d="M23.5 32.5q1 1 2 0M38.5 32.5q1 1 2 0" stroke="${skinD}" stroke-width="1" fill="none"/>` : '';
+
+    return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+      <circle cx="32" cy="32" r="32" fill="${bg}"/>
+      <clipPath id="c${p.seed}"><circle cx="32" cy="32" r="32"/></clipPath>
+      <g clip-path="url(#c${p.seed})">
+        ${back}
+        <path d="M9 66c0-13 10-20 23-20s23 7 23 20z" fill="${shirt}"/>
+        <path d="M26.5 46.5l5.5 5 5.5-5" fill="none" stroke="${shade(shirt, .75)}" stroke-width="1.6"/>
+        <rect x="27.5" y="37" width="9" height="10" rx="4" fill="${skinD}"/>
+        <circle cx="20" cy="29.5" r="2.6" fill="${skinD}"/><circle cx="44" cy="29.5" r="2.6" fill="${skinD}"/>
+        ${earring ? `<circle cx="20" cy="33" r="1.3" fill="#E2B33C"/><circle cx="44" cy="33" r="1.3" fill="#E2B33C"/>` : ''}
+        <ellipse cx="32" cy="28.5" rx="12" ry="13.5" fill="${skin}"/>
+        ${front}${beardSvg}
+        <circle cx="27" cy="29" r="1.5" fill="${INK}"/><circle cx="37" cy="29" r="1.5" fill="${INK}"/>
+        <path d="M25 25.3q2-1.2 4 0M35 25.3q2-1.2 4 0" stroke="${old ? hair : INK}" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <circle cx="24.5" cy="33" r="2" fill="#E8826F" opacity=".25"/><circle cx="39.5" cy="33" r="2" fill="#E8826F" opacity=".25"/>
+        <path d="M32 30.5v2.6h-1.2" stroke="${skinD}" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        ${wrinkles}${mouth}${glassesSvg}
+      </g></svg>`;
+  };
+})();
+
+// API en MODO DEMO: misma interfaz que api-supabase.js, pero todo vive en el navegador.
+(function () {
+  const C = window.YUNTA_CONFIG;
+  const KEY = 'yunta.demo.v2';
+  const wait = (ms = 250) => new Promise(r => setTimeout(r, ms));
+  const uid = () => 'u' + Math.random().toString(36).slice(2, 10);
+
+  const SEED_SERV = [
+    ['p1', 'compania', 'Amigo para salir', 'Diego Ramírez', 'm', 27, 'Pata para ir al cine, un partido o a comer cebiche', 'Si llegaste a Lima hace poco o tus amigos andan ocupados, salgamos. Me gusta el fútbol (soy de la U), el cine y conozco buenas huariques en Surquillo.', 35, 'hora', 'Miraflores', 4.9, 62, '987 112 334'],
+    ['p2', 'compania', 'Pareja para reunión familiar', 'Valeria Chávez', 'f', 29, 'Te acompaño al almuerzo familiar o al matrimonio de tu prima', 'Llego puntual, conversadora y con la historia ensayada. Solo compañía social en lugares con gente; nada de contacto íntimo. Coordinamos antes por chat la versión que contaremos.', 60, 'hora', 'San Isidro', 4.8, 41, '956 221 908'],
+    ['p3', 'compania', 'Familiar para ceremonia', 'Don Alberto Quispe', 'm', 63, 'Tío o padrino para graduaciones, bodas y bautizos', 'Jubilado, profesor de historia. Hago de tío, padrino o "papá" en ceremonias donde falta alguien. Llevo terno propio y doy un discurso corto si lo necesitas.', 80, 'evento', 'Jesús María', 5.0, 23, '944 870 115'],
+    ['p4', 'compania', 'Adulto mayor', 'Rosa Huamán', 'f', 45, 'Compañía para tus papás: paseos, citas médicas, conversa', 'Técnica en enfermería. Acompaño a adultos mayores al médico, al banco o a pasear al parque. Te mando fotos y reporte por WhatsApp al terminar.', 28, 'hora', 'San Borja', 4.9, 88, '912 450 763'],
+    ['p5', 'compania', 'Caminatas y deporte', 'Andrea Salazar', 'f', 31, 'Compañera para correr el malecón o hacer trekking', 'Corredora amateur. Salgo a correr por el malecón de Miraflores a Barranco o a caminatas de fin de semana (Lomas de Lúcumo, Marcahuasi).', 30, 'hora', 'Barranco', 4.7, 19, '987 300 442'],
+    ['p6', 'compania', 'Acompañante a evento', 'Joaquín Torres', 'm', 34, 'Plus one para cenas de trabajo, fiestas de promo y eventos', 'Ingeniero, buena conversa y sé bailar salsa y huayno. Ideal para que no llegues solo al tono.', 55, 'hora', 'Santiago de Surco', 4.6, 14, '933 118 650'],
+    ['p7', 'tutoria', 'Pre-U', 'Lucía Mendoza', 'f', 24, 'Preparación para San Marcos y UNI: matemática y razonamiento', 'Ingresé a la UNI en primer puesto de mi especialidad. Clases con simulacros semanales y banco de preguntas de exámenes pasados.', 40, 'hora', 'Los Olivos', 4.9, 120, '965 772 018'],
+    ['p8', 'tutoria', 'Inglés', 'Mark Benavides', 'm', 38, 'Inglés conversacional y preparación para el TOEFL', 'Bilingüe, 10 años enseñando en institutos. Clases online o en tu casa.', 50, 'hora', 'Online', 4.8, 76, '981 400 227'],
+    ['p9', 'tutoria', 'Quechua', 'Yanet Condori', 'f', 33, 'Quechua sureño para principiantes', 'Docente de EIB del Cusco. Aprende saludos, conversación básica y cultura andina.', 30, 'hora', 'Cusco · Wanchaq', 5.0, 31, '974 551 302'],
+    ['p10', 'tutoria', 'Matemática', 'Carlos Paredes', 'm', 29, 'Refuerzo escolar de matemática, física y química', 'Secundaria y primeros ciclos de universidad. Te ayudo con tareas y exámenes bimestrales.', 35, 'hora', 'Arequipa · Cercado', 4.7, 54, '959 113 884'],
+    ['p11', 'salud', 'Psicología', 'Ps. Mariana Vega', 'f', 36, 'Terapia para ansiedad, duelo y estrés laboral', 'Psicóloga clínica con enfoque cognitivo-conductual. Sesiones de 50 minutos, online o presencial en consultorio. Emito boleta.', 120, 'sesión', 'San Isidro', 4.9, 67, '990 245 671', 'C.Ps.P. 34521'],
+    ['p12', 'salud', 'Psicología', 'Ps. Renzo Alarcón', 'm', 41, 'Terapia de pareja y familia', 'Especialista en terapia sistémica. Primera consulta de orientación a precio reducido.', 140, 'sesión', 'Online', 4.8, 39, '977 310 509', 'C.Ps.P. 18877'],
+    ['p13', 'salud', 'Nutrición', 'Lic. Fiorella Ríos', 'f', 30, 'Plan de alimentación con comida peruana de casa', 'Nutricionista colegiada. Planes que incluyen lo que comes de verdad: arroz, menestras y tu lomo saltado del domingo.', 90, 'sesión', 'Pueblo Libre', 4.8, 45, '948 632 170', 'C.N.P. 7731'],
+    ['p14', 'hogar', 'Electricista', 'Javier Ccahuana', 'm', 44, 'Instalaciones, tableros, cortocircuitos y pozo a tierra', 'Técnico electricista con 18 años de experiencia. Atiendo emergencias el mismo día en Lima Este y Centro. Doy garantía de 30 días.', 70, 'visita', 'San Miguel', 4.9, 132, '936 507 811'],
+    ['p15', 'hogar', 'Gasfitero', 'Pedro Inga', 'm', 50, 'Gasfitería: fugas, terma, caños y desatoros', 'Arreglo fugas, instalo termas y destapo desagües. Presupuesto sin costo al llegar.', 60, 'visita', 'Chorrillos', 4.6, 97, '921 774 039'],
+    ['p16', 'hogar', 'Técnico de PC', 'Kevin Lozano', 'm', 26, 'Formateo, limpieza y armado de PC y laptops', 'Voy a tu casa u oficina o lo hacemos remoto. Instalo programas, recupero archivos y armo PCs gamer.', 50, 'visita', 'Callao', 4.7, 58, '952 018 776'],
+    ['p17', 'hogar', 'Limpieza', 'Marleny Torres', 'f', 38, 'Limpieza profunda de departamentos y post-mudanza', 'Trabajo con mis propios productos. Por horas o por departamento completo.', 25, 'hora', 'La Molina', 4.9, 110, '968 224 590'],
+    ['p18', 'tutoria', 'Música', 'Gonzalo Pinto', 'm', 35, 'Guitarra y cajón peruano desde cero', 'Músico de criollo y afroperuano. Aprende valses, landós y festejos.', 45, 'hora', 'Barranco', 5.0, 27, '983 661 245']
+  ];
+  const REVIEWS = {
+    p1: [['Sebastián', 'Llegué de Piura y Diego me presentó a su grupo de fulbito. Bacán.'], ['Ana', 'Puntual y buena conversa, fuimos al Nacional.']],
+    p2: [['M.', 'Mi familia nunca sospechó nada y la pasé tranquila en el almuerzo.']],
+    p3: [['Karla', 'Fue el padrino de mi graduación. Hasta mi mamá lloró.']],
+    p11: [['Usuario verificado', 'Muy empática, me ayudó a manejar la ansiedad del trabajo.']],
+    p14: [['Rocío', 'Vino en dos horas y arregló el tablero. Dejó todo limpio.']]
+  };
+
+  function fresh() {
+    const users = {
+      cliente: { id: 'demo-cliente', email: 'cliente@demo.pe', password: 'yunta123', name: 'Camila Rojas', role: 'cliente', g: 'f', age: 28, seed: 4411 },
+      proveedor: { id: 'demo-proveedor', email: 'proveedor@demo.pe', password: 'yunta123', name: 'Luis Vargas', role: 'proveedor', g: 'm', age: 32, seed: 9087, whatsapp: '940 333 210' },
+      admin: { id: 'demo-admin', email: 'admin@demo.pe', password: 'yunta123', name: 'Equipo Yunta', role: 'admin', g: 'x', age: 30, seed: 77 }
+    };
+    const services = SEED_SERV.map((r, i) => ({
+      id: 's' + (i + 1), providerId: r[0], cat: r[1], sub: r[2], name: r[3], g: r[4], age: r[5], title: r[6], desc: r[7],
+      price: r[8], unit: r[9], dist: r[10], rating: r[11], n: r[12], whatsapp: r[13], colegiatura: r[14] || null,
+      seed: 1000 + i * 37, verified: true, active: true, featured: i === 3 || i === 13, langs: r[1] === 'tutoria' && r[3].startsWith('Mark') ? 'Español, inglés' : 'Español'
+    }));
+    // Solicitudes de verificación de ejemplo para el panel de revisión
+    const today = new Date();
+    const d = n => new Date(today - n * 864e5).toISOString().slice(0, 10);
+    const verifs = [
+      { id: 'v1', userId: 'x1', name: 'Milagros Paucar', g: 'f', age: 26, seed: 5150, dni: '47281930', sub: 'Acompañante a evento', cat: 'compania', status: 'pendiente', score: 0.93, liveness: true, cul: { numero: 'CUL-2026-0881452', fecha: d(12), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(0) },
+      { id: 'v2', userId: 'x2', name: 'Ricardo Salas', g: 'm', age: 39, seed: 6262, dni: '40915527', sub: 'Electricista', cat: 'hogar', status: 'pendiente', score: 0.71, liveness: true, cul: { numero: 'CUL-2026-0712009', fecha: d(130), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(1) },
+      { id: 'v3', userId: 'x3', name: 'Ps. Daniela Ortiz', g: 'f', age: 33, seed: 7373, dni: '45520881', sub: 'Psicología', cat: 'salud', status: 'pendiente', score: 0.95, liveness: true, colegiatura: 'C.Ps.P. 40112', cul: { numero: 'CUL-2026-0934117', fecha: d(4), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(0) }
+    ];
+    return { users, services, verifs, unlocks: [], credits: {}, bookings: [], session: null };
+  }
+
+  let DB;
+  try { DB = JSON.parse(localStorage.getItem(KEY)) } catch (e) {}
+  if (!DB || !DB.users) DB = fresh();
+  const files = {}; // imágenes subidas (solo en memoria)
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(DB)) } catch (e) {} };
+  const me = () => DB.session && Object.values(DB.users).find(u => u.id === DB.session);
+  const pub = u => u && ({ id: u.id, email: u.email, name: u.name, role: u.role, g: u.g, age: u.age, seed: u.seed });
+  const need = () => { const u = me(); if (!u) throw new Error('Inicia sesión para continuar'); return u; };
+
+  window.API = {
+    mode: 'demo',
+    reviews: id => REVIEWS[id] || [],
+
+    async getUser() { return pub(me()) },
+    async signIn({ email, password }) {
+      await wait(); const u = Object.values(DB.users).find(x => x.email === email.trim().toLowerCase());
+      if (!u || u.password !== password) throw new Error('Correo o contraseña incorrectos');
+      DB.session = u.id; save(); return pub(u);
+    },
+    async signUp({ name, email, password, role }) {
+      await wait(); email = email.trim().toLowerCase();
+      if (Object.values(DB.users).some(x => x.email === email)) throw new Error('Ya existe una cuenta con ese correo');
+      if (password.length < 8) throw new Error('La contraseña debe tener al menos 8 caracteres');
+      const u = { id: uid(), email, password, name, role, g: 'x', age: 30, seed: Math.floor(Math.random() * 1e5) };
+      DB.users[u.id] = u; DB.session = u.id; save(); return pub(u);
+    },
+    async signInGoogle() { await wait(); DB.session = DB.users.cliente.id; save(); return pub(DB.users.cliente) },
+    async quickLogin(role) { DB.session = DB.users[role].id; save(); return pub(DB.users[role]) },
+    async signOut() { DB.session = null; save() },
+    async reset() { DB = fresh(); save() },
+
+    async listServices() {
+      const u = me();
+      return DB.services.filter(s => s.active || (u && s.providerId === u.id))
+        .map(s => ({ ...s, whatsapp: undefined }))
+        .sort((a, b) => (b.featured - a.featured));
+    },
+
+    // ---------- Contacto bloqueado ----------
+    async getContact(providerId) {
+      const u = me(); const s = DB.services.find(x => x.providerId === providerId);
+      const own = u && (u.id === providerId || u.role === 'admin');
+      const unl = u && DB.unlocks.find(x => x.clientId === u.id && x.providerId === providerId);
+      const unlocked = own || (unl && unl.status === 'pagado');
+      const owner = Object.values(DB.users).find(x => x.id === providerId);
+      const wa = s.whatsapp || (owner && owner.whatsapp) || '900 000 000';
+      return { unlocked, pending: unl && unl.status === 'pendiente', whatsapp: unlocked ? wa : wa[0] + '•• ••• •••',
+        email: unlocked ? s.name.toLowerCase().replace(/^(ps\.|lic\.|don)\s/, '').split(' ').slice(0, 2).join('.').normalize('NFD').replace(/[̀-ͯ]/g, '') + '@gmail.com' : '••••••@••••' };
+    },
+    async credits() { const u = me(); return u ? (DB.credits[u.id] || 0) : 0 },
+    async requestUnlock(providerId, { method, op }) {
+      const u = need(); await wait();
+      let r = DB.unlocks.find(x => x.clientId === u.id && x.providerId === providerId);
+      if (!r) { r = { id: uid(), clientId: u.id, providerId, amount: C.PRECIO_DESBLOQUEO, method, op, status: 'pendiente', created: new Date().toISOString() }; DB.unlocks.push(r); }
+      save(); return r;
+    },
+    async unlockWithCredit(providerId) {
+      const u = need(); if (!(DB.credits[u.id] > 0)) return false;
+      DB.credits[u.id]--; DB.unlocks = DB.unlocks.filter(x => !(x.clientId === u.id && x.providerId === providerId));
+      DB.unlocks.push({ id: uid(), clientId: u.id, providerId, amount: 0, method: 'credito', status: 'pagado', created: new Date().toISOString() }); save(); return true;
+    },
+    async buyPack({ method, op }) { const u = need(); await wait(); DB.credits[u.id] = (DB.credits[u.id] || 0) + C.PAQUETE.creditos; save(); return DB.credits[u.id] },
+
+    // ---------- Proveedor: publicar y verificar ----------
+    async myVerification() { const u = me(); return u && DB.verifs.find(v => v.userId === u.id) },
+    async submitVerification(data) {
+      const u = need(); await wait(500);
+      DB.verifs = DB.verifs.filter(v => v.userId !== u.id);
+      const id = uid();
+      ['dniFront', 'selfie', 'culFile'].forEach(k => { if (data[k + 'Url']) files[id + k] = data[k + 'Url'] });
+      const v = { id, userId: u.id, name: data.name, g: u.g, age: u.age, seed: u.seed, dni: data.dni, cat: data.cat, sub: data.sub, status: 'pendiente',
+        score: data.selfieUrl ? +(0.86 + Math.random() * 0.12).toFixed(2) : null, liveness: !!data.liveness, colegiatura: data.colegiatura || null,
+        cul: { numero: data.culNumero, fecha: data.culFecha, policiales: 'Por revisar', penales: 'Por revisar', judiciales: 'Por revisar' }, created: new Date().toISOString().slice(0, 10) };
+      const usr = DB.users[Object.keys(DB.users).find(k => DB.users[k].id === u.id)]; if (usr) usr.whatsapp = data.whatsapp;
+      DB.verifs.unshift(v); save(); return v;
+    },
+    file: (vid, k) => files[vid + k],
+    async createService(s) {
+      const u = need(); await wait();
+      const v = DB.verifs.find(x => x.userId === u.id);
+      const row = { ...s, id: uid(), providerId: u.id, name: u.name, g: u.g, age: u.age, seed: u.seed, rating: 0, n: 0, verified: v && v.status === 'aprobado', active: v && v.status === 'aprobado', featured: false, mine: true, langs: 'Español' };
+      DB.services.unshift(row); save(); return row;
+    },
+    async myServices() { const u = me(); return u ? DB.services.filter(s => s.providerId === u.id) : [] },
+    async featureService(id) { const s = DB.services.find(x => x.id === id); s.featured = true; save() },
+
+    // ---------- Admin ----------
+    async pendingVerifications() { return DB.verifs },
+    async reviewVerification(id, status, notes) {
+      const v = DB.verifs.find(x => x.id === id); v.status = status; v.notes = notes; v.reviewed = new Date().toISOString();
+      if (status === 'aprobado') DB.services.forEach(s => { if (s.providerId === v.userId) { s.active = true; s.verified = true } });
+      save();
+    },
+    async pendingUnlocks() { return DB.unlocks.filter(x => x.status === 'pendiente').map(x => ({ ...x, client: (Object.values(DB.users).find(u => u.id === x.clientId) || {}).name, provider: (DB.services.find(s => s.providerId === x.providerId) || {}).name })) },
+    async confirmUnlock(id, ok = true) { const x = DB.unlocks.find(r => r.id === id); x.status = ok ? 'pagado' : 'rechazado'; save() },
+    async stats() {
+      const paid = DB.unlocks.filter(x => x.status === 'pagado' && x.amount > 0);
+      return { unlocks: paid.length, ingresosDesbloqueo: paid.reduce((a, x) => a + x.amount, 0),
+        comisiones: DB.bookings.filter(b => b.status !== 'Cancelada').reduce((a, b) => a + b.fee, 0),
+        pendientes: DB.verifs.filter(v => v.status === 'pendiente').length };
+    },
+
+    // ---------- Reservas ----------
+    async myBookings() { const u = me(); return u ? DB.bookings.filter(b => b.clientId === u.id) : [] },
+    async createBooking(b) { const u = need(); await wait(); const r = { ...b, id: uid(), clientId: u.id, status: 'Pago por verificar' }; DB.bookings.unshift(r); save(); return r },
+    async updateBooking(id, status) { const b = DB.bookings.find(x => x.id === id); b.status = status; save() }
+  };
+})();
+
+// Yunta · interfaz. Usa window.API (demo o Supabase) y window.avatarSVG.
+(function () {
+const C = window.YUNTA_CONFIG;
+const ICON = {
+  compania:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="3.2"/><circle cx="16.5" cy="9" r="2.6"/><path d="M2.5 20c.6-3.4 2.9-5.4 5.5-5.4s4.9 2 5.5 5.4M14 15.2c.8-.4 1.6-.6 2.5-.6 2.2 0 4 1.7 4.5 5.4"/></svg>',
+  tutoria:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5 12 4l10 4.5L12 13 2 8.5Z"/><path d="M6 10.5V16c2 2 10 2 12 0v-5.5M22 8.5V14"/></svg>',
+  salud:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z"/><path d="M8 12h2.2l1.2-2.4 1.6 4.4 1.2-2H16"/></svg>',
+  hogar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3.5 17.3a1.8 1.8 0 0 0 2.5 2.5l5.8-5.8a4 4 0 0 0 5.2-5.4l-2.5 2.5-2.3-.4-.4-2.3 2.9-2.1Z"/></svg>'
+};
+const CATS = [
+  {id:'compania',name:'Compañía',desc:'Amigos, eventos, reuniones familiares',subs:['Amigo para salir','Acompañante a evento','Pareja para reunión familiar','Familiar para ceremonia','Adulto mayor','Caminatas y deporte']},
+  {id:'tutoria',name:'Tutorías',desc:'Colegio, pre, idiomas, música',subs:['Matemática','Pre-U','Inglés','Quechua','Música','Programación']},
+  {id:'salud',name:'Salud y bienestar',desc:'Psicología, nutrición, coaching',subs:['Psicología','Nutrición','Coaching']},
+  {id:'hogar',name:'Hogar y oficios',desc:'Electricista, gasfitero, técnico',subs:['Electricista','Gasfitero','Técnico de PC','Carpintería','Limpieza']}
+];
+const DISTRITOS = ['Miraflores','San Isidro','Barranco','Santiago de Surco','San Borja','Jesús María','Pueblo Libre','San Miguel','Los Olivos','La Molina','Chorrillos','Callao','Arequipa · Cercado','Cusco · Wanchaq','Trujillo · Centro','Online'];
+
+const S = { view:'explorar', cat:null, sub:null, q:'', dist:'', user:null, services:[], after:null };
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const soles = n => 'S/ ' + Number(n).toFixed(2);
+const catOf = id => CATS.find(c => c.id === id);
+const av = (p, cls='') => `<span class="av ${cls}">${avatarSVG({seed:p.seed, g:p.g, age:p.age})}</span>`;
+const daysAgo = d => Math.floor((Date.now() - new Date(d + 'T12:00')) / 864e5);
+function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true, 3000); }
+const run = fn => async (...a) => { try { return await fn(...a) } catch (e) { toast(e.message || 'Algo salió mal. Intenta otra vez.') } };
+const readFile = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+
+// ---------------- Navegación ----------------
+async function refreshUser(){ S.user = await API.getUser(); renderNav(); }
+function renderNav(){
+  const u = S.user;
+  $('#tabs').innerHTML = [
+    ['explorar','Explorar'],['publicar','Publicar'],['reservas','Reservas'],
+    ...(u && u.role === 'admin' ? [['admin','Revisión']] : [['seguridad','Seguridad']]),
+    ['cuenta', u ? `<span class="me">${avatarSVG({seed:u.seed,g:u.g,age:u.age})}</span>${esc(u.name.split(' ')[0])}` : 'Ingresar']
+  ].map(([v,l]) => `<button data-view="${v}" aria-current="${S.view===v}">${l}</button>`).join('');
+  $$('#tabs button').forEach(b => b.onclick = () => go(b.dataset.view));
+  $('#modeTag').textContent = API.mode === 'demo' ? 'Demo' : 'Beta';
+}
+function go(v){ S.view = v; renderNav(); render(); window.scrollTo(0,0); }
+function requireLogin(next, msg){ if (S.user) return true; S.after = next; go('cuenta'); toast(msg || 'Inicia sesión para continuar'); return false; }
+const VIEWS = {};
+async function render(){ close(); await VIEWS[S.view](); }
+
+// ---------------- Explorar ----------------
+function card(s){
+  const badge = s.colegiatura ? s.colegiatura + ' verificado' : s.verified ? 'Identidad y CUL verificados' : 'Verificación pendiente';
+  return `<button class="card" data-id="${s.id}">
+    ${s.featured ? '<span class="star">Destacado</span>' : ''}
+    <div class="who">${av(s)}<div><b>${esc(s.name)}</b><small>${esc(s.dist)} · ${s.age} años</small></div></div>
+    <h3>${esc(s.title)}</h3>
+    <div class="meta"><span class="pill m">${esc(s.sub)}</span><span class="pill ${s.verified?'ok':'warn'}">${s.verified?'✓':'⏳'} ${esc(badge)}</span></div>
+    <div class="foot"><span class="price">S/ ${s.price}<small> /${esc(s.unit)}</small></span>
+      <span class="stars">${s.n ? `★ <b>${s.rating.toFixed(1)}</b> (${s.n})` : 'Nuevo'}</span></div>
+  </button>`;
+}
+VIEWS.explorar = async function(){
+  S.services = await API.listServices();
+  drawExplorar();
+};
+function drawExplorar(){
+  const list = S.services.filter(s => (!S.cat||s.cat===S.cat) && (!S.sub||s.sub===S.sub) && (!S.dist||s.dist===S.dist) &&
+    (!S.q || (s.title+' '+s.desc+' '+s.sub+' '+s.name).toLowerCase().includes(S.q.toLowerCase())));
+  const c = S.cat && catOf(S.cat);
+  $('#app').innerHTML = `
+  <section class="hero">
+    <div><h1>Tu <em>yunta</em> para lo que se necesite.</h1>
+    <p>Un pata para salir, una tía para la graduación, la profe para el pre o el electricista que llega hoy. Todos verificados con DNI, reconocimiento facial y Certificado Único Laboral.</p></div>
+    <div class="search">
+      <label class="lbl" for="q">Buscar</label>
+      <input id="q" placeholder="Ej. padrino, inglés, terma, psicóloga" value="${esc(S.q)}">
+      <select id="dist" aria-label="Distrito"><option value="">Todo el Perú</option>${DISTRITOS.map(d=>`<option ${d===S.dist?'selected':''}>${d}</option>`).join('')}</select>
+    </div>
+  </section>
+  <div class="cats">${CATS.map(k=>`<button class="cat" data-cat="${k.id}" aria-pressed="${S.cat===k.id}">${ICON[k.id]}<b>${k.name}</b><span>${k.desc}</span></button>`).join('')}</div>
+  ${c ? `<div class="chips"><button class="chip" data-sub="" aria-pressed="${!S.sub}">Todo ${c.name.toLowerCase()}</button>${c.subs.map(x=>`<button class="chip" data-sub="${esc(x)}" aria-pressed="${S.sub===x}">${esc(x)}</button>`).join('')}</div>` : ''}
+  <p class="count">${list.length} ${list.length===1?'persona disponible':'personas disponibles'}${S.dist?' en '+esc(S.dist):''}</p>
+  ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<div class="empty">No hay resultados con esos filtros. Prueba otro distrito o quita la búsqueda.</div>`}
+  ${legal()}`;
+  const q = $('#q'); q.oninput = e => { S.q = e.target.value; const p = q.selectionStart; drawExplorar(); const n = $('#q'); n.focus(); n.setSelectionRange(p,p); };
+  $('#dist').onchange = e => { S.dist = e.target.value; drawExplorar(); };
+  $$('.cat').forEach(b => b.onclick = () => { S.cat = S.cat===b.dataset.cat ? null : b.dataset.cat; S.sub = null; drawExplorar(); });
+  $$('.chip').forEach(b => b.onclick = () => { S.sub = b.dataset.sub || null; drawExplorar(); });
+  $$('.card').forEach(b => b.onclick = () => perfil(S.services.find(s => s.id === b.dataset.id)));
+}
+function legal(){ return `<footer class="legal"><span>Yunta · Lima, Perú</span><button class="link" data-act="reclamo">Libro de Reclamaciones</button><span>Datos protegidos según Ley N.º 29733</span><button class="link" data-act="seguridad">Seguridad</button></footer>`; }
+document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if (!a) return;
+  if (a.dataset.act === 'reclamo') reclamo(); if (a.dataset.act === 'seguridad') go('seguridad'); });
+
+// ---------------- Modal ----------------
+function openModal(html){ $('#modal').innerHTML = `<div class="scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
+  const sc = $('.scrim'); sc.onclick = e => { if (e.target === sc) close(); }; $$('.x').forEach(x => x.onclick = close); }
+function close(){ $('#modal').innerHTML = ''; }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+// ---------------- Perfil + contacto bloqueado ----------------
+async function perfil(s){
+  const c = catOf(s.cat); const social = s.cat === 'compania';
+  openModal(`<header><div class="who">${av(s,'lg')}
+    <div><h2 style="font-size:22px">${esc(s.name)}</h2><small style="color:var(--muted)">${esc(c.name)} · ${esc(s.sub)} · ${esc(s.dist)}</small></div></div><button class="x" aria-label="Cerrar">×</button></header>
+    <h3 style="font-size:18px">${esc(s.title)}</h3>
+    <p style="margin:8px 0">${esc(s.desc)}</p>
+    <div class="meta">${s.verified ? `<span class="pill ok">✓ DNI y rostro</span><span class="pill ok">✓ CUL sin antecedentes</span>` : `<span class="pill warn">⏳ Verificación en revisión</span>`}
+      ${s.colegiatura ? `<span class="pill ok">✓ ${esc(s.colegiatura)}</span>` : ''}<span class="pill">${esc(s.langs)}</span></div>
+    ${social ? `<div class="alert" style="margin-top:12px">Compañía social. El primer encuentro es en un lugar público y no incluye contacto íntimo.</div>` : ''}
+    ${s.cat === 'salud' ? `<div class="note" style="margin-top:12px">Si estás en crisis, llama a la Línea 113, opción 5.</div>` : ''}
+    <div class="section"><h4>Contacto</h4><div id="contact"><div class="lock"><span class="note">Cargando…</span></div></div></div>
+    <div class="section"><h4>Reseñas</h4><div class="reviews">${API.reviews(s.providerId).map(r=>`<div class="rev">"${esc(r[1])}"<br><small>${esc(r[0])}</small></div>`).join('') || '<span class="note">Aún sin reseñas.</span>'}</div></div>
+    <div class="section" style="flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap">
+      <span class="price">S/ ${s.price}<small> /${esc(s.unit)}</small></span>
+      <button class="btn" id="res">Reservar con pago protegido</button></div>`);
+  $('#res').onclick = () => { if (requireLogin(() => reservar(s))) reservar(s); };
+  drawContact(s);
+}
+async function drawContact(s){
+  const box = $('#contact'); if (!box) return;
+  const ct = await API.getContact(s.providerId);
+  const cr = await API.credits();
+  if (!$('#contact')) return;
+  if (ct.unlocked) {
+    box.innerHTML = `<div class="lock open"><div class="kv">
+      <span>WhatsApp</span><b>${esc(ct.whatsapp)}</b><button class="btn sm ghost" data-copy="${esc(ct.whatsapp)}">Copiar</button>
+      <span>Correo</span><b style="font-size:14px;overflow-wrap:anywhere">${esc(ct.email)}</b><button class="btn sm ghost" data-copy="${esc(ct.email)}">Copiar</button></div>
+      <span class="note">Contacto desbloqueado. Si pagas por fuera de Yunta, el pago no queda protegido.</span></div>`;
+    box.querySelectorAll('[data-copy]').forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('Copiado'); } catch (e) { toast('Selecciona el texto para copiarlo'); } });
+    return;
+  }
+  box.innerHTML = `<div class="lock"><div class="kv">
+      <span>WhatsApp</span><b class="blur">${esc(ct.whatsapp)}</b><span></span>
+      <span>Correo</span><b class="blur" style="font-size:14px">${esc(ct.email)}</b><span></span></div>
+    ${ct.pending ? `<div class="alert">Recibimos tu pago. Lo estamos verificando y te mostramos el contacto en unos minutos.</div>` :
+    `<div class="row">
+      <button class="btn aji" id="unl">Ver contacto · S/ ${C.PRECIO_DESBLOQUEO}</button>
+      ${cr > 0 ? `<button class="btn line" id="cred">Usar 1 crédito (tienes ${cr})</button>` : `<button class="btn line" id="pack">${C.PAQUETE.creditos} contactos · S/ ${C.PAQUETE.precio}</button>`}</div>
+    <span class="note">Pago único por persona. Así sabemos que quien escribe va en serio y protegemos a quien publica.</span>`}</div>`;
+  const u = $('#unl'); if (u) u.onclick = () => { if (requireLogin(() => perfil(s), 'Inicia sesión para ver el contacto')) pagar({ concepto: `Ver contacto de ${s.name}`, monto: C.PRECIO_DESBLOQUEO, onPaid: run(async (m) => { await API.requestUnlock(s.providerId, m); if (API.mode === 'demo') { toast('Pago recibido. Verificando…'); await perfil(s); setTimeout(run(async () => { const ul = (await API.pendingUnlocks()).find(x => x.providerId === s.providerId); if (ul) await API.confirmUnlock(ul.id); toast('Pago verificado. Contacto desbloqueado.'); drawContact(s); }), 1600); } else perfil(s); }) }); };
+  const k = $('#cred'); if (k) k.onclick = run(async () => { if (await API.unlockWithCredit(s.providerId)) { toast('Usaste 1 crédito'); drawContact(s); } });
+  const p = $('#pack'); if (p) p.onclick = () => { if (requireLogin(() => perfil(s))) pagar({ concepto: `Paquete de ${C.PAQUETE.creditos} contactos`, monto: C.PAQUETE.precio, onPaid: run(async (m) => { await API.buyPack(m); toast(`Tienes ${C.PAQUETE.creditos} créditos`); perfil(s); }) }); };
+}
+
+// ---------------- Pago Yape/Plin (reutilizable) ----------------
+function pagar({ concepto, monto, onPaid }){
+  let method = 'yape';
+  openModal(`<header><div><h2 style="font-size:20px">Pagar ${soles(monto)}</h2><span class="note">${esc(concepto)}</span></div><button class="x" aria-label="Cerrar">×</button></header>
+    <div class="pay"><button data-p="yape" aria-pressed="true">Yape</button><button data-p="plin" aria-pressed="false">Plin</button></div>
+    <div class="qr" style="margin-top:10px"><canvas id="qr" width="84" height="84"></canvas><div><b id="pnum">Yape a ${esc(C.YAPE_TITULAR)}</b><br><span class="note">Número: ${esc(C.YAPE_NUMERO)}${API.mode==='demo'?' (demo)':''}. Escanea o yapea al número y copia el código de operación.</span></div></div>
+    <div class="field" style="margin-top:10px"><label for="op">Código de operación</label><input id="op" inputmode="numeric" placeholder="Ej. 04821937" autocomplete="off"></div>
+    <button class="btn" id="paid" style="width:100%;margin-top:12px">Ya pagué</button>`);
+  drawQR();
+  $$('.pay button').forEach(b => b.onclick = () => { method = b.dataset.p; $$('.pay button').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#pnum').textContent = (method==='yape'?'Yape':'Plin') + ' a ' + C.YAPE_TITULAR; drawQR(); });
+  $('#paid').onclick = () => { const op = $('#op').value.trim(); if (!/^\d{6,12}$/.test(op)) { toast('El código de operación tiene entre 6 y 12 dígitos'); $('#op').focus(); return; } onPaid({ method, op }); };
+}
+function drawQR(){ const c = $('#qr'); if (!c) return; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,84,84); x.fillStyle = '#231A2B';
+  let seed = Math.random()*1e6; const r = () => (seed = (seed*9301+49297) % 233280) / 233280;
+  for (let i=0;i<21;i++) for (let j=0;j<21;j++){ const f=(i<7&&j<7)||(i<7&&j>13)||(i>13&&j<7);
+    if (f){ const a=i%14,b=j%14; if(a===0||a===6||b===0||b===6||(a>1&&a<5&&b>1&&b<5)) x.fillRect(j*4,i*4,4,4); } else if (r()>.52) x.fillRect(j*4,i*4,4,4); } }
+
+// ---------------- Reservar ----------------
+function reservar(s){
+  const t = new Date(); t.setDate(t.getDate()+2); const d = t.toISOString().slice(0,10);
+  const porHora = s.unit === 'hora'; const social = s.cat === 'compania';
+  openModal(`<header><h2 style="font-size:20px">Reservar con ${esc(s.name)}</h2><button class="x" aria-label="Cerrar">×</button></header>
+  <div class="row"><div class="field"><label for="f">Fecha</label><input type="date" id="f" value="${d}"></div>
+    <div class="field"><label for="h">Hora</label><input type="time" id="h" value="16:00"></div>
+    ${porHora ? `<div class="field"><label for="dur">Horas</label><select id="dur">${[1,2,3,4,5,6].map(n=>`<option ${n===2?'selected':''}>${n}</option>`).join('')}</select></div>` : ''}</div>
+  <div class="field" style="margin-top:10px"><label for="lug">${social?'Punto de encuentro (lugar público)':s.dist==='Online'?'Enlace o plataforma':'Dirección'}</label>
+    <input id="lug" placeholder="${social?'Ej. Larcomar, entrada principal':s.dist==='Online'?'Google Meet / Zoom':'Av., calle, número, referencia'}"></div>
+  <div class="field" style="margin-top:10px"><label for="det">Detalles</label><textarea id="det" placeholder="Cuéntale qué necesitas"></textarea></div>
+  ${social ? `<label class="check" style="margin-top:10px"><input type="checkbox" id="ok1"> Acepto que es compañía social, sin contacto íntimo, y que el primer encuentro será en un lugar público.</label>` : ''}
+  <div class="section"><h4>Resumen</h4><div class="sum" id="sum"></div></div>
+  <button class="btn" id="go" style="width:100%;margin-top:12px">Continuar al pago</button>`);
+  const calc = () => { const h = porHora ? +$('#dur').value : 1; const sub = s.price*h; const fee = Math.round(sub*C.COMISION_RESERVA*100)/100;
+    $('#sum').innerHTML = `<span>S/ ${s.price} × ${h} ${esc(s.unit)}${h>1?'s':''}</span><span>${soles(sub)}</span><span>Tarifa de servicio (${C.COMISION_RESERVA*100}%)</span><span>${soles(fee)}</span><span class="t">Total</span><span class="t">${soles(sub+fee)}</span>`; return { h, sub, fee }; };
+  calc(); if (porHora) $('#dur').onchange = calc;
+  $('#go').onclick = () => {
+    if (social && !$('#ok1').checked) { toast('Marca la casilla de compañía social para continuar'); return; }
+    if (!$('#lug').value.trim()) { toast('Indica el lugar o enlace del servicio'); $('#lug').focus(); return; }
+    const { h, sub, fee } = calc(); const b = { serviceId: s.id, providerId: s.providerId, name: s.name, seed: s.seed, g: s.g, age: s.age, title: s.sub, date: $('#f').value, time: $('#h').value, h, lug: $('#lug').value.trim(), det: $('#det').value.trim(), subtotal: sub, fee, total: sub+fee };
+    pagar({ concepto: `Reserva con ${s.name}`, monto: sub+fee, onPaid: run(async (m) => { await API.createBooking({ ...b, pay: m.method, op: m.op }); toast('Reserva enviada. Verificamos tu pago en unos minutos.'); go('reservas'); }) });
+  };
+}
+
+VIEWS.reservas = async function(){
+  if (!S.user) { $('#app').innerHTML = `<div class="page"><h1>Mis reservas</h1><div class="empty">Inicia sesión para ver tus reservas.<br><br><button class="btn" id="li">Ingresar</button></div></div>`; $('#li').onclick = () => go('cuenta'); return; }
+  const list = await API.myBookings();
+  const fmt = d => new Date(d+'T12:00').toLocaleDateString('es-PE',{weekday:'short',day:'numeric',month:'short'});
+  $('#app').innerHTML = `<div class="page"><h1>Mis reservas</h1><p class="lead">El pago queda retenido por Yunta y se libera 24 horas después del servicio si no reportas ningún problema.</p>
+  ${list.length ? `<div class="list">${list.map(b=>`<div class="bk">${av(b)}
+    <div class="info"><b>${esc(b.name)}</b> · ${esc(b.title)}<br><span class="note">${fmt(b.date)} · ${esc(b.time)} · ${esc(b.lug)}</span><br>
+    <span class="pill ${b.status==='Confirmada'?'ok':b.status==='Cancelada'?'':'warn'}">${esc(b.status)}</span> <span class="note">${b.pay==='yape'?'Yape':'Plin'} · op. ${esc(b.op)} · ${soles(b.total)}</span></div>
+    <div class="row" style="flex:0 1 auto">${b.status==='Pago por verificar'&&API.mode==='demo'?`<button class="btn sm ghost" data-ok="${b.id}">Simular verificación</button>`:''}${b.status!=='Cancelada'?`<button class="btn sm ghost" data-cancel="${b.id}">Cancelar</button>`:''}</div></div>`).join('')}</div>`
+  : `<div class="empty">Aún no tienes reservas. Cuando reserves, aquí verás el estado de tu pago.<br><br><button class="btn" id="ex">Explorar servicios</button></div>`}
+  ${legal()}</div>`;
+  const ex = $('#ex'); if (ex) ex.onclick = () => go('explorar');
+  $$('[data-ok]').forEach(b => b.onclick = run(async () => { await API.updateBooking(b.dataset.ok, 'Confirmada'); toast('Pago verificado. Reserva confirmada.'); render(); }));
+  $$('[data-cancel]').forEach(b => b.onclick = run(async () => { await API.updateBooking(b.dataset.cancel, 'Cancelada'); toast('Reserva cancelada. Devolvemos tu pago en 48 h.'); render(); }));
+};
+
+// ---------------- Cuenta / Login ----------------
+VIEWS.cuenta = async function(){
+  if (S.user) return cuentaPerfil();
+  let mode = 'in';
+  const draw = () => {
+    $('#app').innerHTML = `<div class="auth"><h1 style="font-size:30px;margin-bottom:6px">${mode==='in'?'Ingresa a Yunta':'Crea tu cuenta'}</h1>
+    <p class="lead">${mode==='in'?'Para ver contactos, reservar y publicar.':'Gratis. Para ofrecer servicios te pediremos verificar tu identidad.'}</p>
+    <form class="form" id="af">
+      <div class="seg"><button type="button" data-m="in" aria-pressed="${mode==='in'}">Ingresar</button><button type="button" data-m="up" aria-pressed="${mode==='up'}">Registrarme</button></div>
+      ${mode==='up' ? `<div class="field"><label for="an">Nombre completo</label><input id="an" required autocomplete="name"></div>
+        <div class="field"><label>Quiero</label><div class="seg" id="rolSeg"><button type="button" data-r="cliente" aria-pressed="true">Contratar</button><button type="button" data-r="proveedor" aria-pressed="false">Ofrecer servicios</button></div></div>` : ''}
+      <div class="field"><label for="ae">Correo</label><input id="ae" type="email" required autocomplete="email"></div>
+      <div class="field"><label for="ap">Contraseña</label><input id="ap" type="password" required minlength="${mode==='up'?8:1}" autocomplete="${mode==='up'?'new-password':'current-password'}"></div>
+      <button class="btn" type="submit">${mode==='in'?'Ingresar':'Crear cuenta'}</button>
+      <div class="or">o</div>
+      <button class="btn line" type="button" id="gg">Continuar con Google</button>
+      ${API.mode==='demo' ? `<div class="section"><h4>Probar con cuentas demo</h4>
+        <div class="quick"><button type="button" data-q="cliente">${av({seed:4411,g:'f',age:28})}Cliente</button><button type="button" data-q="proveedor">${av({seed:9087,g:'m',age:32})}Proveedor</button><button type="button" data-q="admin">${av({seed:77,g:'x',age:30})}Admin</button></div>
+        <span class="note">Contraseña de todas: yunta123 (cliente@demo.pe, proveedor@demo.pe, admin@demo.pe)</span></div>` : ''}
+    </form></div>`;
+    let role = 'cliente';
+    $$('[data-m]').forEach(b => b.onclick = () => { mode = b.dataset.m; draw(); });
+    $$('[data-r]').forEach(b => b.onclick = () => { role = b.dataset.r; $$('[data-r]').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+    $('#gg').onclick = run(async () => { await API.signInGoogle(); await loggedIn(); });
+    $$('[data-q]').forEach(b => b.onclick = run(async () => { await API.quickLogin(b.dataset.q); await loggedIn(); }));
+    $('#af').onsubmit = run(async e => { e.preventDefault();
+      if (mode === 'in') await API.signIn({ email: $('#ae').value, password: $('#ap').value });
+      else await API.signUp({ name: $('#an').value.trim(), email: $('#ae').value, password: $('#ap').value, role });
+      await loggedIn(); });
+  };
+  draw();
+};
+async function loggedIn(){ await refreshUser(); toast('Hola, ' + S.user.name.split(' ')[0]); const n = S.after; S.after = null;
+  if (n) { S.view = 'explorar'; renderNav(); await VIEWS.explorar(); n(); } else go(S.user.role === 'admin' ? 'admin' : S.user.role === 'proveedor' ? 'publicar' : 'explorar'); }
+async function cuentaPerfil(){
+  const u = S.user; const cr = await API.credits();
+  $('#app').innerHTML = `<div class="page"><div class="who" style="margin-bottom:18px">${av(u,'lg')}<div><h1 style="font-size:28px;margin:0">${esc(u.name)}</h1><small style="color:var(--muted)">${esc(u.email)} · ${({cliente:'Cliente',proveedor:'Proveedor',admin:'Administrador'})[u.role]}</small></div></div>
+    <div class="rules">
+      <div class="rule"><h3>Créditos de contacto</h3><p>Tienes <b>${cr}</b> ${cr===1?'crédito':'créditos'}. Cada uno desbloquea el WhatsApp y correo de una persona.</p>
+        <button class="btn sm aji" id="buy" style="margin-top:10px">Comprar ${C.PAQUETE.creditos} por S/ ${C.PAQUETE.precio}</button></div>
+      <div class="rule"><h3>Ofrecer servicios</h3><p>Publica tu anuncio y verifica tu identidad para aparecer en Explorar.</p><button class="btn sm ghost" id="pub" style="margin-top:10px">Ir a Publicar</button></div>
+    </div>
+    <div class="row" style="margin-top:18px">${u.role==='admin'?'<button class="btn ghost" id="adm">Panel de revisión</button>':''}<button class="btn line" id="out">Cerrar sesión</button>${API.mode==='demo'?'<button class="btn line" id="rst">Reiniciar datos demo</button>':''}</div>
+    ${legal()}</div>`;
+  $('#buy').onclick = () => pagar({ concepto: `Paquete de ${C.PAQUETE.creditos} contactos`, monto: C.PAQUETE.precio, onPaid: run(async m => { await API.buyPack(m); toast('Créditos añadidos'); render(); }) });
+  $('#pub').onclick = () => go('publicar');
+  const a = $('#adm'); if (a) a.onclick = () => go('admin');
+  $('#out').onclick = run(async () => { await API.signOut(); await refreshUser(); go('explorar'); toast('Sesión cerrada'); });
+  const r = $('#rst'); if (r) r.onclick = run(async () => { await API.reset(); await refreshUser(); go('explorar'); toast('Datos demo reiniciados'); });
+}
+
+// ---------------- Publicar + verificación ----------------
+VIEWS.publicar = async function(){
+  if (!S.user) { $('#app').innerHTML = `<div class="page"><h1>Publica tu servicio</h1><p class="lead">Gana ofreciendo compañía, clases o tu oficio. Publicar es gratis.</p><div class="empty">Crea tu cuenta o ingresa para publicar.<br><br><button class="btn" id="li">Ingresar o registrarme</button></div></div>`; $('#li').onclick = () => { S.after = null; go('cuenta'); }; return; }
+  const v = await API.myVerification();
+  const mine = await API.myServices();
+  $('#app').innerHTML = `<div class="page"><h1>Publica tu servicio</h1>
+    <p class="lead">Publicar es gratis. Ganas cuando un cliente paga S/ ${C.PRECIO_DESBLOQUEO} por ver tu contacto o reserva con pago protegido. Tu WhatsApp y correo nunca se muestran sin ese pago.</p>
+    <div id="vbox"></div>
+    ${mine.length ? `<div class="section" style="border:0;margin:0 0 18px;padding:0"><h4>Mis anuncios</h4><div class="list">${mine.map(s=>`<div class="bk">${av(s)}<div class="info"><b>${esc(s.title)}</b><br><span class="note">${esc(s.sub)} · S/ ${s.price}/${esc(s.unit)}</span><br>
+      <span class="pill ${s.active?'ok':'warn'}">${s.active?'Publicado':'Esperando verificación'}</span>${s.featured?' <span class="pill m">Destacado</span>':''}</div>
+      ${s.active && !s.featured ? `<button class="btn sm aji" data-feat="${s.id}">Destacar 7 días · S/ ${C.PRECIO_DESTACADO}</button>` : ''}</div>`).join('')}</div></div>` : ''}
+    <div id="sf"></div>${legal()}</div>`;
+  $$('[data-feat]').forEach(b => b.onclick = () => pagar({ concepto: 'Anuncio destacado por 7 días', monto: C.PRECIO_DESTACADO, onPaid: run(async () => { await API.featureService(b.dataset.feat); toast('Tu anuncio aparece primero por 7 días'); render(); }) }));
+  if (!v) verifWizard(); else verifStatus(v);
+  serviceForm(!!v);
+};
+function verifStatus(v){
+  const st = { pendiente: ['warn','En revisión','Revisamos tus documentos en menos de 24 horas. Te avisamos por correo.'], aprobado: ['ok','Verificado','Tu identidad y tu CUL están verificados. Tus anuncios ya aparecen en Explorar.'], rechazado: ['bad','Rechazado', 'No pudimos validar tus documentos. ' + (v.notes || '') + ' Vuelve a enviarlos.'] }[v.status];
+  $('#vbox').innerHTML = `<div class="alert ${st[0]==='warn'?'':st[0]}" style="margin-bottom:18px"><b>Verificación: ${st[1]}.</b> ${esc(st[2])}${v.status==='rechazado'?' <button class="link" id="again">Enviar de nuevo</button>':''}</div>`;
+  const a = $('#again'); if (a) a.onclick = verifWizard;
+}
+function verifWizard(){
+  const data = { liveness: false };
+  const maxDate = new Date().toISOString().slice(0,10);
+  $('#vbox').innerHTML = `<div class="form" style="margin-bottom:18px"><div><h2 style="font-size:20px">1 · Verifica tu identidad</h2><p class="note" style="margin:4px 0 0">Obligatorio para aparecer en Explorar. Tus documentos se guardan cifrados y solo los ve el equipo de revisión.</p></div>
+    <div class="steps">
+      <div class="step" id="st1"><span class="n">1</span><div class="body"><h3>DNI</h3>
+        <div class="row"><div class="field"><label for="vn">Nombre como figura en tu DNI</label><input id="vn" value="${esc(S.user.name)}"></div>
+        <div class="field"><label for="vd">N.º de DNI</label><input id="vd" inputmode="numeric" maxlength="8" placeholder="8 dígitos"></div></div>
+        <div class="upl"><span class="thumb" id="t-dni">Foto del DNI</span><input type="file" id="f-dni" accept="image/*" capture="environment" aria-label="Foto del anverso del DNI"></div></div></div>
+      <div class="step" id="st2"><span class="n">2</span><div class="body"><h3>Escaneo de rostro</h3>
+        <p class="note" style="margin:0">Tómate una selfie con buena luz, sin lentes ni gorra. Compararemos tu rostro con la foto del DNI y haremos una prueba de vida para confirmar que eres tú y no una foto.</p>
+        <div class="face" id="face"><span class="hint">Centra tu rostro en el óvalo</span></div>
+        <div class="live" id="live"><span>Mira al frente</span><span>Parpadea</span><span>Gira a la izquierda</span><span>Sonríe</span></div>
+        <div class="upl"><span class="thumb">Selfie</span><input type="file" id="f-selfie" accept="image/*" capture="user" aria-label="Selfie"></div></div></div>
+      <div class="step" id="st3"><span class="n">3</span><div class="body"><h3>Certificado Único Laboral (CUL)</h3>
+        <p class="note" style="margin:0">Descárgalo gratis en Empleos Perú (empleosperu.gob.pe) del Ministerio de Trabajo. Reúne tus antecedentes policiales, penales y judiciales en un solo documento. Debe tener menos de ${C.CUL_VIGENCIA_DIAS} días.</p>
+        <div class="row"><div class="field"><label for="vcn">N.º del certificado</label><input id="vcn" placeholder="Figura en el PDF"></div>
+          <div class="field"><label for="vcf">Fecha de emisión</label><input id="vcf" type="date" max="${maxDate}"></div></div>
+        <div class="upl"><span class="thumb" id="t-cul">PDF</span><input type="file" id="f-cul" accept="application/pdf,image/*" aria-label="Archivo del CUL"></div></div></div>
+      <div class="step" id="st4"><span class="n">4</span><div class="body"><h3>Contacto y colegiatura</h3>
+        <div class="row"><div class="field"><label for="vw">WhatsApp (se mantiene bloqueado)</label><input id="vw" inputmode="tel" placeholder="9XX XXX XXX"></div>
+          <div class="field"><label for="vcol">Colegiatura (solo salud)</label><input id="vcol" placeholder="Ej. C.Ps.P. 34521"></div></div>
+        <label class="check"><input type="checkbox" id="vok"> Autorizo a Yunta a tratar mis datos personales y biométricos para verificar mi identidad (Ley N.º 29733).</label></div></div>
+    </div>
+    <button class="btn" id="vsend">Enviar a revisión</button></div>`;
+  const mark = (id, on) => $('#'+id).classList.toggle('done', on);
+  $('#f-dni').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.dniFrontUrl = await readFile(f); $('#t-dni').innerHTML = `<img alt="DNI" src="${data.dniFrontUrl}">`; mark('st1', /^\d{8}$/.test($('#vd').value)); });
+  $('#vd').oninput = () => mark('st1', /^\d{8}$/.test($('#vd').value) && !!data.dniFrontUrl);
+  $('#f-selfie').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.selfieUrl = await readFile(f);
+    $('#face').innerHTML = `<img alt="Tu selfie" src="${data.selfieUrl}">`;
+    const chips = $$('#live span'); chips.forEach((c,i) => setTimeout(() => c.classList.add('on'), 350*(i+1)));
+    setTimeout(() => { data.liveness = true; mark('st2', true); toast('Prueba de vida completada'); }, 350*chips.length + 100); });
+  $('#f-cul').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; if (f.size > 8e6) { toast('El archivo pesa más de 8 MB'); return; } data.culFileUrl = await readFile(f); $('#t-cul').textContent = f.name.slice(0,14); });
+  $('#vsend').onclick = run(async () => {
+    const dni = $('#vd').value.trim(), fecha = $('#vcf').value;
+    if (!/^\d{8}$/.test(dni)) return toast('El DNI debe tener 8 dígitos');
+    if (!data.dniFrontUrl) return toast('Sube la foto de tu DNI');
+    if (!data.selfieUrl) return toast('Falta el escaneo de rostro');
+    if (!$('#vcn').value.trim() || !fecha) return toast('Ingresa el número y la fecha de emisión del CUL');
+    if (daysAgo(fecha) > C.CUL_VIGENCIA_DIAS) return toast(`Tu CUL tiene ${daysAgo(fecha)} días. Descarga uno nuevo en Empleos Perú.`);
+    if (!data.culFileUrl) return toast('Sube el PDF del CUL');
+    if (!/^9\d{8}$/.test($('#vw').value.replace(/\s/g,''))) return toast('Ingresa un celular peruano de 9 dígitos que empiece en 9');
+    if (!$('#vok').checked) return toast('Debes autorizar el tratamiento de tus datos');
+    await API.submitVerification({ ...data, name: $('#vn').value.trim(), dni, culNumero: $('#vcn').value.trim(), culFecha: fecha, whatsapp: $('#vw').value.trim(), colegiatura: $('#vcol').value.trim() });
+    toast('Documentos enviados. Los revisamos en menos de 24 h.'); render();
+  });
+}
+function serviceForm(hasVerif){
+  $('#sf').innerHTML = `<form class="form" id="pf"><div><h2 style="font-size:20px">${hasVerif?'Nuevo anuncio':'2 · Tu anuncio'}</h2></div>
+    <div class="row"><div class="field"><label for="pc">Categoría</label><select id="pc">${CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+      <div class="field"><label for="ps">Tipo de servicio</label><select id="ps"></select></div></div>
+    <div class="field"><label for="pt">Título del anuncio</label><input id="pt" required minlength="10" maxlength="90" placeholder="Ej. Clases de guitarra criolla para principiantes"></div>
+    <div class="field"><label for="pde">Descripción</label><textarea id="pde" required placeholder="Tu experiencia, qué incluye y cómo trabajas. No pongas tu número: se comparte al desbloquear."></textarea></div>
+    <div class="row"><div class="field"><label for="pp">Precio (S/)</label><input id="pp" type="number" min="10" required value="40"></div>
+      <div class="field"><label for="pu">Por</label><select id="pu"><option>hora</option><option>sesión</option><option>visita</option><option>evento</option></select></div>
+      <div class="field"><label for="pdi">Distrito</label><select id="pdi">${DISTRITOS.map(d=>`<option>${d}</option>`).join('')}</select></div></div>
+    <div class="alert" id="rules" hidden>En Compañía está prohibido ofrecer servicios sexuales o íntimos. Revisamos cada anuncio antes de publicarlo.</div>
+    <button class="btn aji" type="submit">Guardar anuncio</button></form>`;
+  const sync = () => { const c = catOf($('#pc').value); $('#ps').innerHTML = c.subs.map(s=>`<option>${s}</option>`).join(''); $('#rules').hidden = c.id !== 'compania'; };
+  sync(); $('#pc').onchange = sync;
+  $('#pf').onsubmit = run(async e => { e.preventDefault();
+    const desc = $('#pde').value.trim();
+    if (/\b9\d{2}\s?\d{3}\s?\d{3}\b|@\w+\./.test(desc)) return toast('Quita tu número o correo de la descripción: se comparte al desbloquear');
+    await API.createService({ cat: $('#pc').value, sub: $('#ps').value, title: $('#pt').value.trim(), desc, price: +$('#pp').value, unit: $('#pu').value, dist: $('#pdi').value });
+    toast(hasVerif ? 'Anuncio guardado' : 'Anuncio guardado. Se publica cuando aprobemos tu verificación.'); render(); });
+}
+
+// ---------------- Admin: revisión ----------------
+VIEWS.admin = async function(){
+  if (!S.user || S.user.role !== 'admin') return go('explorar');
+  const [vs, us, st] = await Promise.all([API.pendingVerifications(), API.pendingUnlocks(), API.stats()]);
+  const pend = vs.filter(v => v.status === 'pendiente');
+  $('#app').innerHTML = `<div class="page" style="max-width:900px"><h1>Revisión</h1><p class="lead">Aprueba identidades y confirma pagos de Yape/Plin.</p>
+    <div class="stats"><div class="stat"><b>${st.pendientes}</b><span>Verificaciones pendientes</span></div><div class="stat"><b>${us.length}</b><span>Pagos por confirmar</span></div>
+      <div class="stat"><b>${soles(st.ingresosDesbloqueo)}</b><span>Ingresos por contactos</span></div><div class="stat"><b>${soles(st.comisiones)}</b><span>Comisiones de reservas</span></div></div>
+    <div class="section" style="border:0;margin:0;padding:0"><h4>Pagos de desbloqueo por confirmar</h4>
+      ${us.length ? `<div class="list">${us.map(x=>`<div class="bk"><div class="info"><b>${esc(x.client||'Cliente')}</b> → ${esc(x.provider||'Proveedor')}<br><span class="note">${x.method==='yape'?'Yape':'Plin'} · op. ${esc(x.op)} · ${soles(x.amount)}</span></div>
+        <div class="row" style="flex:0 1 auto"><button class="btn sm" data-pay="${x.id}">Confirmar</button><button class="btn sm ghost" data-nopay="${x.id}">Rechazar</button></div></div>`).join('')}</div>`
+      : `<div class="empty" style="padding:16px">No hay pagos pendientes. Compara cada código de operación con tu app de Yape antes de confirmar.</div>`}</div>
+    <div class="section"><h4>Verificaciones de identidad</h4>
+      ${pend.length ? pend.map(reviewCard).join('') : '<div class="empty" style="padding:16px">Todo revisado.</div>'}</div>
+    ${legal()}</div>`;
+  $$('[data-pay]').forEach(b => b.onclick = run(async () => { await API.confirmUnlock(b.dataset.pay, true); toast('Pago confirmado. El cliente ya ve el contacto.'); render(); }));
+  $$('[data-nopay]').forEach(b => b.onclick = run(async () => { await API.confirmUnlock(b.dataset.nopay, false); toast('Pago rechazado'); render(); }));
+  $$('.rv').forEach(card => {
+    const id = card.dataset.v; const boxes = card.querySelectorAll('input[type=checkbox]'); const ap = card.querySelector('[data-ap]');
+    const upd = () => ap.disabled = ![...boxes].every(b => b.checked); boxes.forEach(b => b.onchange = upd); upd();
+    ap.onclick = run(async () => { await API.reviewVerification(id, 'aprobado', ''); toast('Identidad aprobada. Sus anuncios ya están publicados.'); render(); });
+    card.querySelector('[data-rj]').onclick = run(async () => { const n = card.querySelector('textarea').value.trim(); if (!n) return toast('Escribe el motivo del rechazo para el usuario'); await API.reviewVerification(id, 'rechazado', n); toast('Verificación rechazada'); render(); });
+  });
+};
+function reviewCard(v){
+  const dniImg = API.file(v.id,'dniFront'), selfie = API.file(v.id,'selfie');
+  const draw = (img, label) => img ? `<img alt="${label}" src="${img}">` : avatarSVG({ seed: v.seed, g: v.g, age: v.age });
+  const age = v.cul && v.cul.fecha ? daysAgo(v.cul.fecha) : null;
+  const culOk = age !== null && age <= C.CUL_VIGENCIA_DIAS;
+  const sc = v.score; const scOk = sc != null && sc >= C.PUNTAJE_ROSTRO_MIN;
+  return `<div class="rv" data-v="${esc(v.id)}">
+    <div class="who">${av(v)}<div><b>${esc(v.name)}</b><small>DNI ${esc(v.dni || '—')}${v.sub ? ' · ' + esc(v.sub) : ''} · enviado ${esc(v.created)}</small></div></div>
+    <div class="cmp"><figure><span class="ph">${draw(dniImg,'DNI')}</span>Foto del DNI</figure><figure><span class="ph">${draw(selfie,'Selfie')}</span>Selfie</figure>
+      <figure><span class="ph" style="aspect-ratio:3/4;font-size:11px;padding:6px;text-align:center">CUL<br>${esc(v.cul?.numero || '')}</span>Certificado</figure></div>
+    <div class="field"><span class="lbl">Coincidencia de rostro ${sc!=null?`· ${(sc*100).toFixed(0)}%`:''} ${v.liveness?'· prueba de vida OK':''}</span>
+      <div class="meter"><i style="width:${(sc||0)*100}%;background:${scOk?'var(--ok)':'var(--bad)'}"></i></div>
+      ${!scOk ? `<span class="pill bad" style="align-self:flex-start">Bajo el mínimo de ${C.PUNTAJE_ROSTRO_MIN*100}%: pedir nueva selfie</span>` : ''}</div>
+    <div class="cul"><span>N.º CUL</span><span>${esc(v.cul?.numero)}</span><span>Emitido</span><span>${esc(v.cul?.fecha)} ${age!==null?`(hace ${age} días)`:''} ${culOk?'':'<b style="color:var(--bad)">· vencido</b>'}</span>
+      <span>Ant. policiales</span><span>${esc(v.cul?.policiales)}</span><span>Ant. penales</span><span>${esc(v.cul?.penales)}</span><span>Ant. judiciales</span><span>${esc(v.cul?.judiciales)}</span>
+      ${v.colegiatura?`<span>Colegiatura</span><span>${esc(v.colegiatura)}</span>`:''}</div>
+    <div class="field"><span class="lbl">Antes de aprobar</span>
+      <label class="check"><input type="checkbox"> El nombre y el DNI del CUL coinciden con la foto del DNI.</label>
+      <label class="check"><input type="checkbox"> Validé el CUL en empleosperu.gob.pe con su número y el DNI, y el resultado coincide con el PDF.</label>
+      <label class="check"><input type="checkbox"> El CUL no muestra antecedentes policiales, penales ni judiciales.</label>
+      ${v.colegiatura?'<label class="check"><input type="checkbox"> Encontré la colegiatura activa en el registro del colegio profesional.</label>':''}
+      <label class="check"><input type="checkbox"> La selfie y la foto del DNI son la misma persona.</label></div>
+    <textarea placeholder="Motivo si rechazas (lo verá el usuario)"></textarea>
+    <div class="row"><button class="btn" data-ap>Aprobar</button><button class="btn ghost" data-rj>Rechazar</button></div></div>`;
+}
+
+// ---------------- Seguridad ----------------
+VIEWS.seguridad = async function(){
+  $('#app').innerHTML = `<div class="page"><h1>Seguridad en Yunta</h1><p class="lead">Así verificamos a cada persona antes de que aparezca en la app.</p>
+  <div class="rules">
+    <div class="rule"><h3>DNI + escaneo de rostro</h3><p>Foto del DNI y selfie con prueba de vida (parpadear, girar). Un sistema biométrico compara ambas caras; si la coincidencia es menor a ${C.PUNTAJE_ROSTRO_MIN*100}%, se rechaza.</p></div>
+    <div class="rule"><h3>Certificado Único Laboral</h3><p>Todos suben su CUL del Ministerio de Trabajo, que reúne antecedentes policiales, penales y judiciales. Lo validamos en Empleos Perú con su número y DNI, y no aceptamos certificados de más de ${C.CUL_VIGENCIA_DIAS} días.</p></div>
+    <div class="rule"><h3>Colegiatura real</h3><p>Psicólogos y nutricionistas se validan en el registro del C.Ps.P. y del C.N.P.</p></div>
+    <div class="rule"><h3>Contacto protegido</h3><p>El WhatsApp y el correo solo se muestran a clientes registrados que pagan el desbloqueo. Así evitamos curiosos y acoso.</p></div>
+    <div class="rule"><h3>Primer encuentro en público</h3><p>Las citas de Compañía empiezan en un centro comercial, café o parque. Está prohibido ofrecer o pedir servicios sexuales.</p></div>
+    <div class="rule"><h3>Pago protegido</h3><p>Si reservas por la app, retenemos el pago y lo liberamos 24 horas después del servicio.</p></div>
+  </div>
+  <div class="sos"><p><b>¿Te sientes en riesgo?</b> Llama a la PNP al 105. Violencia: Línea 100. Salud mental: Línea 113, opción 5.</p><button class="btn aji" id="sosb">Probar botón de emergencia</button></div>
+  ${legal()}</div>`;
+  $('#sosb').onclick = () => toast('En la app real esto avisa a tu contacto de confianza y a soporte con tu ubicación.');
+};
+
+function reclamo(){
+  openModal(`<header><h2 style="font-size:20px">Libro de Reclamaciones</h2><button class="x" aria-label="Cerrar">×</button></header>
+  <p class="note">Conforme al Código de Protección y Defensa del Consumidor (Indecopi). Respondemos en un plazo máximo de 15 días hábiles.</p>
+  <form class="form" id="rf" style="border:0;padding:0">
+    <div class="row"><div class="field"><label for="rn">Nombre</label><input id="rn" required></div><div class="field"><label for="rd">DNI</label><input id="rd" required maxlength="8"></div></div>
+    <div class="field"><label for="rt">Tipo</label><select id="rt"><option>Reclamo (sobre el servicio)</option><option>Queja (sobre la atención)</option></select></div>
+    <div class="field"><label for="rx">Detalle</label><textarea id="rx" required></textarea></div>
+    <button class="btn" type="submit">Registrar</button></form>`);
+  $('#rf').onsubmit = e => { e.preventDefault(); close(); toast('Reclamo registrado. Código R-' + String(Date.now()).slice(-6)); };
+}
+
+// ---------------- Inicio ----------------
+$('#home').onclick = () => { S.cat = null; S.sub = null; go('explorar'); };
+window.addEventListener('yunta:auth', () => refreshUser());
+refreshUser().then(render);
+})();
+
+</script>
