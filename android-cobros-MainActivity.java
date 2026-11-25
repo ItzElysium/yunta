@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
     col.addView(text("Últimos avisos", 14, true));
     log = text("", 13, false); log.setTypeface(Typeface.MONOSPACE); col.addView(log);
 
-    ScrollView sv = new ScrollView(this); sv.addView(col);
+    ScrollView sv = new ScrollView(this); sv.setFitsSystemWindows(true); sv.addView(col);
     setContentView(sv);
   }
 

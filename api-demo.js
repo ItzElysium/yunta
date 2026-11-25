@@ -1,7 +1,7 @@
 // API en MODO DEMO: misma interfaz que api-supabase.js; todo vive en el navegador.
 (function () {
   const C = window.YUNTA_CONFIG;
-  const KEY = 'yunta.demo.v4';
+  const KEY = 'yunta.demo.v5';
   const wait = (ms = 200) => new Promise(r => setTimeout(r, ms));
   const uid = () => 'u' + Math.random().toString(36).slice(2, 10);
   const today = () => new Date().toISOString().slice(0, 10);
@@ -26,6 +26,8 @@
     ['p15','hogar','Gasfitero','Pedro Inga','m',50,'Gasfitería: fugas, terma, caños y desatoros','Arreglo fugas, instalo termas y destapo desagües. Presupuesto sin costo al llegar.',60,'visita','Chorrillos',97,4.6,'921 774 039',[],'',[1,2,3,4,5,6],'8 am – 6 pm',22],
     ['p16','hogar','Técnico de PC','Kevin Lozano','m',26,'Formateo, limpieza y armado de PC y laptops','Voy a tu casa u oficina o lo hacemos remoto. Recupero archivos y armo PCs gamer.',50,'visita','Callao',58,4.7,'952 018 776',[['Recuperar archivos',40]],'',[1,2,3,4,5,6,0],'10 am – 10 pm',15],
     ['p17','hogar','Limpieza','Marleny Torres','f',38,'Limpieza profunda de departamentos y post-mudanza','Trabajo con mis propios productos. Por horas o por departamento completo.',25,'hora','La Molina',110,4.9,'968 224 590',[['Lavado de muebles',60]],'',[1,2,3,4,5],'7 am – 5 pm',14],
+    ['p19','hogar','Cocinera','Gladys Mamani','f',47,'Menú semanal casero y cocina para eventos familiares','Cocinera con 20 años en casas de familia y un restaurante en Lince. Preparo el menú de la semana en tu casa (ají de gallina, seco, causa) y cocino para cumpleaños de hasta 40 personas.',30,'hora','Lince',84,4.9,'951 870 336',[['Compras del mercado',20],['Postres (picarones, mazamorra)',35]],'Los insumos los paga el cliente.',[1,2,3,4,5,6],'8 am – 4 pm',16],
+    ['p20','hogar','Niñera','Milagros Rojas','f',34,'Cuido a tus hijos de 1 a 10 años: tareas, juegos y comidas','Educadora inicial con curso de primeros auxilios (Cruz Roja). Ayudo con las tareas y te mando reporte y fotos durante el turno. Tengo referencias de 3 familias.',22,'hora','Surquillo',57,5.0,'923 604 118',[['Turno noche',10],['Recojo del colegio',12]],'No me quedo sola con bebés menores de 1 año. No doy medicamentos sin indicación escrita de los padres.',[1,2,3,4,5,6],'7 am – 11 pm',12],
     ['p18','tutoria','Música','Gonzalo Pinto','m',35,'Guitarra y cajón peruano desde cero','Músico de criollo y afroperuano. Aprende valses, landós y festejos.',45,'hora','Barranco',27,5.0,'983 661 245',[['Cajón prestado',0]],'',[2,4,6],'5 pm – 9 pm',28]
   ];
   const COMMENTS = {

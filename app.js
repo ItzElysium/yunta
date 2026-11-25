@@ -47,7 +47,7 @@ const CATS = [
   {id:'compania',name:'Compañía',desc:'Amigos, eventos, familia',icon:'users',subs:['Amigo para salir','Acompañante a evento','Pareja para reunión familiar','Familiar para ceremonia','Adulto mayor','Caminatas y deporte']},
   {id:'tutoria',name:'Tutorías',desc:'Colegio, pre, idiomas',icon:'cap',subs:['Matemática','Pre-U','Inglés','Quechua','Música','Programación']},
   {id:'salud',name:'Salud',desc:'Psicología, nutrición',icon:'pulse',subs:['Psicología','Nutrición','Coaching']},
-  {id:'hogar',name:'Hogar y oficios',desc:'Electricista, gasfitero',icon:'tool',subs:['Electricista','Gasfitero','Técnico de PC','Carpintería','Limpieza']}
+  {id:'hogar',name:'Hogar y oficios',desc:'Cocinera, niñera, electricista',icon:'tool',subs:['Cocinera','Niñera','Electricista','Gasfitero','Técnico de PC','Carpintería','Limpieza']}
 ];
 const DISTRITOS = ['Miraflores','San Isidro','Barranco','Santiago de Surco','San Borja','Jesús María','Pueblo Libre','San Miguel','Los Olivos','La Molina','Chorrillos','Callao','Arequipa · Cercado','Cusco · Wanchaq','Trujillo · Centro','Online'];
 const DIAS = ['D','L','M','M','J','V','S'];
@@ -236,6 +236,7 @@ async function perfil(s){
       ${s.limits || s.cat==='compania' ? `<div class="block"><h4>Lo que no hago</h4><div class="limits">${s.cat==='compania'?'Solo compañía social, sin contacto íntimo. Primer encuentro en un lugar público. ':''}${esc(s.limits||'')}</div></div>` : ''}
       <div class="block"><h4>Verificado por Yunta</h4><div class="trustlist">
         <div>${I('idcard')} DNI validado</div><div>${I('face')} Rostro y prueba de vida</div>
+        ${s.sub==='Niñera'?`<div class="alert" style="margin:6px 0"><b>Cuidado de niños:</b> exigimos CUL sin antecedentes renovado cada 90 días, verificación de rostro y referencias. Recomendamos una entrevista previa con tus hijos presentes.</div>`:''}
         <div>${I('doc')} CUL sin antecedentes${s.culVence?` · vence en ${Math.max(0,daysTo(s.culVence))} días`:''}</div>
         ${s.colegiatura?`<div>${I('verified')} ${esc(s.colegiatura)}</div>`:`<div>${I('shield')} Cita segura disponible</div>`}</div></div>
       <div class="block"><h4>Reseñas</h4>${revs.length?revs.slice(0,6).map(r=>`<div class="rev"><div class="h"><b style="color:var(--fg)">${esc(r.author)}</b><span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)} · ${esc(r.date)}</span></div>${r.comment?esc(r.comment):''}<div class="badges">${(r.tags||[]).filter(t=>TAGS[t]).map(t=>bdg(TAGS[t])).join('')}</div></div>`).join(''):'<span class="note">Aún no tiene reseñas.</span>'}</div>

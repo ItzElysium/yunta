@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.WindowInsets;
 import android.webkit.CookieManager;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -32,6 +34,14 @@ public class MainActivity extends Activity {
     web = new WebView(this);
     web.setBackgroundColor(Color.parseColor("#FAF7F3"));
     setContentView(web);
+    // Android 15+ dibuja de borde a borde: dejamos espacio para la barra de estado y la de navegación
+    if (Build.VERSION.SDK_INT >= 30) {
+      web.setOnApplyWindowInsetsListener((v, insets) -> {
+        android.graphics.Insets b = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.ime());
+        v.setPadding(b.left, b.top, b.right, b.bottom);
+        return WindowInsets.CONSUMED;
+      });
+    }
 
     WebSettings s = web.getSettings();
     s.setJavaScriptEnabled(true);

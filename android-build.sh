@@ -24,14 +24,14 @@ EOF
 printf 'android.useAndroidX=false\norg.gradle.jvmargs=-Xmx2g\n' > gradle.properties
 
 cat > build.gradle <<EOF
-plugins { id 'com.android.application' version '8.5.2' }
+plugins { id 'com.android.application' version '8.9.1' }
 android {
   namespace '$PKG'
-  compileSdk 34
+  compileSdk 36
   defaultConfig {
     applicationId '$PKG'
     minSdk 26
-    targetSdk 34
+    targetSdk 36
     versionCode $VERSION_CODE
     versionName '$VERSION_NAME.$VERSION_CODE'
     buildConfigField 'String', 'APP_URL', '"$APP_URL"'
