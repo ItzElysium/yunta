@@ -1,0 +1,13 @@
+# Contenedor del verificador de identidad de Yunta (DeepFace).
+# docker build -f Dockerfile.verificador -t yunta-verificador .
+# docker run -p 8080:8080 -e SUPABASE_URL=... -e SUPABASE_SERVICE_ROLE_KEY=... yunta-verificador
+FROM python:3.11-slim
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY verificador-requirements.txt .
+RUN pip install --no-cache-dir -r verificador-requirements.txt
+COPY verificador.py verificador_cul.py ./
+# Descarga los modelos al construir para que la primera verificación no tarde
+RUN python -c "from deepface import DeepFace; DeepFace.build_model('Facenet512')" || true
+EXPOSE 8080
+CMD ["uvicorn", "verificador:app", "--host", "0.0.0.0", "--port", "8080"]

@@ -1,7 +1,7 @@
 // API en MODO DEMO: misma interfaz que api-supabase.js; todo vive en el navegador.
 (function () {
   const C = window.YUNTA_CONFIG;
-  const KEY = 'yunta.demo.v3';
+  const KEY = 'yunta.demo.v4';
   const wait = (ms = 200) => new Promise(r => setTimeout(r, ms));
   const uid = () => 'u' + Math.random().toString(36).slice(2, 10);
   const today = () => new Date().toISOString().slice(0, 10);
@@ -69,8 +69,10 @@
     const d = n => new Date(today0 - n * 864e5).toISOString().slice(0, 10);
     const verifs = [
       { id: 'vLuis', userId: 'demo-proveedor', name: 'Luis Vargas', g: 'm', age: 32, seed: 9087, dni: '45123987', status: 'aprobado', score: 0.94, liveness: true, cul: { numero: 'CUL-2026-0655210', fecha: d(78), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(78) },
-      { id: 'v1', userId: 'x1', name: 'Milagros Paucar', g: 'f', age: 26, seed: 5150, dni: '47281930', sub: 'Acompañante a evento', status: 'pendiente', score: 0.93, liveness: true, cul: { numero: 'CUL-2026-0881452', fecha: d(12), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(0) },
-      { id: 'v2', userId: 'x2', name: 'Ricardo Salas', g: 'm', age: 39, seed: 6262, dni: '40915527', sub: 'Electricista', status: 'pendiente', score: 0.71, liveness: true, cul: { numero: 'CUL-2026-0712009', fecha: d(130), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(1) }
+      { id: 'v1', userId: 'x1', name: 'Milagros Paucar', g: 'f', age: 26, seed: 5150, dni: '47281930', sub: 'Acompañante a evento', status: 'pendiente', score: 0.82, liveness: true,
+        auto: { decision: 'aprobado', motivos: [], parecido: 0.82, real: 0.97, live: 0.91, desafios: true, ocrDni: '47281930', checkedBy: 'navegador' }, cul: { numero: 'CUL-2026-0881452', fecha: d(12), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(0) },
+      { id: 'v2', userId: 'x2', name: 'Ricardo Salas', g: 'm', age: 39, seed: 6262, dni: '40915527', sub: 'Electricista', status: 'pendiente', score: 0.44, liveness: true,
+        auto: { decision: 'revision', motivos: ['Tu selfie no se parece lo suficiente a la foto del DNI'], parecido: 0.44, real: 0.88, live: 0.79, desafios: true, ocrDni: '40915527', checkedBy: 'navegador' }, cul: { numero: 'CUL-2026-0712009', fecha: d(130), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(1) }
     ];
     // Clientes que desbloquearon al proveedor demo (para su panel)
     const fans = [
@@ -78,7 +80,10 @@
       { id: 'c2', name: 'Lucía Prado', g: 'f', age: 24, seed: 3202, rep: { n: 0, rating: 0, puntual: 0, respetuoso: 0 } },
       { id: 'c3', name: 'Mario Huerta', g: 'm', age: 41, seed: 3303, rep: { n: 3, rating: 2.7, puntual: 1, respetuoso: 0 } }
     ];
-    return { users, services, reviews, verifs, fans, unlocks: [], favs: {}, wallets: { 'demo-cliente': { credits: C.CONTACTOS_BIENVENIDA, plan: null } }, purchases: [], myReviews: {}, clientReviews: {}, safety: null, session: null };
+    return { users, services, reviews, verifs, fans, unlocks: [], favs: {}, wallets: { 'demo-cliente': { credits: C.CONTACTOS_BIENVENIDA, plan: null } }, purchases: [], notices: [
+      { id: 'n1', source: 'com.bcp.innovacxion.yapeapp', payer: 'Andrés S.', amount: 39.78, status: 'cruzado', received: new Date(Date.now() - 3 * 36e5).toISOString(), purchaseUser: 'Andrés Soto', plan: 'Plus' },
+      { id: 'n2', source: 'pe.com.interbank.mobilebanking', payer: 'Rosa M.', amount: 12.5, status: 'sin_cruce', received: new Date(Date.now() - 26 * 36e5).toISOString() }
+    ], myReviews: {}, clientReviews: {}, safety: null, session: null };
   }
 
   let DB;
@@ -176,7 +181,7 @@
       const id = uid();
       ['dniFront', 'selfie'].forEach(k => { if (data[k + 'Url']) files[id + k] = data[k + 'Url'] });
       DB.verifs.unshift({ id, userId: u.id, name: data.name, g: u.g, age: u.age, seed: u.seed, dni: data.dni, status: 'pendiente',
-        score: +(0.86 + Math.random() * 0.12).toFixed(2), liveness: !!data.liveness, colegiatura: data.colegiatura || null,
+        score: data.auto && data.auto.parecido != null ? +data.auto.parecido.toFixed(2) : null, liveness: !!data.liveness, auto: data.auto || null, colegiatura: data.colegiatura || null,
         cul: { numero: data.culNumero, fecha: data.culFecha, policiales: 'Por revisar', penales: 'Por revisar', judiciales: 'Por revisar' }, created: today() });
       const usr = Object.values(DB.users).find(x => x.id === u.id); if (usr) usr.whatsapp = data.whatsapp;
       save();
@@ -201,6 +206,37 @@
       save();
     },
     async pendingPurchases() { return DB.purchases.filter(p => p.status === 'pendiente') },
+    async paymentNotices() {
+      const SRC = { 'com.bcp.innovacxion.yapeapp': 'Yape', 'pe.com.interbank.mobilebanking': 'Plin (Interbank)' };
+      return (DB.notices || []).slice(0, 20).map(n => ({ ...n, sourceName: SRC[n.source] || n.source, when: new Date(n.received).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) }));
+    },
+
+    // ---------- Pagos automáticos ----------
+    // Yape con código de aprobación (en producción lo cobra la pasarela desde el servidor)
+    async payYapeCode(planId, { phone, code, serviceId }) {
+      const u = need(); await wait(1400); const p = plan(planId);
+      if (code === '000000') throw new Error('Yape no aprobó el código. Genera uno nuevo e intenta otra vez.');
+      const r = { id: uid(), userId: u.id, user: u.name, planId, plan: p.nombre, amount: p.precio, method: 'yape', channel: 'yape_codigo', op: 'Yape ' + phone.slice(-3), serviceId, status: 'pendiente', created: today() };
+      DB.purchases.unshift(r); save(); await API.confirmPurchase(r.id, true); return r;
+    },
+    // QR con monto único: en producción lo confirma el aviso que lee la app Yunta Cobros
+    async createQR(planId, { serviceId } = {}) {
+      const u = need(); await wait(300); const p = plan(planId);
+      let cents; do { cents = Math.floor(Math.random() * 99) - 49; } while (cents === 0 || DB.purchases.some(x => x.status === 'pendiente' && x.expected === +(p.precio + cents / 100).toFixed(2)));
+      const amount = +(p.precio + cents / 100).toFixed(2);
+      const r = { id: uid(), userId: u.id, user: u.name, planId, plan: p.nombre, amount, expected: amount, method: 'yape', channel: 'qr', serviceId, status: 'pendiente', created: today() };
+      DB.purchases.unshift(r); save();
+      // Demo: simulamos que el cliente paga y llega el aviso de Yape a los 7 segundos
+      setTimeout(() => API._aviso('com.bcp.innovacxion.yapeapp', u.name.split(' ')[0] + ' ' + ((u.name.split(' ')[1] || ' ')[0]) + '.', amount), 7000);
+      return { id: r.id, amount };
+    },
+    async purchaseStatus(id) { const r = DB.purchases.find(x => x.id === id); return r ? r.status : null },
+    async _aviso(source, payer, amount) {
+      const matches = DB.purchases.filter(x => x.status === 'pendiente' && x.channel === 'qr' && x.expected === amount);
+      const n = { id: uid(), source, payer, amount, received: new Date().toISOString(), status: matches.length === 1 ? 'cruzado' : 'sin_cruce' };
+      if (matches.length === 1) { n.purchaseUser = matches[0].user; n.plan = matches[0].plan; matches[0].op = payer + ' · Yape'; await API.confirmPurchase(matches[0].id, true); }
+      (DB.notices ||= []).unshift(n); save();
+    },
     async confirmPurchase(id, ok = true) {
       const r = DB.purchases.find(x => x.id === id); if (!r || r.status !== 'pendiente') return;
       r.status = ok ? 'pagado' : 'rechazado';

@@ -387,3 +387,46 @@ canvas.confetti{position:fixed;inset:0;pointer-events:none;z-index:45;width:100%
 }
 @media (max-width:520px){.plans{grid-template-columns:1fr}.cmp{gap:6px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- Biometría ---------- */
+.bio-checks{display:flex;flex-wrap:wrap;gap:6px}
+.bdg.okc{background:var(--ok-soft);color:var(--ok)}
+.bdg.okc svg{color:var(--ok)}
+.bdg.badc{background:var(--warn-soft);color:var(--warn)}
+.bdg.badc svg{color:var(--warn)}
+.bio-card{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:12px}
+.face-sm{width:96px;height:120px;border-radius:50%/42%;overflow:hidden;background:var(--sunk);flex:none}
+.face-sm img{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam{position:relative;width:100%;max-width:420px;aspect-ratio:3/4;margin:8px auto 12px;border-radius:22px;overflow:hidden;background:#111}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .oval{position:absolute;left:50%;top:46%;width:62%;height:68%;transform:translate(-50%,-50%);border-radius:50%/44%;border:4px solid rgba(255,255,255,.85);box-shadow:0 0 0 999px rgba(15,8,22,.45)}
+.cam .cam-msg{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(15,8,22,.75);color:#fff;border-radius:12px;padding:10px 12px;font-weight:700;text-align:center}
+
+/* ---------- Pagos ---------- */
+.seg.seg3{grid-template-columns:1fr 1fr 1fr}
+.paysteps{margin:0 0 12px;padding-left:22px;display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:14px}
+.qrpay{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--sunk);border-radius:16px;padding:14px}
+.qrpay canvas{width:168px;height:168px;border-radius:12px;background:#fff;flex:none}
+.amount{font-family:var(--font-display);font-size:44px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--morado)}
+.waiting{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:700}
+.spin{width:20px;height:20px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--morado);animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Paletas ---------- */
+.palpick{display:flex;gap:8px;flex-wrap:wrap}
+.palpick button{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--bg);border-radius:99px;padding:6px 12px 6px 6px;font-weight:700;font-size:13px}
+.palpick button[aria-pressed="true"]{border-color:var(--morado)}
+.palpick i{display:inline-flex;width:30px;height:20px;border-radius:99px;overflow:hidden}
+.palpick i b{flex:1}
+
+:root[data-palette="andina"]{--morado:#9C3D25;--morado-2:#B9573B;--morado-soft:#F7E3DB;--on-morado:#FFFFFF;--aji:#3BB39C;--aji-ink:#062A22;--aji-soft:#D8F2EC;--hero-bg:#7A2E1B;--hero-bg-2:#A8492D}
+:root[data-palette="pacifico"]{--morado:#1F4FA3;--morado-2:#2F66C4;--morado-soft:#E1EAFA;--on-morado:#FFFFFF;--aji:#FF9F1C;--aji-ink:#3A1F00;--aji-soft:#FFEBD0;--hero-bg:#143C80;--hero-bg-2:#2557AE}
+:root[data-palette="selva"]{--morado:#1E6B4F;--morado-2:#2A8763;--morado-soft:#DDF0E7;--on-morado:#FFFFFF;--aji:#F28AB2;--aji-ink:#3D0A22;--aji-soft:#FCE3EE;--hero-bg:#134A37;--hero-bg-2:#1E6B4F}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="andina"]:not([data-theme="light"]){--morado:#F0A58F;--morado-2:#D9876F;--morado-soft:#3F2219;--on-morado:#2A0E06;--hero-bg:#4A1C10;--hero-bg-2:#7A2E1B}
+  :root[data-palette="pacifico"]:not([data-theme="light"]){--morado:#9DBBF5;--morado-2:#7AA0E8;--morado-soft:#1D2A45;--on-morado:#0B1630;--hero-bg:#0F2A5C;--hero-bg-2:#1A3F84}
+  :root[data-palette="selva"]:not([data-theme="light"]){--morado:#8FD8B6;--morado-2:#6CC39C;--morado-soft:#173528;--on-morado:#06241A;--hero-bg:#0D3426;--hero-bg-2:#134A37}
+}
+:root[data-palette="andina"][data-theme="dark"]{--morado:#F0A58F;--morado-2:#D9876F;--morado-soft:#3F2219;--on-morado:#2A0E06;--hero-bg:#4A1C10;--hero-bg-2:#7A2E1B}
+:root[data-palette="pacifico"][data-theme="dark"]{--morado:#9DBBF5;--morado-2:#7AA0E8;--morado-soft:#1D2A45;--on-morado:#0B1630;--hero-bg:#0F2A5C;--hero-bg-2:#1A3F84}
+:root[data-palette="selva"][data-theme="dark"]{--morado:#8FD8B6;--morado-2:#6CC39C;--morado-soft:#173528;--on-morado:#06241A;--hero-bg:#0D3426;--hero-bg-2:#134A37}

@@ -3,7 +3,7 @@ import re, pathlib
 R = pathlib.Path(__file__).parent
 html = (R/'index.html').read_text()
 body = re.search(r'<!--HEADER-->(.*)<!--/HEADER-->', html, re.S).group(1)
-js = '\n'.join((R/f).read_text().replace('</script', '<\\/script') for f in ['config.js','avatars.js','api-demo.js','app.js'])
+js = '\n'.join((R/f).read_text().replace('</script', '<\\/script') for f in ['config.js','avatars.js','bio.js','api-demo.js','app.js'])
 out = f'''<title>Yunta</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">

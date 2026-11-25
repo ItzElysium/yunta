@@ -436,3 +436,97 @@ create policy "ver documentos" on storage.objects for select
 
 -- Hacerte admin:
 --   update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'TU_CORREO');
+
+-- =====================================================================
+-- v3 · Pagos automáticos y verificación automática
+-- =====================================================================
+
+-- Compras: canal, monto exacto a pagar (con céntimos únicos) y vencimiento
+alter table public.plan_purchases add column if not exists channel text not null default 'manual'
+  check (channel in ('manual','yape_codigo','qr'));
+alter table public.plan_purchases add column if not exists expected_amount numeric(8,2);
+alter table public.plan_purchases add column if not exists expires_at timestamptz;
+alter table public.plan_purchases add column if not exists notice_id uuid;
+create index if not exists purchases_match_idx on public.plan_purchases(expected_amount) where status = 'pendiente';
+
+-- La política de inserción v2 exige amount = precio; las compras por QR se crean con crear_compra_qr()
+-- Avisos de pago leídos del celular de la empresa (app Yunta Cobros)
+create table if not exists public.payment_notices (
+  id           uuid primary key default gen_random_uuid(),
+  source       text not null,               -- paquete de la app (Yape, banco con Plin)
+  payer_name   text,
+  amount       numeric(8,2) not null,
+  raw_text     text,
+  received_at  timestamptz not null default now(),
+  purchase_id  uuid references public.plan_purchases(id),
+  status       text not null default 'sin_cruce' check (status in ('cruzado','sin_cruce','duplicado'))
+);
+alter table public.payment_notices enable row level security;
+create policy "admin ve avisos" on public.payment_notices for select using (public.is_admin());
+-- Sin políticas de escritura: solo el servidor (service_role) inserta, desde la función aviso-pago
+
+-- Crea una compra por QR con un monto único (precio + céntimos libres) válido 20 minutos
+create or replace function public.crear_compra_qr(p_plan text, p_service uuid default null, p_method pay_method default 'yape')
+returns public.plan_purchases
+language plpgsql security definer set search_path = public as $$
+declare pr plans%rowtype; cents int; amt numeric(8,2); r plan_purchases%rowtype; tries int := 0;
+begin
+  if auth.uid() is null then raise exception 'Inicia sesión'; end if;
+  select * into pr from plans where id = p_plan;
+  if not found then raise exception 'Plan no existe'; end if;
+  loop
+    tries := tries + 1;
+    cents := floor(random() * 99)::int - 49;           -- de -0.49 a +0.49 sobre el precio
+    continue when cents = 0;
+    amt := pr.price + cents / 100.0;
+    exit when not exists (select 1 from plan_purchases where status = 'pendiente'
+                          and expected_amount = amt and expires_at > now());
+    if tries > 200 then raise exception 'Demasiados pagos pendientes, intenta en unos minutos'; end if;
+  end loop;
+  insert into plan_purchases (user_id, plan_id, service_id, amount, method, channel, expected_amount, expires_at)
+  values (auth.uid(), p_plan, p_service, amt, p_method, 'qr', amt, now() + interval '20 minutes')
+  returning * into r;
+  return r;
+end $$;
+
+-- Registra un aviso de pago y lo cruza con una compra pendiente del mismo monto exacto (solo servidor)
+create or replace function public.registrar_aviso(p_source text, p_name text, p_amount numeric, p_raw text)
+returns public.payment_notices
+language plpgsql security definer set search_path = public as $$
+declare n payment_notices%rowtype; pid uuid; cnt int;
+begin
+  if coalesce(auth.role(),'') <> 'service_role' and not public.is_admin() then
+    raise exception 'No autorizado';
+  end if;
+  -- mismo aviso repetido en 2 minutos = duplicado
+  if exists (select 1 from payment_notices where amount = p_amount and coalesce(raw_text,'') = coalesce(p_raw,'')
+             and received_at > now() - interval '2 minutes') then
+    insert into payment_notices (source, payer_name, amount, raw_text, status)
+    values (p_source, p_name, p_amount, p_raw, 'duplicado') returning * into n;
+    return n;
+  end if;
+  select count(*), min(id::text)::uuid into cnt, pid from plan_purchases
+   where status = 'pendiente' and channel = 'qr' and expected_amount = p_amount and expires_at > now() - interval '5 minutes';
+  insert into payment_notices (source, payer_name, amount, raw_text, purchase_id, status)
+  values (p_source, p_name, p_amount, p_raw, case when cnt = 1 then pid end, case when cnt = 1 then 'cruzado' else 'sin_cruce' end)
+  returning * into n;
+  if cnt = 1 then
+    update plan_purchases set status = 'pagado', notice_id = n.id,
+      operation_code = left(coalesce(p_name,'') || ' · ' || p_source, 120) where id = pid;
+  end if;
+  return n;
+end $$;
+revoke execute on function public.registrar_aviso(text,text,numeric,text) from public, anon, authenticated;
+
+-- Estado de una compra (para que la app sepa cuándo se confirmó)
+create or replace function public.estado_compra(p_id uuid) returns text
+language sql stable security definer set search_path = public as $$
+  select status::text from plan_purchases where id = p_id and user_id = auth.uid();
+$$;
+
+-- Verificación automática: lo que decidió el sistema
+alter table public.verifications add column if not exists auto_decision text
+  check (auto_decision in ('aprobado','revision','rechazado'));
+alter table public.verifications add column if not exists ocr_dni text;
+alter table public.verifications add column if not exists antispoof_score numeric(4,3);
+alter table public.verifications add column if not exists checked_by text;  -- 'deepface', 'navegador', 'humano'

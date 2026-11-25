@@ -22,8 +22,32 @@ window.YUNTA_CONFIG = {
   YAPE_NUMERO: '999 000 111',
   YAPE_TITULAR: 'Yunta Servicios',
 
+  // Cómo se paga: 'demo' simula; 'real' usa la pasarela (Yape con código) y los avisos de la app Yunta Cobros (QR).
+  // Métodos que se muestran al pagar, en orden
+  PAGOS: {
+    METODOS: ['yape_codigo', 'qr'],   // agrega 'manual' para volver al código de operación revisado por un admin
+    QR_MINUTOS: 20                   // tiempo para pagar el monto exacto por QR
+  },
+
+  // Verificación automática de identidad
+  BIOMETRIA: {
+    HUMAN_URL: 'https://cdn.jsdelivr.net/npm/@vladmandic/human@3.3.5/dist/human.js',
+    HUMAN_MODELS: 'https://cdn.jsdelivr.net/npm/@vladmandic/human@3.3.5/models/',
+    TESSERACT_URL: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+    PARECIDO_MIN: 0.55,      // parecido selfie–DNI para aprobar solo (ajustar con el piloto)
+    PARECIDO_RECHAZO: 0.30,  // por debajo, se rechaza (una persona puede revisarlo)
+    ANTISPOOF_MIN: 0.5,      // "es una persona real y no una foto"
+    VIVO_MIN: 0.5,           // prueba de vida
+    TIEMPO_MAX_MS: 45000,
+    // Servidor con DeepFace que toma la decisión final (verificador.py). Vacío = la decide una persona.
+    VERIFICADOR_URL: ''
+  },
+
   CUL_VIGENCIA_DIAS: 90,
   PUNTAJE_ROSTRO_MIN: 0.85,
+
+  // Paleta de colores: 'chicha' (morado + ají), 'andina' (terracota + jade), 'pacifico' (azul + mango), 'selva' (verde + rosa)
+  PALETA: 'chicha',
 
   // Niveles de prestigio (se recalculan cada mes)
   NIVELES: [

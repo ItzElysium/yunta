@@ -393,6 +393,49 @@ canvas.confetti{position:fixed;inset:0;pointer-events:none;z-index:45;width:100%
 @media (max-width:520px){.plans{grid-template-columns:1fr}.cmp{gap:6px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
+/* ---------- Biometría ---------- */
+.bio-checks{display:flex;flex-wrap:wrap;gap:6px}
+.bdg.okc{background:var(--ok-soft);color:var(--ok)}
+.bdg.okc svg{color:var(--ok)}
+.bdg.badc{background:var(--warn-soft);color:var(--warn)}
+.bdg.badc svg{color:var(--warn)}
+.bio-card{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--bg);border:1.5px solid var(--line);border-radius:16px;padding:12px}
+.face-sm{width:96px;height:120px;border-radius:50%/42%;overflow:hidden;background:var(--sunk);flex:none}
+.face-sm img{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam{position:relative;width:100%;max-width:420px;aspect-ratio:3/4;margin:8px auto 12px;border-radius:22px;overflow:hidden;background:#111}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .oval{position:absolute;left:50%;top:46%;width:62%;height:68%;transform:translate(-50%,-50%);border-radius:50%/44%;border:4px solid rgba(255,255,255,.85);box-shadow:0 0 0 999px rgba(15,8,22,.45)}
+.cam .cam-msg{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(15,8,22,.75);color:#fff;border-radius:12px;padding:10px 12px;font-weight:700;text-align:center}
+
+/* ---------- Pagos ---------- */
+.seg.seg3{grid-template-columns:1fr 1fr 1fr}
+.paysteps{margin:0 0 12px;padding-left:22px;display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:14px}
+.qrpay{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--sunk);border-radius:16px;padding:14px}
+.qrpay canvas{width:168px;height:168px;border-radius:12px;background:#fff;flex:none}
+.amount{font-family:var(--font-display);font-size:44px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--morado)}
+.waiting{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:700}
+.spin{width:20px;height:20px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--morado);animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Paletas ---------- */
+.palpick{display:flex;gap:8px;flex-wrap:wrap}
+.palpick button{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--bg);border-radius:99px;padding:6px 12px 6px 6px;font-weight:700;font-size:13px}
+.palpick button[aria-pressed="true"]{border-color:var(--morado)}
+.palpick i{display:inline-flex;width:30px;height:20px;border-radius:99px;overflow:hidden}
+.palpick i b{flex:1}
+
+:root[data-palette="andina"]{--morado:#9C3D25;--morado-2:#B9573B;--morado-soft:#F7E3DB;--on-morado:#FFFFFF;--aji:#3BB39C;--aji-ink:#062A22;--aji-soft:#D8F2EC;--hero-bg:#7A2E1B;--hero-bg-2:#A8492D}
+:root[data-palette="pacifico"]{--morado:#1F4FA3;--morado-2:#2F66C4;--morado-soft:#E1EAFA;--on-morado:#FFFFFF;--aji:#FF9F1C;--aji-ink:#3A1F00;--aji-soft:#FFEBD0;--hero-bg:#143C80;--hero-bg-2:#2557AE}
+:root[data-palette="selva"]{--morado:#1E6B4F;--morado-2:#2A8763;--morado-soft:#DDF0E7;--on-morado:#FFFFFF;--aji:#F28AB2;--aji-ink:#3D0A22;--aji-soft:#FCE3EE;--hero-bg:#134A37;--hero-bg-2:#1E6B4F}
+@media (prefers-color-scheme: dark){
+  :root[data-palette="andina"]:not([data-theme="light"]){--morado:#F0A58F;--morado-2:#D9876F;--morado-soft:#3F2219;--on-morado:#2A0E06;--hero-bg:#4A1C10;--hero-bg-2:#7A2E1B}
+  :root[data-palette="pacifico"]:not([data-theme="light"]){--morado:#9DBBF5;--morado-2:#7AA0E8;--morado-soft:#1D2A45;--on-morado:#0B1630;--hero-bg:#0F2A5C;--hero-bg-2:#1A3F84}
+  :root[data-palette="selva"]:not([data-theme="light"]){--morado:#8FD8B6;--morado-2:#6CC39C;--morado-soft:#173528;--on-morado:#06241A;--hero-bg:#0D3426;--hero-bg-2:#134A37}
+}
+:root[data-palette="andina"][data-theme="dark"]{--morado:#F0A58F;--morado-2:#D9876F;--morado-soft:#3F2219;--on-morado:#2A0E06;--hero-bg:#4A1C10;--hero-bg-2:#7A2E1B}
+:root[data-palette="pacifico"][data-theme="dark"]{--morado:#9DBBF5;--morado-2:#7AA0E8;--morado-soft:#1D2A45;--on-morado:#0B1630;--hero-bg:#0F2A5C;--hero-bg-2:#1A3F84}
+:root[data-palette="selva"][data-theme="dark"]{--morado:#8FD8B6;--morado-2:#6CC39C;--morado-soft:#173528;--on-morado:#06241A;--hero-bg:#0D3426;--hero-bg-2:#134A37}
+
 </style>
 
 <header class="top"><div class="wrap">
@@ -431,8 +474,32 @@ window.YUNTA_CONFIG = {
   YAPE_NUMERO: '999 000 111',
   YAPE_TITULAR: 'Yunta Servicios',
 
+  // Cómo se paga: 'demo' simula; 'real' usa la pasarela (Yape con código) y los avisos de la app Yunta Cobros (QR).
+  // Métodos que se muestran al pagar, en orden
+  PAGOS: {
+    METODOS: ['yape_codigo', 'qr'],   // agrega 'manual' para volver al código de operación revisado por un admin
+    QR_MINUTOS: 20                   // tiempo para pagar el monto exacto por QR
+  },
+
+  // Verificación automática de identidad
+  BIOMETRIA: {
+    HUMAN_URL: 'https://cdn.jsdelivr.net/npm/@vladmandic/human@3.3.5/dist/human.js',
+    HUMAN_MODELS: 'https://cdn.jsdelivr.net/npm/@vladmandic/human@3.3.5/models/',
+    TESSERACT_URL: 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js',
+    PARECIDO_MIN: 0.55,      // parecido selfie–DNI para aprobar solo (ajustar con el piloto)
+    PARECIDO_RECHAZO: 0.30,  // por debajo, se rechaza (una persona puede revisarlo)
+    ANTISPOOF_MIN: 0.5,      // "es una persona real y no una foto"
+    VIVO_MIN: 0.5,           // prueba de vida
+    TIEMPO_MAX_MS: 45000,
+    // Servidor con DeepFace que toma la decisión final (verificador.py). Vacío = la decide una persona.
+    VERIFICADOR_URL: ''
+  },
+
   CUL_VIGENCIA_DIAS: 90,
   PUNTAJE_ROSTRO_MIN: 0.85,
+
+  // Paleta de colores: 'chicha' (morado + ají), 'andina' (terracota + jade), 'pacifico' (azul + mango), 'selva' (verde + rosa)
+  PALETA: 'chicha',
 
   // Niveles de prestigio (se recalculan cada mes)
   NIVELES: [
@@ -528,10 +595,155 @@ window.YUNTA_CONFIG = {
   };
 })();
 
+// Yunta · biometría en el navegador.
+// - Lee el DNI con tesseract.js (OCR).
+// - Detecta el rostro, hace la prueba de vida (parpadeo y giro) y compara la selfie con la foto del DNI
+//   usando Human (github.com/vladmandic/human, licencia MIT).
+// Esto da una decisión preliminar y guía al usuario. La decisión confiable la toma el servidor
+// (verificador.py con DeepFace), porque lo que corre en el celular se puede manipular.
+(function () {
+  const C = window.YUNTA_CONFIG.BIOMETRIA;
+  let human = null, humanLoading = null, tessLoading = null;
+
+  function loadScript(src) {
+    return new Promise((res, rej) => {
+      if ([...document.scripts].some(s => s.src === src)) return res();
+      const s = document.createElement('script'); s.src = src; s.async = true;
+      s.onload = res; s.onerror = () => rej(new Error('No se pudo cargar ' + src)); document.head.appendChild(s);
+    });
+  }
+
+  async function getHuman() {
+    if (human) return human;
+    if (!humanLoading) humanLoading = (async () => {
+      await loadScript(C.HUMAN_URL);
+      const h = new window.Human.Human({
+        modelBasePath: C.HUMAN_MODELS,
+        debug: false,
+        cacheSensitivity: 0,
+        face: {
+          enabled: true,
+          detector: { rotation: true, maxDetected: 1, minConfidence: 0.3 },
+          mesh: { enabled: true }, iris: { enabled: true },
+          description: { enabled: true }, emotion: { enabled: false },
+          antispoof: { enabled: true }, liveness: { enabled: true }
+        },
+        body: { enabled: false }, hand: { enabled: false }, object: { enabled: false },
+        segmentation: { enabled: false }, gesture: { enabled: true }
+      });
+      await h.load(); await h.warmup();
+      human = h; return h;
+    })();
+    return humanLoading;
+  }
+
+  const imgFrom = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+
+  function similarity(a, b) {
+    if (!a || !b) return 0;
+    if (human && human.match && human.match.similarity) return human.match.similarity(a, b);
+    if (human && human.similarity) return human.similarity(a, b);
+    let dot = 0, na = 0, nb = 0;
+    for (let i = 0; i < a.length; i++) { dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+    return Math.max(0, dot / Math.sqrt(na * nb));
+  }
+
+  // ---------- OCR del DNI ----------
+  async function ocrDNI(dataUrl, dniEsperado, nombreEsperado) {
+    if (!tessLoading) tessLoading = loadScript(C.TESSERACT_URL);
+    await tessLoading;
+    const { data } = await window.Tesseract.recognize(dataUrl, 'spa');
+    const text = (data && data.text) || '';
+    const nums = [...text.replace(/[Oo]/g, '0').matchAll(/(?<!\d)(\d{8})(?!\d)/g)].map(m => m[1]);
+    const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+    const T = norm(text);
+    const palabras = norm(nombreEsperado || '').split(/\s+/).filter(w => w.length > 2);
+    const nombreOk = palabras.length ? palabras.filter(w => T.includes(w)).length / palabras.length : 0;
+    return { dniLeido: nums[0] || null, dniOk: !!dniEsperado && nums.includes(dniEsperado), nombreOk: nombreOk >= 0.5, texto: text.slice(0, 400) };
+  }
+
+  // ---------- Rostro en una foto (DNI o selfie subida) ----------
+  async function rostroDeFoto(dataUrl) {
+    const h = await getHuman();
+    const img = await imgFrom(dataUrl);
+    const r = await h.detect(img);
+    const f = r.face && r.face[0];
+    if (!f || !f.embedding || !f.embedding.length) return null;
+    return { embedding: Array.from(f.embedding), real: f.real ?? null, live: f.live ?? null, score: f.score ?? f.boxScore ?? null };
+  }
+
+  // ---------- Escaneo en vivo con desafíos ----------
+  // onStep({paso, texto, hecho}) actualiza la interfaz. Devuelve la selfie y las medidas.
+  async function escaneoEnVivo(video, onStep, signal) {
+    const h = await getHuman();
+    const pasos = [
+      { id: 'frente', texto: 'Mira al frente, con la cara dentro del óvalo' },
+      { id: 'parpadeo', texto: 'Parpadea' },
+      { id: 'izquierda', texto: 'Gira la cabeza a la izquierda' },
+      { id: 'derecha', texto: 'Ahora a la derecha' },
+      { id: 'final', texto: 'Mira al frente otra vez' }
+    ];
+    let i = 0; const reales = [], vivos = []; let selfie = null, embedding = null, frenteOk = 0;
+    const t0 = Date.now();
+    onStep({ paso: pasos[0].id, texto: pasos[0].texto, i: 0, total: pasos.length });
+    while (i < pasos.length) {
+      if (signal && signal.aborted) throw new Error('Escaneo cancelado');
+      if (Date.now() - t0 > C.TIEMPO_MAX_MS) throw new Error('Se acabó el tiempo. Busca más luz e intenta otra vez.');
+      const r = await h.detect(video);
+      const f = r.face && r.face[0];
+      if (!f) { onStep({ paso: pasos[i].id, texto: 'No vemos tu rostro. ' + pasos[i].texto, i, total: pasos.length }); await new Promise(z => setTimeout(z, 120)); continue; }
+      if (typeof f.real === 'number') reales.push(f.real);
+      if (typeof f.live === 'number') vivos.push(f.live);
+      const yaw = (f.rotation && f.rotation.angle && f.rotation.angle.yaw) || 0;
+      const gestos = (r.gesture || []).map(g => g.gesture || '');
+      const p = pasos[i].id;
+      let cumple = false;
+      if (p === 'frente' || p === 'final') { cumple = Math.abs(yaw) < 0.18 && (++frenteOk > 4); }
+      if (p === 'parpadeo') cumple = gestos.some(g => /blink/.test(g));
+      if (p === 'izquierda') cumple = yaw > 0.35 || gestos.some(g => /facing left/.test(g));
+      if (p === 'derecha') cumple = yaw < -0.35 || gestos.some(g => /facing right/.test(g));
+      if (cumple) {
+        if (p === 'final') {
+          const c = document.createElement('canvas'); c.width = video.videoWidth; c.height = video.videoHeight;
+          c.getContext('2d').drawImage(video, 0, 0); selfie = c.toDataURL('image/jpeg', 0.9);
+          embedding = Array.from(f.embedding || []);
+        }
+        onStep({ paso: p, texto: pasos[i].texto, i, total: pasos.length, hecho: true });
+        i++; frenteOk = 0;
+        if (i < pasos.length) onStep({ paso: pasos[i].id, texto: pasos[i].texto, i, total: pasos.length });
+      }
+      await new Promise(z => setTimeout(z, 60));
+    }
+    const prom = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+    return { selfie, embedding, real: prom(reales), live: prom(vivos), desafios: true };
+  }
+
+  // Decisión preliminar en el navegador
+  function decidir({ ocr, parecido, vivo }) {
+    const motivos = [];
+    if (!ocr || !ocr.dniOk) motivos.push('No pudimos leer tu número de DNI en la foto');
+    if (!vivo || !vivo.desafios) motivos.push('Falta la prueba de vida con cámara');
+    else {
+      if (vivo.real != null && vivo.real < C.ANTISPOOF_MIN) motivos.push('La imagen podría ser una foto o una pantalla');
+      if (vivo.live != null && vivo.live < C.VIVO_MIN) motivos.push('La prueba de vida no fue clara');
+    }
+    if (parecido == null) motivos.push('No encontramos tu rostro en la foto del DNI');
+    else if (parecido < C.PARECIDO_MIN) motivos.push('Tu selfie no se parece lo suficiente a la foto del DNI');
+    const decision = motivos.length ? (parecido != null && parecido < C.PARECIDO_RECHAZO ? 'rechazado' : 'revision') : 'aprobado';
+    return { decision, motivos };
+  }
+
+  async function camaraDisponible() {
+    try { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext; } catch (e) { return false; }
+  }
+
+  window.BIO = { getHuman, ocrDNI, rostroDeFoto, escaneoEnVivo, similarity, decidir, camaraDisponible };
+})();
+
 // API en MODO DEMO: misma interfaz que api-supabase.js; todo vive en el navegador.
 (function () {
   const C = window.YUNTA_CONFIG;
-  const KEY = 'yunta.demo.v3';
+  const KEY = 'yunta.demo.v4';
   const wait = (ms = 200) => new Promise(r => setTimeout(r, ms));
   const uid = () => 'u' + Math.random().toString(36).slice(2, 10);
   const today = () => new Date().toISOString().slice(0, 10);
@@ -599,8 +811,10 @@ window.YUNTA_CONFIG = {
     const d = n => new Date(today0 - n * 864e5).toISOString().slice(0, 10);
     const verifs = [
       { id: 'vLuis', userId: 'demo-proveedor', name: 'Luis Vargas', g: 'm', age: 32, seed: 9087, dni: '45123987', status: 'aprobado', score: 0.94, liveness: true, cul: { numero: 'CUL-2026-0655210', fecha: d(78), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(78) },
-      { id: 'v1', userId: 'x1', name: 'Milagros Paucar', g: 'f', age: 26, seed: 5150, dni: '47281930', sub: 'Acompañante a evento', status: 'pendiente', score: 0.93, liveness: true, cul: { numero: 'CUL-2026-0881452', fecha: d(12), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(0) },
-      { id: 'v2', userId: 'x2', name: 'Ricardo Salas', g: 'm', age: 39, seed: 6262, dni: '40915527', sub: 'Electricista', status: 'pendiente', score: 0.71, liveness: true, cul: { numero: 'CUL-2026-0712009', fecha: d(130), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(1) }
+      { id: 'v1', userId: 'x1', name: 'Milagros Paucar', g: 'f', age: 26, seed: 5150, dni: '47281930', sub: 'Acompañante a evento', status: 'pendiente', score: 0.82, liveness: true,
+        auto: { decision: 'aprobado', motivos: [], parecido: 0.82, real: 0.97, live: 0.91, desafios: true, ocrDni: '47281930', checkedBy: 'navegador' }, cul: { numero: 'CUL-2026-0881452', fecha: d(12), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(0) },
+      { id: 'v2', userId: 'x2', name: 'Ricardo Salas', g: 'm', age: 39, seed: 6262, dni: '40915527', sub: 'Electricista', status: 'pendiente', score: 0.44, liveness: true,
+        auto: { decision: 'revision', motivos: ['Tu selfie no se parece lo suficiente a la foto del DNI'], parecido: 0.44, real: 0.88, live: 0.79, desafios: true, ocrDni: '40915527', checkedBy: 'navegador' }, cul: { numero: 'CUL-2026-0712009', fecha: d(130), policiales: 'Sin registros', penales: 'Sin registros', judiciales: 'Sin registros' }, created: d(1) }
     ];
     // Clientes que desbloquearon al proveedor demo (para su panel)
     const fans = [
@@ -608,7 +822,10 @@ window.YUNTA_CONFIG = {
       { id: 'c2', name: 'Lucía Prado', g: 'f', age: 24, seed: 3202, rep: { n: 0, rating: 0, puntual: 0, respetuoso: 0 } },
       { id: 'c3', name: 'Mario Huerta', g: 'm', age: 41, seed: 3303, rep: { n: 3, rating: 2.7, puntual: 1, respetuoso: 0 } }
     ];
-    return { users, services, reviews, verifs, fans, unlocks: [], favs: {}, wallets: { 'demo-cliente': { credits: C.CONTACTOS_BIENVENIDA, plan: null } }, purchases: [], myReviews: {}, clientReviews: {}, safety: null, session: null };
+    return { users, services, reviews, verifs, fans, unlocks: [], favs: {}, wallets: { 'demo-cliente': { credits: C.CONTACTOS_BIENVENIDA, plan: null } }, purchases: [], notices: [
+      { id: 'n1', source: 'com.bcp.innovacxion.yapeapp', payer: 'Andrés S.', amount: 39.78, status: 'cruzado', received: new Date(Date.now() - 3 * 36e5).toISOString(), purchaseUser: 'Andrés Soto', plan: 'Plus' },
+      { id: 'n2', source: 'pe.com.interbank.mobilebanking', payer: 'Rosa M.', amount: 12.5, status: 'sin_cruce', received: new Date(Date.now() - 26 * 36e5).toISOString() }
+    ], myReviews: {}, clientReviews: {}, safety: null, session: null };
   }
 
   let DB;
@@ -706,7 +923,7 @@ window.YUNTA_CONFIG = {
       const id = uid();
       ['dniFront', 'selfie'].forEach(k => { if (data[k + 'Url']) files[id + k] = data[k + 'Url'] });
       DB.verifs.unshift({ id, userId: u.id, name: data.name, g: u.g, age: u.age, seed: u.seed, dni: data.dni, status: 'pendiente',
-        score: +(0.86 + Math.random() * 0.12).toFixed(2), liveness: !!data.liveness, colegiatura: data.colegiatura || null,
+        score: data.auto && data.auto.parecido != null ? +data.auto.parecido.toFixed(2) : null, liveness: !!data.liveness, auto: data.auto || null, colegiatura: data.colegiatura || null,
         cul: { numero: data.culNumero, fecha: data.culFecha, policiales: 'Por revisar', penales: 'Por revisar', judiciales: 'Por revisar' }, created: today() });
       const usr = Object.values(DB.users).find(x => x.id === u.id); if (usr) usr.whatsapp = data.whatsapp;
       save();
@@ -731,6 +948,37 @@ window.YUNTA_CONFIG = {
       save();
     },
     async pendingPurchases() { return DB.purchases.filter(p => p.status === 'pendiente') },
+    async paymentNotices() {
+      const SRC = { 'com.bcp.innovacxion.yapeapp': 'Yape', 'pe.com.interbank.mobilebanking': 'Plin (Interbank)' };
+      return (DB.notices || []).slice(0, 20).map(n => ({ ...n, sourceName: SRC[n.source] || n.source, when: new Date(n.received).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }) }));
+    },
+
+    // ---------- Pagos automáticos ----------
+    // Yape con código de aprobación (en producción lo cobra la pasarela desde el servidor)
+    async payYapeCode(planId, { phone, code, serviceId }) {
+      const u = need(); await wait(1400); const p = plan(planId);
+      if (code === '000000') throw new Error('Yape no aprobó el código. Genera uno nuevo e intenta otra vez.');
+      const r = { id: uid(), userId: u.id, user: u.name, planId, plan: p.nombre, amount: p.precio, method: 'yape', channel: 'yape_codigo', op: 'Yape ' + phone.slice(-3), serviceId, status: 'pendiente', created: today() };
+      DB.purchases.unshift(r); save(); await API.confirmPurchase(r.id, true); return r;
+    },
+    // QR con monto único: en producción lo confirma el aviso que lee la app Yunta Cobros
+    async createQR(planId, { serviceId } = {}) {
+      const u = need(); await wait(300); const p = plan(planId);
+      let cents; do { cents = Math.floor(Math.random() * 99) - 49; } while (cents === 0 || DB.purchases.some(x => x.status === 'pendiente' && x.expected === +(p.precio + cents / 100).toFixed(2)));
+      const amount = +(p.precio + cents / 100).toFixed(2);
+      const r = { id: uid(), userId: u.id, user: u.name, planId, plan: p.nombre, amount, expected: amount, method: 'yape', channel: 'qr', serviceId, status: 'pendiente', created: today() };
+      DB.purchases.unshift(r); save();
+      // Demo: simulamos que el cliente paga y llega el aviso de Yape a los 7 segundos
+      setTimeout(() => API._aviso('com.bcp.innovacxion.yapeapp', u.name.split(' ')[0] + ' ' + ((u.name.split(' ')[1] || ' ')[0]) + '.', amount), 7000);
+      return { id: r.id, amount };
+    },
+    async purchaseStatus(id) { const r = DB.purchases.find(x => x.id === id); return r ? r.status : null },
+    async _aviso(source, payer, amount) {
+      const matches = DB.purchases.filter(x => x.status === 'pendiente' && x.channel === 'qr' && x.expected === amount);
+      const n = { id: uid(), source, payer, amount, received: new Date().toISOString(), status: matches.length === 1 ? 'cruzado' : 'sin_cruce' };
+      if (matches.length === 1) { n.purchaseUser = matches[0].user; n.plan = matches[0].plan; matches[0].op = payer + ' · Yape'; await API.confirmPurchase(matches[0].id, true); }
+      (DB.notices ||= []).unshift(n); save();
+    },
     async confirmPurchase(id, ok = true) {
       const r = DB.purchases.find(x => x.id === id); if (!r || r.status !== 'pendiente') return;
       r.status = ok ? 'pagado' : 'rechazado';
@@ -955,7 +1203,7 @@ document.addEventListener('click', e => { const a = e.target.closest('[data-act]
 // ---------------- Modal ----------------
 function openModal(html, cat){ $('#modal').innerHTML = `<div class="scrim"><div class="sheet" role="dialog" aria-modal="true" ${cat?`data-cat="${cat}"`:''}><button class="x" aria-label="Cerrar">${I('x')}</button>${html}</div></div>`;
   const sc = $('.scrim'); sc.onclick = e => { if (e.target === sc) close(); }; $$('.x').forEach(x => x.onclick = close); }
-function close(){ $('#modal').innerHTML = ''; }
+function close(){ if (typeof stopCam === 'function') stopCam(); if (typeof payPoll !== 'undefined') clearInterval(payPoll); $('#modal').innerHTML = ''; }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 
 // ---------------- Perfil ----------------
@@ -1133,25 +1381,73 @@ VIEWS.planes = async function(){
   $$('[data-buy]').forEach(b => b.onclick = () => { const p = C.PLANES.find(x => x.id === b.dataset.buy); if (requireLogin(() => go('planes'), 'Crea tu cuenta para comprar un plan')) comprar(p); });
   $$('[data-imp]').forEach(b => b.onclick = () => { if (requireLogin(() => go('cuenta'))) go('cuenta'); });
 };
+const METODO_TXT = { yape_codigo: 'Yape con código', qr: 'QR Yape o Plin', manual: 'Código de operación' };
+let payPoll = null;
 function comprar(p, serviceId){
-  let method = 'yape';
+  const metodos = (C.PAGOS && C.PAGOS.METODOS) || ['manual'];
+  let actual = metodos[0];
   openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">${esc(p.nombre)} · ${soles(p.precio)}</h2>
     <p class="note">${p.contactos ? `${p.contactos} ${p.contactos===1?'contacto':'contactos'}${p.periodo?' cada mes':''}` : esc(p.desc)}</p>
-    <div class="seg" style="margin-top:10px"><button type="button" data-p="yape" aria-pressed="true">Yape</button><button type="button" data-p="plin" aria-pressed="false">Plin</button></div>
+    ${metodos.length > 1 ? `<div class="seg seg${metodos.length}" style="margin-top:10px">${metodos.map(m=>`<button type="button" data-m="${m}" aria-pressed="${m===actual}">${METODO_TXT[m]}</button>`).join('')}</div>` : ''}
+    <div id="paybox" style="margin-top:14px"></div></div>`);
+  const draw = () => { clearInterval(payPoll); ({ yape_codigo: pagoCodigo, qr: pagoQR, manual: pagoManual })[actual](p, serviceId); };
+  $$('[data-m]').forEach(b => b.onclick = () => { actual = b.dataset.m; $$('[data-m]').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
+  draw();
+}
+async function pagoExitoso(){ clearInterval(payPoll); close(); S.wallet = await API.wallet(); renderNav(); confetti(); toast('¡Pago confirmado!'); if (['planes','cuenta'].includes(S.view)) render(); }
+function pagoCodigo(p, serviceId){
+  $('#paybox').innerHTML = `<ol class="paysteps"><li>Abre Yape y entra al menú.</li><li>Toca <b>Código de aprobación</b> y copia los 6 dígitos.</li><li>Escríbelos aquí: vence en 2 minutos.</li></ol>
+    <div class="row"><div class="field"><label for="yc">Celular con Yape</label><input id="yc" inputmode="tel" maxlength="9" placeholder="9XX XXX XXX" autocomplete="tel"></div>
+      <div class="field"><label for="yo">Código de aprobación</label><input id="yo" inputmode="numeric" maxlength="6" placeholder="6 dígitos" autocomplete="one-time-code"></div></div>
+    <button class="btn big" id="ypay" style="width:100%;margin-top:14px">Pagar ${soles(p.precio)} con Yape</button>
+    <p class="note" style="margin-top:8px">El pago se confirma al instante. Máximo S/ 2,000 por pago.${API.mode==='demo'?' Demo: cualquier código funciona menos 000000.':''}</p>`;
+  $('#ypay').onclick = run(async () => {
+    const cel = $('#yc').value.replace(/\s/g,''), cod = $('#yo').value.trim();
+    if (!/^9\d{8}$/.test(cel)) return toast('Escribe tu celular de 9 dígitos');
+    if (!/^\d{6}$/.test(cod)) return toast('El código de aprobación tiene 6 dígitos');
+    const b = $('#ypay'); b.disabled = true; b.textContent = 'Cobrando…';
+    try { await API.payYapeCode(p.id, { phone: cel, code: cod, serviceId }); await pagoExitoso(); }
+    catch (e) { b.disabled = false; b.textContent = `Pagar ${soles(p.precio)} con Yape`; toast(e.message); }
+  });
+}
+function pagoQR(p, serviceId){
+  $('#paybox').innerHTML = `<ol class="paysteps"><li>Generamos un QR con un monto exacto solo para ti.</li><li>Págalo con Yape, Plin o la app de tu banco.</li><li>Se confirma solo en segundos. No necesitas enviar captura.</li></ol>
+    <button class="btn big" id="qgo" style="width:100%">Generar mi QR</button>`;
+  $('#qgo').onclick = run(async () => {
+    const r = await API.createQR(p.id, { serviceId });
+    const fin = Date.now() + (C.PAGOS.QR_MINUTOS || 20) * 60e3;
+    $('#paybox').innerHTML = `<div class="qrpay"><canvas id="qr" width="168" height="168"></canvas>
+      <div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="lbl">Paga exactamente</span><span class="amount">${soles(r.amount)}</span>
+        <span class="note">A ${esc(C.YAPE_TITULAR)} · ${esc(C.YAPE_NUMERO)}${API.mode==='demo'?' (demo)':''}</span>
+        <span class="note">Los céntimos identifican tu compra: si pagas otro monto no se confirmará solo.</span></div></div>
+      <div class="waiting"><span class="spin"></span><span id="qwait">Esperando tu pago…</span><span class="note" id="qtime" style="margin-left:auto"></span></div>`;
+    drawQR(168);
+    payPoll = setInterval(run(async () => {
+      const left = fin - Date.now(); const t = $('#qtime'); if (!t) return clearInterval(payPoll);
+      t.textContent = left > 0 ? `${Math.floor(left/60e3)}:${String(Math.floor(left%60e3/1e3)).padStart(2,'0')}` : 'Vencido';
+      if (left <= 0) { clearInterval(payPoll); $('#qwait').textContent = 'El QR venció. Genera uno nuevo.'; return; }
+      const st = await API.purchaseStatus(r.id);
+      if (st === 'pagado') { $('#qwait').textContent = '¡Pago recibido!'; setTimeout(pagoExitoso, 600); clearInterval(payPoll); }
+    }), 3000);
+  });
+}
+function pagoManual(p, serviceId){
+  let method = 'yape';
+  $('#paybox').innerHTML = `<div class="seg"><button type="button" data-p="yape" aria-pressed="true">Yape</button><button type="button" data-p="plin" aria-pressed="false">Plin</button></div>
     <div class="panel" style="flex-direction:row;align-items:center;margin-top:12px;background:var(--sunk);border:0"><canvas id="qr" width="84" height="84" style="width:84px;height:84px;border-radius:10px;background:#fff;flex:none"></canvas>
-      <div><b id="pnum">Yape a ${esc(C.YAPE_TITULAR)}</b><br><span class="note">${esc(C.YAPE_NUMERO)}${API.mode==='demo'?' (demo)':''} · escanea o yapea al número y copia el código de operación.</span></div></div>
+      <div><b id="pnum">Yape a ${esc(C.YAPE_TITULAR)}</b><br><span class="note">${esc(C.YAPE_NUMERO)}${API.mode==='demo'?' (demo)':''} · paga y copia el código de operación. Lo revisa una persona.</span></div></div>
     <div class="field" style="margin-top:12px"><label for="op">Código de operación</label><input id="op" inputmode="numeric" placeholder="Ej. 04821937" autocomplete="off"></div>
-    <button class="btn big" id="paid" style="width:100%;margin-top:14px">Ya pagué</button></div>`);
+    <button class="btn big" id="paid" style="width:100%;margin-top:14px">Ya pagué</button>`;
   drawQR();
   $$('[data-p]').forEach(b => b.onclick = () => { method = b.dataset.p; $$('[data-p]').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#pnum').textContent = (method==='yape'?'Yape':'Plin') + ' a ' + C.YAPE_TITULAR; drawQR(); });
   $('#paid').onclick = run(async () => { const op = $('#op').value.trim();
     if (!/^\d{6,12}$/.test(op)) { toast('El código de operación tiene entre 6 y 12 dígitos'); $('#op').focus(); return; }
     await API.buyPlan(p.id, { method, op, serviceId }); close(); toast('Recibimos tu pago. Lo confirmamos en unos minutos.'); });
 }
-function drawQR(){ const c = $('#qr'); if (!c) return; const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,84,84); x.fillStyle = '#231A2B';
+function drawQR(size = 84){ const c = $('#qr'); if (!c) return; const x = c.getContext('2d'); const u = size / 21; x.fillStyle = '#fff'; x.fillRect(0,0,size,size); x.fillStyle = '#231A2B';
   let seed = Math.random()*1e6; const r = () => (seed = (seed*9301+49297) % 233280) / 233280;
   for (let i=0;i<21;i++) for (let j=0;j<21;j++){ const f=(i<7&&j<7)||(i<7&&j>13)||(i>13&&j<7);
-    if (f){ const a=i%14,b=j%14; if(a===0||a===6||b===0||b===6||(a>1&&a<5&&b>1&&b<5)) x.fillRect(j*4,i*4,4,4); } else if (r()>.52) x.fillRect(j*4,i*4,4,4); } }
+    if (f){ const a=i%14,b=j%14; if(a===0||a===6||b===0||b===6||(a>1&&a<5&&b>1&&b<5)) x.fillRect(j*u,i*u,u,u); } else if (r()>.52) x.fillRect(j*u,i*u,u,u); } }
 window.addEventListener('yunta:wallet', run(async () => { const before = S.wallet.credits; S.wallet = await API.wallet(); renderNav(); if (S.wallet.credits > before) { confetti(); toast(`Pago confirmado: ahora tienes ${S.wallet.credits} contactos`); } if (['planes','cuenta'].includes(S.view)) render(); }));
 
 // ---------------- Cuenta ----------------
@@ -1193,8 +1489,13 @@ function login(){
 }
 async function loggedIn(){ await refreshUser(); toast('Hola, ' + S.user.name.split(' ')[0]); const n = S.after; S.after = null;
   if (n) { S.view = 'inicio'; renderNav(); await VIEWS.inicio(); n(); } else go(S.user.role === 'cliente' ? 'inicio' : 'cuenta'); }
-function accountFoot(){ return `<div class="row" style="margin-top:22px"><button class="btn line" id="out">${I('logout')} Cerrar sesión</button>${API.mode==='demo'?'<button class="btn line" id="rst">Reiniciar datos demo</button>':''}</div>${legal()}`; }
+const PALETAS = [['chicha','Chicha','#5A2A82','#F2B705'],['andina','Andina','#9C3D25','#3BB39C'],['pacifico','Pacífico','#1F4FA3','#FF9F1C'],['selva','Selva','#1E6B4F','#F28AB2']];
+function paletaActual(){ try { return localStorage.getItem('yunta.paleta') || C.PALETA || 'chicha'; } catch (e) { return C.PALETA || 'chicha'; } }
+function aplicarPaleta(id){ document.documentElement.dataset.palette = id; try { localStorage.setItem('yunta.paleta', id); } catch (e) {} }
+function palPicker(){ const cur = paletaActual(); return `<div class="field" style="margin-top:18px"><span class="lbl">Probar paleta de colores</span><div class="palpick">${PALETAS.map(([id,n,a,b])=>`<button type="button" data-pal="${id}" aria-pressed="${id===cur}"><i><b style="background:${a}"></b><b style="background:${b}"></b></i>${n}</button>`).join('')}</div></div>`; }
+function accountFoot(){ return palPicker() + `<div class="row" style="margin-top:22px"><button class="btn line" id="out">${I('logout')} Cerrar sesión</button>${API.mode==='demo'?'<button class="btn line" id="rst">Reiniciar datos demo</button>':''}</div>${legal()}`; }
 function bindFoot(){
+  $$('[data-pal]').forEach(b => b.onclick = () => { aplicarPaleta(b.dataset.pal); $$('[data-pal]').forEach(x => x.setAttribute('aria-pressed', x === b)); toast('Paleta ' + b.textContent.trim()); });
   $('#out').onclick = run(async () => { await API.signOut(); await refreshUser(); go('inicio'); toast('Sesión cerrada'); });
   const r = $('#rst'); if (r) r.onclick = run(async () => { await API.reset(); S.seen.clear(); await refreshUser(); go('inicio'); toast('Datos demo reiniciados'); });
 }
@@ -1291,32 +1592,70 @@ function verifStatus(v){
 }
 function verifWizard(){
   const data = { liveness: false }; const maxDate = new Date().toISOString().slice(0,10);
-  $('#vbox').innerHTML = `<div class="panel" style="margin-bottom:18px"><div><h2 style="font-size:22px">Verifica tu identidad</h2><p class="note" style="margin:4px 0 0">Obligatorio para aparecer en Yunta. Solo el equipo de revisión ve tus documentos.</p></div>
+  $('#vbox').innerHTML = `<div class="panel" style="margin-bottom:18px"><div><h2 style="font-size:22px">Verifica tu identidad</h2><p class="note" style="margin:4px 0 0">Automático en 2 minutos: leemos tu DNI, escaneamos tu rostro y los comparamos. Solo el equipo de revisión ve tus documentos.</p></div>
     <div class="steps">
       <div class="step" id="st1"><span class="n">1</span><div class="body"><h3>DNI</h3>
         <div class="row"><div class="field"><label for="vn">Nombre como figura en tu DNI</label><input id="vn" value="${esc(S.user.name)}"></div><div class="field"><label for="vd">N.º de DNI</label><input id="vd" inputmode="numeric" maxlength="8" placeholder="8 dígitos"></div></div>
-        <div class="upl"><span class="thumb" id="t-dni">Foto del DNI</span><input type="file" id="f-dni" accept="image/*" capture="environment" aria-label="Foto del DNI"></div></div></div>
-      <div class="step" id="st2"><span class="n">2</span><div class="body"><h3>Escaneo de rostro</h3>
-        <p class="note" style="margin:0">Selfie con buena luz, sin lentes ni gorra. La comparamos con tu DNI y hacemos una prueba de vida.</p>
-        <div class="face" id="face"><span class="hint">Centra tu rostro en el óvalo</span></div>
-        <div class="live" id="live"><span>Mira al frente</span><span>Parpadea</span><span>Gira a la izquierda</span><span>Sonríe</span></div>
-        <div class="upl"><span class="thumb">Selfie</span><input type="file" id="f-selfie" accept="image/*" capture="user" aria-label="Selfie"></div></div></div>
+        <div class="upl"><span class="thumb" id="t-dni">Foto del DNI</span><input type="file" id="f-dni" accept="image/*" capture="environment" aria-label="Foto del DNI"></div>
+        <div class="bio-checks" id="ocr-st"></div></div></div>
+      <div class="step" id="st2"><span class="n">2</span><div class="body"><h3>Escaneo de rostro con prueba de vida</h3>
+        <p class="note" style="margin:0">Te pediremos mirar al frente, parpadear y girar la cabeza. Así sabemos que eres una persona real y no una foto.</p>
+        <div class="row" style="align-items:center"><button type="button" class="btn" id="scan" style="flex:0 1 auto">${I('face')} Escanear mi rostro</button>
+          <label class="note" style="flex:1 1 220px">¿Sin cámara? <span class="link" style="cursor:pointer" id="upsel">Sube una selfie</span> (pasará a revisión humana)<input type="file" id="f-selfie" accept="image/*" capture="user" hidden aria-label="Selfie"></label></div>
+        <div id="bio-res"></div></div></div>
       <div class="step" id="st3"><span class="n">3</span><div class="body"><h3>Certificado Único Laboral (CUL)</h3>
-        <p class="note" style="margin:0">Gratis en empleosperu.gob.pe. Reúne tus antecedentes policiales, penales y judiciales. Debe tener menos de ${C.CUL_VIGENCIA_DIAS} días.</p>
+        <p class="note" style="margin:0">Gratis en empleosperu.gob.pe. Reúne tus antecedentes policiales, penales y judiciales. Debe tener menos de ${C.CUL_VIGENCIA_DIAS} días. Sube el <b>PDF original</b>: verificamos solos su firma digital del Ministerio y su QR. Si lo editas o es una foto, lo revisa una persona.</p>
         <div class="row"><div class="field"><label for="vcn">N.º del certificado</label><input id="vcn"></div><div class="field"><label for="vcf">Fecha de emisión</label><input id="vcf" type="date" max="${maxDate}"></div></div>
         <div class="upl"><span class="thumb" id="t-cul">PDF</span><input type="file" id="f-cul" accept="application/pdf,image/*" aria-label="Archivo del CUL"></div></div></div>
       <div class="step" id="st4"><span class="n">4</span><div class="body"><h3>Contacto</h3>
         <div class="row"><div class="field"><label for="vw">WhatsApp (solo lo ven quienes lo desbloquean)</label><input id="vw" inputmode="tel" placeholder="9XX XXX XXX"></div><div class="field"><label for="vcol">Colegiatura (solo salud)</label><input id="vcol" placeholder="Ej. C.Ps.P. 34521"></div></div>
-        <label class="check"><input type="checkbox" id="vok"> Autorizo a Yunta a tratar mis datos personales y biométricos para verificar mi identidad (Ley N.º 29733).</label></div></div>
-    </div><button class="btn big" id="vsend">Enviar a revisión</button></div>`;
+        <label class="check"><input type="checkbox" id="vok"> Autorizo a Yunta a tratar mis datos personales y biométricos (foto del DNI y de mi rostro) para verificar mi identidad de forma automática, con revisión humana si lo pido (Ley N.º 29733).</label></div></div>
+    </div><button class="btn big" id="vsend">Enviar verificación</button></div>`;
   const mark = (id, on) => $('#'+id).classList.toggle('done', on);
-  $('#f-dni').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.dniFrontUrl = await readFile(f); $('#t-dni').innerHTML = `<img alt="DNI" src="${data.dniFrontUrl}">`; mark('st1', /^\d{8}$/.test($('#vd').value)); });
-  $('#vd').oninput = () => mark('st1', /^\d{8}$/.test($('#vd').value) && !!data.dniFrontUrl);
+  const chk = (ok, txt) => `<span class="bdg ${ok===null?'':ok?'okc':'badc'}">${I(ok===null?'clock':ok?'check':'x')}${esc(txt)}</span>`;
+  async function leerDNI(){
+    if (!data.dniFrontUrl) return;
+    const st = $('#ocr-st'); st.innerHTML = chk(null, 'Leyendo tu DNI…');
+    try {
+      const [ocr, rostro] = await Promise.all([
+        BIO.ocrDNI(data.dniFrontUrl, $('#vd').value.trim(), $('#vn').value.trim()).catch(() => null),
+        BIO.rostroDeFoto(data.dniFrontUrl).catch(() => null)
+      ]);
+      data.ocr = ocr; data.dniFace = rostro && rostro.embedding;
+      if (ocr && ocr.dniLeido && !/^\d{8}$/.test($('#vd').value)) { $('#vd').value = ocr.dniLeido; ocr.dniOk = true; }
+      st.innerHTML = [
+        ocr ? chk(ocr.dniOk, ocr.dniOk ? `Número ${ocr.dniLeido} leído` : ocr.dniLeido ? `Leímos ${ocr.dniLeido}, no coincide` : 'No pudimos leer el número') : chk(false, 'No pudimos leer el DNI'),
+        ocr ? chk(ocr.nombreOk, ocr.nombreOk ? 'Nombre coincide' : 'Nombre no encontrado') : '',
+        chk(!!rostro, rostro ? 'Rostro del DNI detectado' : 'No vemos el rostro en la foto')
+      ].join('');
+      mark('st1', /^\d{8}$/.test($('#vd').value)); evaluar();
+    } catch (e) { st.innerHTML = chk(false, 'No pudimos analizar la foto. La revisará una persona.'); }
+  }
+  function evaluar(){
+    const box = $('#bio-res'); if (!box || !data.vivo) return;
+    data.parecido = data.dniFace && data.vivo.embedding && data.vivo.embedding.length ? BIO.similarity(data.dniFace, data.vivo.embedding) : null;
+    const d = BIO.decidir({ ocr: data.ocr, parecido: data.parecido, vivo: data.vivo }); data.auto = d;
+    const pct = data.parecido == null ? null : Math.round(data.parecido * 100);
+    const tone = d.decision === 'aprobado' ? 'ok' : d.decision === 'rechazado' ? 'bad' : '';
+    box.innerHTML = `<div class="bio-card"><div class="face-sm">${data.selfieUrl?`<img alt="Tu selfie" src="${data.selfieUrl}">`:''}</div>
+      <div style="flex:1 1 240px;display:flex;flex-direction:column;gap:8px">
+        <span class="lbl">Parecido con tu DNI ${pct!=null?`· ${pct}%`:''}</span>
+        <div class="meter"><i style="width:${pct||0}%;background:${(data.parecido||0) >= C.BIOMETRIA.PARECIDO_MIN ? 'var(--ok)' : 'var(--warn)'}"></i></div>
+        <div class="bio-checks">${chk(!!data.vivo.desafios, data.vivo.desafios ? 'Prueba de vida completa' : 'Sin prueba de vida')}${data.vivo.real!=null?chk(data.vivo.real >= C.BIOMETRIA.ANTISPOOF_MIN, 'Persona real ' + Math.round(data.vivo.real*100) + '%'):''}</div>
+        <div class="alert ${tone}">${d.decision==='aprobado' ? '<b>Identidad verificada automáticamente.</b> Falta solo que revisemos tu CUL.' : d.decision==='rechazado' ? '<b>No coincide.</b> ' + esc(d.motivos.join('. ')) + '. Puedes intentar otra vez o pedir revisión humana.' : '<b>Pasará a revisión humana.</b> ' + esc(d.motivos.join('. ')) + '.'}</div>
+      </div></div>`;
+    mark('st2', true);
+  }
+  $('#f-dni').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.dniFrontUrl = await readFile(f); $('#t-dni').innerHTML = `<img alt="DNI" src="${data.dniFrontUrl}">`; leerDNI(); });
+  $('#vd').oninput = () => { mark('st1', /^\d{8}$/.test($('#vd').value) && !!data.dniFrontUrl); if (data.ocr && data.ocr.dniLeido) { data.ocr.dniOk = data.ocr.dniLeido === $('#vd').value.trim(); evaluar(); } };
+  $('#upsel').onclick = () => $('#f-selfie').click();
   $('#f-selfie').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; data.selfieUrl = await readFile(f);
-    const face = $('#face'); face.innerHTML = `<img alt="Tu selfie" src="${data.selfieUrl}">`; face.classList.add('scan');
-    const chips = $$('#live span'); chips.forEach((c,i) => setTimeout(() => c.classList.add('on'), 400*(i+1)));
-    setTimeout(() => { face.classList.remove('scan'); data.liveness = true; mark('st2', true); toast('Prueba de vida completada'); }, 400*chips.length + 200); });
-  $('#f-cul').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; if (f.size > 8e6) return toast('El archivo pesa más de 8 MB'); data.culFileUrl = await readFile(f); $('#t-cul').textContent = f.name.slice(0,14); mark('st3', true); });
+    $('#bio-res').innerHTML = chk(null, 'Analizando tu selfie…');
+    const r = await BIO.rostroDeFoto(data.selfieUrl).catch(() => null);
+    data.vivo = { selfie: data.selfieUrl, embedding: r && r.embedding, real: r && r.real, live: null, desafios: false }; data.liveness = false; evaluar(); });
+  $('#scan').onclick = () => escanear(res => { data.vivo = res; data.selfieUrl = res.selfie; data.liveness = true; evaluar(); });
+  $('#f-cul').onchange = run(async e => { const f = e.target.files[0]; if (!f) return; if (f.size > 8e6) return toast('El archivo pesa más de 8 MB'); data.culFileUrl = await readFile(f); $('#t-cul').textContent = f.name.slice(0,14); mark('st3', true);
+    if (f.type !== 'application/pdf') toast('Es una imagen: la revisará una persona. Con el PDF original es automático.'); });
   $('#vsend').onclick = run(async () => {
     const dni = $('#vd').value.trim(), fecha = $('#vcf').value;
     if (!/^\d{8}$/.test(dni)) return toast('El DNI debe tener 8 dígitos');
@@ -1327,9 +1666,33 @@ function verifWizard(){
     if (!data.culFileUrl) return toast('Sube el PDF del CUL');
     if (!/^9\d{8}$/.test($('#vw').value.replace(/\s/g,''))) return toast('Ingresa un celular de 9 dígitos que empiece en 9');
     if (!$('#vok').checked) return toast('Debes autorizar el tratamiento de tus datos');
-    await API.submitVerification({ ...data, name: $('#vn').value.trim(), dni, culNumero: $('#vcn').value.trim(), culFecha: fecha, whatsapp: $('#vw').value.trim(), colegiatura: $('#vcol').value.trim() });
-    toast('Documentos enviados. Los revisamos en menos de 24 h.'); panelProveedor();
+    const auto = data.auto || { decision: 'revision', motivos: ['Sin análisis automático'] };
+    await API.submitVerification({ ...data, vivo: undefined, dniFace: undefined, name: $('#vn').value.trim(), dni, culNumero: $('#vcn').value.trim(), culFecha: fecha, whatsapp: $('#vw').value.trim(), colegiatura: $('#vcol').value.trim(),
+      auto: { decision: auto.decision, motivos: auto.motivos, parecido: data.parecido ?? null, real: data.vivo ? data.vivo.real : null, live: data.vivo ? data.vivo.live : null, desafios: !!(data.vivo && data.vivo.desafios), ocrDni: data.ocr ? data.ocr.dniLeido : null, checkedBy: 'navegador' } });
+    toast(auto.decision === 'aprobado' ? 'Identidad verificada. Solo falta revisar tu CUL.' : 'Enviado. Una persona lo revisará en menos de 24 h.'); panelProveedor();
   });
+}
+let camStream = null;
+function stopCam(){ if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; } }
+function escanear(onDone){
+  const ctl = new AbortController();
+  openModal(`<div class="pad"><h2 style="font-size:22px;margin-right:40px">${I('face')} Escaneo de rostro</h2>
+    <div class="cam"><video id="cam" playsinline muted autoplay></video><div class="oval"></div><div class="cam-msg" id="cam-msg">Cargando la cámara…</div></div>
+    <div class="live" id="cam-steps"><span>Frente</span><span>Parpadea</span><span>Izquierda</span><span>Derecha</span><span>Frente</span></div>
+    <p class="note" style="text-align:center">Buena luz, sin lentes de sol ni gorra. El video no se guarda: solo una foto final.</p>
+    <button class="btn ghost" id="cam-x" style="width:100%">Cancelar</button></div>`);
+  $('#cam-x').onclick = () => { ctl.abort(); close(); };
+  (async () => {
+    try {
+      if (!(await BIO.camaraDisponible())) throw new Error('Este navegador no permite usar la cámara. Sube una selfie.');
+      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+      const v = $('#cam'); v.srcObject = camStream; await v.play();
+      $('#cam-msg').textContent = 'Preparando el reconocimiento…';
+      await BIO.getHuman();
+      const res = await BIO.escaneoEnVivo(v, st => { const m = $('#cam-msg'); if (!m) return; m.textContent = st.texto; $$('#cam-steps span').forEach((x, k) => x.classList.toggle('on', k < st.i + (st.hecho ? 1 : 0))); }, ctl.signal);
+      close(); onDone(res); toast('Prueba de vida completada');
+    } catch (e) { if (ctl.signal.aborted) return; const m = $('#cam-msg'); if (m) m.textContent = e.message || 'No se pudo usar la cámara'; else toast(e.message); stopCam(); }
+  })();
 }
 function serviceForm(hasVerif){
   const days = new Set([1,2,3,4,5]); let video = null;
@@ -1361,10 +1724,15 @@ function serviceForm(hasVerif){
 
 // ---------------- Admin ----------------
 async function panelAdmin(){
-  const [vs, ps, st] = await Promise.all([API.pendingVerifications(), API.pendingPurchases(), API.stats()]);
-  $('#app').innerHTML = `<div class="page" style="max-width:960px"><h1>Revisión</h1><p class="lead">Confirma pagos de Yape/Plin y aprueba identidades.</p>
+  const [vs, ps0, st, nts] = await Promise.all([API.pendingVerifications(), API.pendingPurchases(), API.stats(), API.paymentNotices()]);
+  const ps = ps0.filter(x => !x.channel || x.channel === 'manual');
+  const NST = { cruzado: ['ok','Confirmó una compra'], sin_cruce: ['warn','Sin compra con ese monto'], duplicado: ['','Aviso repetido'] };
+  $('#app').innerHTML = `<div class="page" style="max-width:960px"><h1>Revisión</h1><p class="lead">Los pagos con Yape y las identidades se confirman solos. Aquí revisas lo que quedó pendiente.</p>
     <div class="kpis"><div class="kpi"><b>${soles(st.ingresos)}</b><span>Ingresos por planes</span></div><div class="kpi"><b>${st.ventas}</b><span>Planes vendidos</span></div><div class="kpi"><b>${st.contactos}</b><span>Contactos desbloqueados</span></div><div class="kpi"><b>${st.pendientes}</b><span>Verificaciones pendientes</span></div></div>
-    <div class="section-h"><h2>Pagos por confirmar</h2></div>
+    <div class="section-h"><h2>Avisos de pago automáticos</h2><small>Leídos por la app Yunta Cobros</small></div>
+    ${nts.length ? `<div class="list">${nts.map(n=>`<div class="row-item"><div class="info"><b>${soles(n.amount)}</b> · ${esc(n.payer || 'Sin nombre')}<br><span class="note">${esc(n.sourceName)} · ${esc(n.when)}${n.purchaseUser?` · ${esc(n.purchaseUser)} (${esc(n.plan)})`:''}</span></div><span class="pill ${NST[n.status][0]}">${NST[n.status][1]}</span></div>`).join('')}</div>`
+      : '<div class="empty" style="padding:18px">Aún no llegan avisos. Instala Yunta Cobros en el celular que recibe los Yape.</div>'}
+    <div class="section-h"><h2>Pagos manuales por confirmar</h2></div>
     ${ps.length ? `<div class="list">${ps.map(x=>`<div class="row-item"><div class="info"><b>${esc(x.user)}</b> · ${esc(x.plan)}<br><span class="note">${x.method==='yape'?'Yape':'Plin'} · op. ${esc(x.op)} · ${soles(x.amount)}</span></div><div class="row" style="flex:0 1 auto"><button class="btn sm" data-pay="${x.id}">Confirmar</button><button class="btn sm ghost" data-nopay="${x.id}">Rechazar</button></div></div>`).join('')}</div>`
       : '<div class="empty" style="padding:18px">No hay pagos pendientes. Compara cada código con tu app de Yape antes de confirmar.</div>'}
     <div class="section-h"><h2>Verificaciones</h2></div>
@@ -1384,18 +1752,21 @@ function reviewCard(v){
   const dniImg = API.file(v.id,'dniFront'), selfie = API.file(v.id,'selfie');
   const draw = (img, label) => img ? `<img alt="${label}" src="${img}">` : avatar(v);
   const age = v.cul && v.cul.fecha ? daysAgo(v.cul.fecha) : null; const culOk = age !== null && age <= C.CUL_VIGENCIA_DIAS;
-  const sc = v.score; const scOk = sc != null && sc >= C.PUNTAJE_ROSTRO_MIN;
+  const a = v.auto || {}; const autoOk = a.decision === 'aprobado';
+  const sc = a.parecido ?? v.score; const pct = sc != null ? Math.round(sc * 100) : null;
+  const tone = autoOk ? 'ok' : a.decision === 'rechazado' ? 'bad' : '';
   return `<div class="panel rvw" data-v="${esc(v.id)}">
     <div style="display:flex;gap:12px;align-items:center">${av(v)}<div><b>${esc(v.name)}</b><br><span class="note">DNI ${esc(v.dni || '—')}${v.sub?' · '+esc(v.sub):''} · ${esc(v.created)}</span></div></div>
+    <div class="alert ${tone}"><b>${autoOk ? 'DNI y rostro aprobados automáticamente' : a.decision === 'rechazado' ? 'El sistema sugiere rechazar' : 'Revisión humana de DNI y rostro'}</b>${a.checkedBy ? ` · por ${a.checkedBy === 'deepface' ? 'el servidor (DeepFace)' : 'el navegador'}` : ''}${(a.motivos||[]).length ? '<br>' + esc(a.motivos.join('. ')) : ''}</div>
     <div class="cmp"><figure><span class="ph">${draw(dniImg,'DNI')}</span>Foto del DNI</figure><figure><span class="ph">${draw(selfie,'Selfie')}</span>Selfie</figure><figure><span class="ph" style="font-size:11px;padding:6px;text-align:center">CUL<br>${esc(v.cul?.numero || '')}</span>Certificado</figure></div>
-    <div class="field"><span class="lbl">Coincidencia de rostro ${sc!=null?`· ${(sc*100).toFixed(0)}%`:''} ${v.liveness?'· prueba de vida OK':''}</span><div class="meter"><i style="width:${(sc||0)*100}%;background:${scOk?'var(--ok)':'var(--bad)'}"></i></div>${!scOk?`<span class="pill bad" style="align-self:flex-start">Bajo ${C.PUNTAJE_ROSTRO_MIN*100}%: pedir nueva selfie</span>`:''}</div>
+    <div class="field"><span class="lbl">Parecido selfie–DNI ${pct!=null?`· ${pct}%`:''}</span><div class="meter"><i style="width:${pct||0}%;background:${(sc||0) >= C.BIOMETRIA.PARECIDO_MIN?'var(--ok)':'var(--bad)'}"></i></div>
+      <div class="bio-checks"><span class="bdg ${a.desafios?'okc':'badc'}">${I(a.desafios?'check':'x')}${a.desafios?'Prueba de vida con cámara':'Sin prueba de vida'}</span>${a.real!=null?`<span class="bdg ${a.real>=C.BIOMETRIA.ANTISPOOF_MIN?'okc':'badc'}">${I('face')}Persona real ${Math.round(a.real*100)}%</span>`:''}${a.ocrDni?`<span class="bdg ${a.ocrDni===v.dni?'okc':'badc'}">${I('idcard')}OCR leyó ${esc(a.ocrDni)}</span>`:''}</div></div>
     <div class="cul"><span>N.º CUL</span><span>${esc(v.cul?.numero)}</span><span>Emitido</span><span>${esc(v.cul?.fecha)} ${age!==null?`(hace ${age} días)`:''} ${culOk?'':'<b style="color:var(--bad)">· vencido</b>'}</span><span>Ant. policiales</span><span>${esc(v.cul?.policiales)}</span><span>Ant. penales</span><span>${esc(v.cul?.penales)}</span><span>Ant. judiciales</span><span>${esc(v.cul?.judiciales)}</span>${v.colegiatura?`<span>Colegiatura</span><span>${esc(v.colegiatura)}</span>`:''}</div>
     <div class="field"><span class="lbl">Antes de aprobar</span>
-      <label class="check"><input type="checkbox"> El nombre y el DNI del CUL coinciden con la foto del DNI.</label>
-      <label class="check"><input type="checkbox"> Validé el CUL en empleosperu.gob.pe con su número y el DNI.</label>
+      ${v.culAuto==='aprobado'?'<span class="bdg okc">'+I('check')+'Firma digital del Ministerio y QR verificados</span>':'<label class="check"><input type="checkbox"> Validé el CUL en empleosperu.gob.pe con su número y el DNI.</label>'}
       <label class="check"><input type="checkbox"> El CUL no muestra antecedentes policiales, penales ni judiciales.</label>
       ${v.colegiatura?'<label class="check"><input type="checkbox"> La colegiatura está activa en el registro del colegio profesional.</label>':''}
-      <label class="check"><input type="checkbox"> La selfie y la foto del DNI son la misma persona.</label></div>
+      ${autoOk?'':'<label class="check"><input type="checkbox"> Revisé a mano: el DNI es legible y la selfie es la misma persona.</label>'}</div>
     <textarea placeholder="Motivo si rechazas (lo verá el usuario)" aria-label="Motivo del rechazo"></textarea>
     <div class="row"><button class="btn" data-ap>Aprobar</button><button class="btn ghost" data-rj>Rechazar</button></div></div>`;
 }
@@ -1491,6 +1862,7 @@ function confetti(){
 $('#home').onclick = () => { S.cat = S.sub = S.filter = null; S.q = S.dist = ''; go('inicio'); };
 $('#wallet').onclick = () => go('planes');
 window.addEventListener('yunta:auth', () => refreshUser());
+(() => { const q = new URLSearchParams(location.search).get('paleta'); if (q && PALETAS.some(p => p[0] === q)) aplicarPaleta(q); else document.documentElement.dataset.palette = paletaActual(); })();
 (async () => { await refreshUser(); S.safety = await API.getSafety(); drawSafety(); render(); })();
 })();
 

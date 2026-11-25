@@ -129,10 +129,20 @@
       const u = await me();
       const [dni, selfie, cul] = await Promise.all([upload('verificaciones', u.id, 'dni.jpg', d.dniFrontUrl), upload('verificaciones', u.id, 'selfie.jpg', d.selfieUrl), upload('verificaciones', u.id, 'cul.pdf', d.culFileUrl)]);
       ok(await sb.from('provider_private').upsert({ user_id: u.id, dni: d.dni, whatsapp: d.whatsapp, email: u.email }));
-      const rows = [{ user_id: u.id, kind: 'dni', file_path: dni }, { user_id: u.id, kind: 'selfie', file_path: selfie, liveness_passed: !!d.liveness },
+      const a = d.auto || {};
+      const autoCols = { auto_decision: a.decision || 'revision', checked_by: 'navegador' };
+      const rows = [{ user_id: u.id, kind: 'dni', file_path: dni, ocr_dni: a.ocrDni || null, ...autoCols },
+        { user_id: u.id, kind: 'selfie', file_path: selfie, liveness_passed: !!a.desafios, face_match_score: a.parecido != null ? +a.parecido.toFixed(3) : null,
+          antispoof_score: a.real != null ? +a.real.toFixed(3) : null, notes: (a.motivos || []).join('. ') || null, ...autoCols },
         { user_id: u.id, kind: 'cul', file_path: cul, cul_numero: d.culNumero, cul_fecha_emision: d.culFecha }];
       if (d.colegiatura) rows.push({ user_id: u.id, kind: 'colegiatura', colegiatura: d.colegiatura });
       ok(await sb.from('verifications').insert(rows));
+      // El servidor con DeepFace repite la comparación y aprueba DNI y rostro si corresponde
+      const url = C.BIOMETRIA && C.BIOMETRIA.VERIFICADOR_URL;
+      if (url) {
+        const { data: { session } } = await sb.auth.getSession();
+        fetch(url.replace(/\/$/, '') + '/verificar', { method: 'POST', headers: { Authorization: 'Bearer ' + session.access_token } }).catch(() => {});
+      }
     },
     file: () => null,
     async createService(s) {
@@ -148,7 +158,9 @@
       const by = {};
       for (const r of rows) {
         const v = by[r.user_id] ||= { id: r.user_id, userId: r.user_id, name: r.profile.full_name, g: r.profile.gender, age: age(r.profile.birth_year), seed: r.profile.avatar_seed, cul: {}, created: r.created_at.slice(0, 10) };
-        if (r.kind === 'selfie') { v.score = r.face_match_score; v.liveness = r.liveness_passed; }
+        if (r.kind === 'selfie') { v.score = r.face_match_score; v.liveness = r.liveness_passed;
+          v.auto = { decision: r.auto_decision, motivos: r.notes ? r.notes.split('. ') : [], parecido: r.face_match_score, real: r.antispoof_score, desafios: r.liveness_passed, checkedBy: r.checked_by, ocrDni: v.auto && v.auto.ocrDni }; }
+        if (r.kind === 'dni') { v.auto = { ...(v.auto || {}), ocrDni: r.ocr_dni }; }
         if (r.kind === 'cul') v.cul = { numero: r.cul_numero, fecha: r.cul_fecha_emision, policiales: 'Ver PDF', penales: 'Ver PDF', judiciales: 'Ver PDF' };
         if (r.kind === 'colegiatura') v.colegiatura = r.colegiatura;
       }
@@ -161,8 +173,24 @@
     },
     async pendingPurchases() {
       const rows = ok(await sb.from('plan_purchases').select('*, u:profiles!plan_purchases_user_id_fkey(full_name)').eq('status', 'pendiente').order('created_at'));
-      return rows.map(r => ({ id: r.id, user: r.u.full_name, planId: r.plan_id, plan: plan(r.plan_id).nombre, amount: +r.amount, method: r.method, op: r.operation_code, created: r.created_at.slice(0, 10) }));
+      return rows.map(r => ({ id: r.id, user: r.u.full_name, planId: r.plan_id, plan: plan(r.plan_id).nombre, amount: +r.amount, method: r.method, channel: r.channel, op: r.operation_code, created: r.created_at.slice(0, 10) }));
     },
+    async paymentNotices() {
+      const SRC = { 'com.bcp.innovacxion.yapeapp': 'Yape' };
+      const rows = ok(await sb.from('payment_notices').select('*, p:plan_purchases(plan_id, u:profiles!plan_purchases_user_id_fkey(full_name))').order('received_at', { ascending: false }).limit(20));
+      return rows.map(n => ({ id: n.id, amount: +n.amount, payer: n.payer_name, status: n.status, sourceName: SRC[n.source] || n.source,
+        when: new Date(n.received_at).toLocaleString('es-PE', { dateStyle: 'short', timeStyle: 'short' }), purchaseUser: n.p && n.p.u && n.p.u.full_name, plan: n.p && plan(n.p.plan_id) && plan(n.p.plan_id).nombre }));
+    },
+    async payYapeCode(planId, { phone, code, serviceId }) {
+      const { data, error } = await sb.functions.invoke('cobrar-yape', { body: { plan: planId, servicio: serviceId || null, celular: phone, codigo: code } });
+      if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} throw new Error(m); }
+      return data;
+    },
+    async createQR(planId, { serviceId } = {}) {
+      const r = ok(await sb.rpc('crear_compra_qr', { p_plan: planId, p_service: serviceId || null }));
+      return { id: r.id, amount: +r.expected_amount };
+    },
+    async purchaseStatus(id) { return ok(await sb.rpc('estado_compra', { p_id: id })) },
     async confirmPurchase(id, yes = true) { ok(await sb.from('plan_purchases').update({ status: yes ? 'pagado' : 'rechazado' }).eq('id', id)) },
     async stats() {
       const [paid, unl, pend] = await Promise.all([sb.from('plan_purchases').select('amount').eq('status', 'pagado').then(ok), sb.from('contact_unlocks').select('id').then(ok), sb.from('verifications').select('user_id').eq('status', 'pendiente').then(ok)]);
