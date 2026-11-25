@@ -18,7 +18,7 @@ permissions:
 env:
   APP_URL: https://itzelysium.github.io/yunta/
   APP_HOST: itzelysium.github.io
-  VERSION_NAME: "1.1"
+  VERSION_NAME: "1.2"
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: '8.11.1'
 
       - name: Preparar firma (opcional)
         env:
@@ -54,22 +54,25 @@ jobs:
           chmod +x android-build.sh
           for app in yunta cobros; do
             ./android-build.sh $app
-            (cd build-$app && gradle assembleRelease --no-daemon)
+            (cd build-$app && gradle assembleRelease bundleRelease --no-daemon)
           done
           cp build-yunta/build/outputs/apk/release/*.apk yunta.apk
           cp build-cobros/build/outputs/apk/release/*.apk yunta-cobros.apk
-          ls -la *.apk
+          cp build-yunta/build/outputs/bundle/release/*.aab yunta-play.aab
+          ls -la *.apk *.aab
 
       - uses: actions/upload-artifact@v4
         with:
           name: yunta-apks
-          path: '*.apk'
+          path: |
+            *.apk
+            *.aab
 
       - name: Publicar en Releases
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete apk --yes --cleanup-tag || true
-          gh release create apk yunta.apk yunta-cobros.apk \
+          gh release create apk yunta.apk yunta-cobros.apk yunta-play.aab \
             --title "Yunta para Android (versión ${{ env.VERSION_NAME }}.${{ github.run_number }})" \
-            --notes "yunta.apk: la app para todos (necesita cámara para el escaneo de rostro). yunta-cobros.apk: SOLO para el celular de la empresa que recibe los Yape y Plin. Para instalar, abre el archivo en tu Android y permite 'Instalar apps de origen desconocido' para tu navegador."
+            --notes "yunta.apk: la app para todos (necesita cámara para el escaneo de rostro). yunta-cobros.apk: SOLO para el celular de la empresa que recibe los Yape y Plin. Para instalar, abre el archivo en tu Android y permite 'Instalar apps de origen desconocido' para tu navegador. yunta-play.aab: el paquete para subir a Google Play (necesita firma propia)."
